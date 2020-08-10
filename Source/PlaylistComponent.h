@@ -46,7 +46,7 @@ public:
         bool rowIsSelected
     ) override;
 
-    virtual void cellClicked(int rowNumber, int columnId, const MouseEvent&);
+    virtual void cellClicked(int rowNumber, int columnId, const MouseEvent&) override;
 
     Component* refreshComponentForCell(
         int rowNumber, 
