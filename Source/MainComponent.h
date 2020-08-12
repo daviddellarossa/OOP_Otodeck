@@ -11,7 +11,8 @@
 #include "../JuceLibraryCode/JuceHeader.h"
 #include "DJAudioPlayer.h"
 #include "DeckGUI.h"
-#include "PlaylistComponent.h"
+//#include "PlaylistComponent.h"
+#include "PlaylistAggregateComponent.h"
 
 //==============================================================================
 /*
@@ -49,7 +50,9 @@ private:
 
     MixerAudioSource mixerSource; 
 
-    PlaylistComponent playlistComponent;
+    //PlaylistComponent playlistComponent;
+    PlaylistAggregateComponent playlistAggregateComponent;
+	
     
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (MainComponent)
 };

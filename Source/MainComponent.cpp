@@ -30,8 +30,8 @@ MainComponent::MainComponent()
 
     addAndMakeVisible(deckGUI1); 
     addAndMakeVisible(deckGUI2);
-    addAndMakeVisible(playlistComponent);
-
+    //addAndMakeVisible(playlistComponent);
+    addAndMakeVisible(this->playlistAggregateComponent);
 
     formatManager.registerBasicFormats();
 }
@@ -83,6 +83,8 @@ void MainComponent::resized()
 {
     deckGUI1.setBounds(0, 0, getWidth()/2, getHeight()/2);
     deckGUI2.setBounds(getWidth()/2, 0, getWidth()/2, getHeight()/2);
-    playlistComponent.setBounds(0, getHeight() / 2, getWidth(), getHeight() / 2);
+    //playlistComponent.setBounds(0, getHeight() / 2, getWidth(), getHeight() / 2);
+    playlistAggregateComponent.setBounds(0, getHeight() / 2, getWidth(), getHeight() / 2);
+
 }
 
