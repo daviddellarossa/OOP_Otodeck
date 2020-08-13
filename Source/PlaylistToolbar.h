@@ -24,7 +24,7 @@ public:
     void paint (juce::Graphics&) override;
     void resized() override;
 
-private:
+
 	class PlaylistToolbarItemFactory : public ToolbarItemFactory
 	{
 	public:
@@ -39,19 +39,16 @@ private:
         	savePlaylist = 5
         };
 
-        void getAllToolbarItemIds(Array <int>& ids);
-        void getDefaultItemSet(Array <int>& ids);
-        ToolbarItemComponent* createItem(int itemId);
+        void getAllToolbarItemIds(Array <int>& ids) override;
+        void getDefaultItemSet(Array <int>& ids) override;
+        ToolbarItemComponent* createItem(int itemId) override;
 	private:
         OwnedArray <Drawable> iconsFromZipFile;
         StringArray iconNames;
-        std::unique_ptr<ToolbarButton> createButtonFromZipFileSVG(const int itemId, const String& text, const String& filename);
+        ToolbarButton* createButtonFromZipFileSVG(const int itemId, const String& text, const String& filename);
 	};
-    //TextButton addFileButton{"AddFile"};
-    //TextButton addFolderButton{"AddFolder"};
-    //ImageButton deleteFilesButton;
-    //ImageButton savePlaylistButton;
-    //ImageButton loadPlaylistButton;
+
+    private:
     Toolbar toolbar;
     PlaylistToolbarItemFactory toolbarItemFactory;
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (PlaylistToolbar)

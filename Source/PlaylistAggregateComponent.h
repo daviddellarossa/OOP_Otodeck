@@ -31,7 +31,6 @@ private:
     PlaylistMediator playlistMediator;
     PlaylistGrid playlistGrid;
     PlaylistToolbar playlistToolbar;
-    //FlexBox flexBox;
 	
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (PlaylistAggregateComponent)
 };

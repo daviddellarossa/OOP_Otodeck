@@ -18,7 +18,9 @@ PlaylistAggregateComponent::PlaylistAggregateComponent()
     // initialise any special settings that your component needs.
 
 	addAndMakeVisible(this->playlistToolbar);
-    //addAndMakeVisible(this->playlistGrid);
+    addAndMakeVisible(this->playlistGrid);
+    playlistToolbar.setBounds(0, 0, getWidth(), getHeight());
+
 }
 
 PlaylistAggregateComponent::~PlaylistAggregateComponent()
@@ -53,9 +55,9 @@ void PlaylistAggregateComponent::resized()
     FlexBox controlLayout;
     controlLayout.flexWrap = FlexBox::Wrap::noWrap;
     controlLayout.flexDirection = FlexBox::Direction::column;
-    controlLayout.items.add(FlexItem(static_cast<float>(getWidth()), 40.0f,playlistToolbar));
-    //controlLayout.items.add(FlexItem(playlistGrid).withMinHeight(100).withMaxHeight(getHeight()));
-
+    controlLayout.items.add(FlexItem(static_cast<float>(getWidth()), 32.0f,playlistToolbar));
+    controlLayout.items.add(FlexItem(playlistGrid).withMinHeight(100).withMaxHeight(getHeight()));
     controlLayout.performLayout(getLocalBounds().toFloat());
-    //this->playlistToolbar.setBounds(0, 0, getWidth(), getHeight());
+   
+
 }

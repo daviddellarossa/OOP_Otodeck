@@ -17,34 +17,9 @@ PlaylistToolbar::PlaylistToolbar()
 {
     // In your constructor, you should add any child components, and
     // initialise any special settings that your component needs.
-
- //   std::unique_ptr<XmlElement> svgXmlAddDocument(XmlDocument::parse(BinaryData::AddDocument_16x_svg)); // GET THE SVG AS A XML
- //   auto svgAddDocument = Drawable::createFromSVG(*svgXmlAddDocument); // GET THIS AS DRAWABLE
- //   
- //   
- //   ImageFileFormat::loadFrom(*svgAddDocument);
-	////addFileButton.setButtonText("AddFile");
- //   addAndMakeVisible(*svgAddDocument);
- //   auto image = getImageFromAssets("imagename.ext");
- //   deleteFilesButton.setImages(true, true, true,
- //       image, 0.7f, Colours::transparentBlack,
- //       image, 1.0f, Colours::transparentBlack,
- //       image, 1.0f, Colours::transparentBlack,
- //       0.5f);
-
- //   addAndMakeVisible(this->addFileButton);
- //   addAndMakeVisible(this->addFolderButton);
- //   addAndMakeVisible(this->deleteFilesButton);
- //   addAndMakeVisible(this->loadPlaylistButton);
- //   addAndMakeVisible(this->savePlaylistButton);
-
-
-
-    //toolbar.setStyle(Toolbar::ToolbarItemStyle::iconsWithText);
-
-	
-    addAndMakeVisible(&toolbar);
+    addAndMakeVisible(toolbar);
     toolbar.addDefaultItems(toolbarItemFactory);
+    toolbar.setBounds(0, 0, getWidth(), getHeight());
 }
 
 PlaylistToolbar::~PlaylistToolbar()
@@ -75,16 +50,7 @@ void PlaylistToolbar::resized()
 {
     // This method is where you should set the bounds of any child
     // components that your component contains..
-    //FlexBox controlLayout;
-    //controlLayout.flexWrap = FlexBox::Wrap::noWrap;
-    //controlLayout.flexDirection = FlexBox::Direction::row;
-    //controlLayout.items.add(FlexItem(32.0f, 32.0f, this->addFileButton));
-    //controlLayout.items.add(FlexItem(32.0f, 32.0f, this->addFolderButton));
-    //controlLayout.items.add(FlexItem(32.0f, 32.0f, this->deleteFilesButton));
-    //controlLayout.items.add(FlexItem(32.0f, 32.0f, this->loadPlaylistButton));
-    //controlLayout.items.add(FlexItem(32.0f, 32.0f, this->savePlaylistButton));
-
-    //controlLayout.performLayout(getLocalBounds().toFloat());
+    toolbar.setBounds(0, 0, getWidth(), 30);
 }
 
 void PlaylistToolbar::PlaylistToolbarItemFactory::getAllToolbarItemIds(Array<int>& ids)
@@ -114,46 +80,48 @@ ToolbarItemComponent* PlaylistToolbar::PlaylistToolbarItemFactory::createItem(in
 	switch(itemId)
 	{
         case static_cast<int>(PlaylistToolbarItemIds::addFile) :
-            createButtonFromZipFileSVG(
-				static_cast<int>(PlaylistToolbarItemIds::addFile),
+            return createButtonFromZipFileSVG(
+                static_cast<int>(PlaylistToolbarItemIds::addFile),
                 "Add file",
                 "AddFile.svg"
             );
             break;
         case static_cast<int>(PlaylistToolbarItemIds::addFolder) :
-            createButtonFromZipFileSVG(
+            return createButtonFromZipFileSVG(
                 static_cast<int>(PlaylistToolbarItemIds::addFolder),
                 "Add folder",
                 "AddFolder.svg"
             );
             break;
 		case static_cast<int>(PlaylistToolbarItemIds::deleteFiles) :
-            createButtonFromZipFileSVG(
+            return createButtonFromZipFileSVG(
                 static_cast<int>(PlaylistToolbarItemIds::deleteFiles),
                 "Delete files",
                 "Delete.svg"
             );
             break;
 		case static_cast<int>(PlaylistToolbarItemIds::loadPlaylist) :
-            createButtonFromZipFileSVG(
+            return createButtonFromZipFileSVG(
                 static_cast<int>(PlaylistToolbarItemIds::loadPlaylist),
                 "Load playlist",
                 "LoadPlaylist.svg"
             );
             break;
 		case static_cast<int>(PlaylistToolbarItemIds::savePlaylist) :
-            createButtonFromZipFileSVG(
+            return createButtonFromZipFileSVG(
                 static_cast<int>(PlaylistToolbarItemIds::savePlaylist),
                 "Save playlist",
                 "SavePlaylist.svg"
             );
             break;
+		
 		default:
-            return nullptr;
+            break;
 	}
+    return nullptr;
 }
 
-std::unique_ptr<ToolbarButton> PlaylistToolbar::PlaylistToolbarItemFactory::createButtonFromZipFileSVG(const int itemId,
+ToolbarButton* PlaylistToolbar::PlaylistToolbarItemFactory::createButtonFromZipFileSVG(const int itemId,
 	const String& text, const String& filename)
 {
     if (iconsFromZipFile.size() == 0)
@@ -174,10 +142,10 @@ std::unique_ptr<ToolbarButton> PlaylistToolbar::PlaylistToolbarItemFactory::crea
         }
     }
 
-    return std::unique_ptr<ToolbarButton>{new ToolbarButton(
+    return new ToolbarButton(
         itemId,
         text,
         iconsFromZipFile[iconNames.indexOf(filename)]->createCopy(),
-        0
-    )};
+        nullptr
+    );
 }

@@ -11,8 +11,8 @@
 #include "../JuceLibraryCode/JuceHeader.h"
 #include "DJAudioPlayer.h"
 #include "DeckGUI.h"
-//#include "PlaylistComponent.h"
 #include "PlaylistAggregateComponent.h"
+//#include "PlaylistToolbar.h"
 
 //==============================================================================
 /*
@@ -50,7 +50,7 @@ private:
 
     MixerAudioSource mixerSource; 
 
-    //PlaylistComponent playlistComponent;
+    //PlaylistToolbar playlistToolbar;
     PlaylistAggregateComponent playlistAggregateComponent;
 	
     
