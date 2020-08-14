@@ -56,7 +56,7 @@ void PlaylistAggregateComponent::resized()
     controlLayout.flexWrap = FlexBox::Wrap::noWrap;
     controlLayout.flexDirection = FlexBox::Direction::column;
     controlLayout.items.add(FlexItem(static_cast<float>(getWidth()), 32.0f,playlistToolbar));
-    controlLayout.items.add(FlexItem(playlistGrid).withMinHeight(100).withMaxHeight(getHeight()));
+    controlLayout.items.add(FlexItem(playlistGrid).withMinHeight(100).withMaxHeight(getHeight()).withFlex(1));
     controlLayout.performLayout(getLocalBounds().toFloat());
    
 
