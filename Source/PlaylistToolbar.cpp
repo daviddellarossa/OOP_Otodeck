@@ -17,9 +17,12 @@ PlaylistToolbar::PlaylistToolbar()
 {
     // In your constructor, you should add any child components, and
     // initialise any special settings that your component needs.
+    toolbarItemFactory.setButtonListener(this);
+    
     addAndMakeVisible(toolbar);
     toolbar.addDefaultItems(toolbarItemFactory);
     toolbar.setBounds(0, 0, getWidth(), getHeight());
+    auto children = toolbar.getChildren();
 }
 
 PlaylistToolbar::~PlaylistToolbar()
@@ -51,6 +54,35 @@ void PlaylistToolbar::resized()
     // This method is where you should set the bounds of any child
     // components that your component contains..
     toolbar.setBounds(0, 0, getWidth(), 30);
+}
+
+void PlaylistToolbar::buttonClicked(Button* button)
+{
+    auto toolbarButton = dynamic_cast<ToolbarButton*>(button);
+	if(toolbarButton != nullptr)
+	{
+
+		switch(toolbarButton->getItemId())
+		{
+            case static_cast<int>(PlaylistToolbarItemFactory::PlaylistToolbarItemIds::addFile) :
+                AddFileEventBroadcaster.sendActionMessage("Add File");
+            break;
+            case static_cast<int>(PlaylistToolbarItemFactory::PlaylistToolbarItemIds::addFolder) :
+                AddFolderEventBroadcaster.sendActionMessage("Add Folder");
+            break;
+            case static_cast<int>(PlaylistToolbarItemFactory::PlaylistToolbarItemIds::deleteFiles) :
+                DeleteFilesEventBroadcaster.sendActionMessage("Delete Files");
+            break;
+            case static_cast<int>(PlaylistToolbarItemFactory::PlaylistToolbarItemIds::loadPlaylist) :
+                LoadPlaylistEventBroadcaster.sendActionMessage("Load Playlist");
+            break;
+            case static_cast<int>(PlaylistToolbarItemFactory::PlaylistToolbarItemIds::savePlaylist) :
+                SavePlaylistEventBroadcaster.sendActionMessage("Save Playlist");
+            break;
+			default:
+            break;
+		}
+	}
 }
 
 void PlaylistToolbar::PlaylistToolbarItemFactory::getAllToolbarItemIds(Array<int>& ids)
@@ -121,8 +153,13 @@ ToolbarItemComponent* PlaylistToolbar::PlaylistToolbarItemFactory::createItem(in
     return nullptr;
 }
 
+void PlaylistToolbar::PlaylistToolbarItemFactory::setButtonListener(Listener* listener)
+{
+    this->buttonEventListener = listener;
+}
+
 ToolbarButton* PlaylistToolbar::PlaylistToolbarItemFactory::createButtonFromZipFileSVG(const int itemId,
-	const String& text, const String& filename)
+                                                                                       const String& text, const String& filename)
 {
     if (iconsFromZipFile.size() == 0)
     {
@@ -142,10 +179,15 @@ ToolbarButton* PlaylistToolbar::PlaylistToolbarItemFactory::createButtonFromZipF
         }
     }
 
-    return new ToolbarButton(
+    auto button = new ToolbarButton(
         itemId,
         text,
         iconsFromZipFile[iconNames.indexOf(filename)]->createCopy(),
         nullptr
     );
+    if(this->buttonEventListener != nullptr)
+    {
+        button->addListener(buttonEventListener);
+    }
+    return button;
 }

@@ -12,7 +12,12 @@
 #include "PlaylistAggregateComponent.h"
 
 //==============================================================================
-PlaylistAggregateComponent::PlaylistAggregateComponent()	
+PlaylistAggregateComponent::PlaylistAggregateComponent() :
+	AddFileListener([this](const String& message) {AddFileCallback(message); }),
+	AddFolderListener([this](const String& message) {AddFolderCallback(message); }),
+	DeleteFilesListener([this](const String& message) {DeleteFilesCallback(message); }),
+	LoadPlaylistListener([this](const String& message) {LoadPlaylistCallback(message); }),
+	SavePlaylistListener([this](const String& message) {SavePlaylistCallback(message); })
 {
     // In your constructor, you should add any child components, and
     // initialise any special settings that your component needs.
@@ -21,6 +26,12 @@ PlaylistAggregateComponent::PlaylistAggregateComponent()
     addAndMakeVisible(this->playlistGrid);
     playlistToolbar.setBounds(0, 0, getWidth(), getHeight());
 
+	//Register EventListeners to PlaylistToolbar Broadcasters
+    playlistToolbar.AddFileEventBroadcaster.addActionListener(&AddFileListener);
+    playlistToolbar.AddFolderEventBroadcaster.addActionListener(&AddFolderListener);
+    playlistToolbar.DeleteFilesEventBroadcaster.addActionListener(&DeleteFilesListener);
+    playlistToolbar.LoadPlaylistEventBroadcaster.addActionListener(&LoadPlaylistListener);
+    playlistToolbar.SavePlaylistEventBroadcaster.addActionListener(&SavePlaylistListener);
 }
 
 PlaylistAggregateComponent::~PlaylistAggregateComponent()
@@ -61,3 +72,29 @@ void PlaylistAggregateComponent::resized()
    
 
 }
+
+void PlaylistAggregateComponent::AddFileCallback(const String& message)
+{
+    DBG(message);
+}
+
+void PlaylistAggregateComponent::AddFolderCallback(const String& message)
+{
+    DBG(message);
+}
+
+void PlaylistAggregateComponent::DeleteFilesCallback(const String& message)
+{
+    DBG(message);
+}
+
+void PlaylistAggregateComponent::LoadPlaylistCallback(const String& message)
+{
+    DBG(message);
+}
+
+void PlaylistAggregateComponent::SavePlaylistCallback(const String& message)
+{
+    DBG(message);
+}
+
