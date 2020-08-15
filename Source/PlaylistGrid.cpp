@@ -61,18 +61,46 @@ void PlaylistGrid::resized()
 
 void PlaylistGrid::addTrack(TrackModel track)
 {
+	for(auto iterator = trackTitles->begin(); iterator < trackTitles->end(); ++iterator)
+	{
+        if (iterator->filePath == track.filePath)
+        {
+            DBG("File already in playlist");
+            return;
+        }
+
+	}
     trackTitles->push_back(track);
     this->playlistDataGrid.updateContent();
 }
 
-void PlaylistGrid::removeTrackAt(unsigned index)
+void PlaylistGrid::removeSelectedTracks()
 {
+
+    auto index = playlistDataGrid.getSelectedRow();
+	
+	//SparseSet<int> selectedRows{ playlistDataGrid.getSelectedRows() };
+	//
+ //   for(auto range : selectedRows.getRanges())
+ //   {
+	//    for(auto iterator = range.getStart(); range.getEnd(); ++iterator )
+	//    {
+	//	    
+	//    }
+ //   }
+	
 	if(index < trackTitles->size())
 	{
         auto iterator = trackTitles->begin();
         iterator += index;
         trackTitles->erase(iterator);
 	}
+    this->playlistDataGrid.updateContent();
+}
+
+SparseSet<int> PlaylistGrid::getSelectedRows()
+{
+    return playlistDataGrid.getSelectedRows();
 }
 
 PlaylistGrid::PlaylistTableListBoxModel::PlaylistTableListBoxModel(const std::shared_ptr<std::vector<TrackModel>> trackTitles) : trackTitles(trackTitles)

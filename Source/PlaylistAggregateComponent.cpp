@@ -125,7 +125,7 @@ void PlaylistAggregateComponent::AddFolderCallback(const String& message)
 
 void PlaylistAggregateComponent::DeleteFilesCallback(const String& message)
 {
-    DBG(message);
+    playlistGrid.removeSelectedTracks();
 }
 
 void PlaylistAggregateComponent::LoadPlaylistCallback(const String& message)

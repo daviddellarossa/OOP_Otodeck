@@ -88,8 +88,8 @@ public:
     };
 
     void addTrack(TrackModel track);
-    void removeTrackAt(unsigned index);
-
+    void removeSelectedTracks();
+    SparseSet<int> getSelectedRows();
 private:
 
     std::shared_ptr<std::vector<TrackModel>> trackTitles;
