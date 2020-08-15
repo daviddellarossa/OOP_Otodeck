@@ -13,7 +13,7 @@
 
 //==============================================================================
 PlaylistGrid::PlaylistGrid() :
-    trackTitles{new std::vector<std::string>()},
+    trackTitles{new std::vector<TrackModel>()},
 	playlistDataGridBoxModel(this->trackTitles)
 {
     // In your constructor, you should add any child components, and
@@ -22,13 +22,10 @@ PlaylistGrid::PlaylistGrid() :
     playlistDataGrid.setModel(&playlistDataGridBoxModel);
 	
     playlistDataGrid.getHeader().addColumn("Track title", 1, 400);
-    playlistDataGrid.getHeader().addColumn("", 2, 200);
+    playlistDataGrid.getHeader().addColumn("Length", 2, 80);
+    playlistDataGrid.getHeader().addColumn("Sample rate", 3, 100);
 
-	//Mock values inserted into the list
-    trackTitles->push_back("Track 1");
-    trackTitles->push_back("Track 2");
-    trackTitles->push_back("Track 3");
-    trackTitles->push_back("Track 4");
+
 }
 
 PlaylistGrid::~PlaylistGrid()
@@ -62,9 +59,25 @@ void PlaylistGrid::resized()
     playlistDataGrid.setBounds(0, 0, getWidth(), getHeight());
 }
 
-PlaylistGrid::PlaylistTableListBoxModel::PlaylistTableListBoxModel(const std::shared_ptr<std::vector<std::string>> trackTitles) : trackTitles(trackTitles)
+void PlaylistGrid::addTrack(TrackModel track)
 {
-    //this->trackTitles = trackTitles;
+    trackTitles->push_back(track);
+    this->playlistDataGrid.updateContent();
+}
+
+void PlaylistGrid::removeTrackAt(unsigned index)
+{
+	if(index < trackTitles->size())
+	{
+        auto iterator = trackTitles->begin();
+        iterator += index;
+        trackTitles->erase(iterator);
+	}
+}
+
+PlaylistGrid::PlaylistTableListBoxModel::PlaylistTableListBoxModel(const std::shared_ptr<std::vector<TrackModel>> trackTitles) : trackTitles(trackTitles)
+{
+
 }
 
 int PlaylistGrid::PlaylistTableListBoxModel::getNumRows()
@@ -88,8 +101,32 @@ void PlaylistGrid::PlaylistTableListBoxModel::paintRowBackground(Graphics& graph
 void PlaylistGrid::PlaylistTableListBoxModel::paintCell(Graphics& graphics, int rowNumber, int columnId, int width, int height,
 	bool rowIsSelected)
 {
+    const auto track = trackTitles->at(rowNumber);
+    const int hours = static_cast<int>(track.lengthInSeconds() / 3600);
+    const int minutes = static_cast<int>(track.lengthInSeconds() / 60);
+    const int seconds = static_cast<int>(track.lengthInSeconds() % 60);
+    std::stringstream text;
+	
+	switch(columnId)
+	{
+    case 1:
+        text << track.fileName;
+        break;
+    case 2:
+        text
+			<< std::setfill('0') << std::setw(2) << hours << ":"
+			<< std::setfill('0') << std::setw(2) <<minutes << ":"
+			<< std::setfill('0') << std::setw(2) << seconds;
+        break;
+    case 3:
+        text << track.sampleRate;
+        break;
+    default:
+        break;
+	}
+	
     graphics.drawText(
-        trackTitles->at(rowNumber), // we will change this later
+        text.str(), 
         2,
         0,
         width - 4,
@@ -120,4 +157,30 @@ Component* PlaylistGrid::PlaylistTableListBoxModel::refreshComponentForCell(int 
     //    }
     //}
     return  existingComponentToUpdate;
+}
+unsigned PlaylistGrid::TrackModel::lengthInSeconds() const
+{
+    if (sampleRate != 0)
+        return lengthInSamples / sampleRate;
+    else
+        return 0;
+}
+
+PlaylistGrid::TrackModel::TrackModel(
+    const String& fileName,
+    const String& filePath,
+    const String& formatName,
+    unsigned bitsPerSample,
+    unsigned numChannels,
+    double sampleRate,
+    int64 lengthInSamples
+) :
+	fileName { fileName },
+    filePath{ filePath },
+    formatName{ formatName },
+    bitsPerSample{ bitsPerSample },
+    numChannels{ numChannels },
+    sampleRate{ sampleRate },
+    lengthInSamples{ lengthInSamples }
+{
 }

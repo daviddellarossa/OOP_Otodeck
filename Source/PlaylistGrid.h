@@ -24,10 +24,39 @@ public:
     void paint (juce::Graphics&) override;
     void resized() override;
 
+
+    class TrackModel
+    {
+    public:
+        TrackModel() = default;
+
+        TrackModel(
+            const String& fileName,
+            const String& filePath,
+            const String& formatName,
+            unsigned bitsPerSample,
+            unsigned numChannels,
+            double sampleRate,
+            int64 lengthInSamples
+        );
+
+        String fileName;
+        String filePath;
+        String formatName;
+        unsigned bitsPerSample;
+        unsigned numChannels;
+        double sampleRate;
+        int64 lengthInSamples;
+        unsigned lengthInSeconds() const;
+    };
+
+
+
+	
     class PlaylistTableListBoxModel : public TableListBoxModel
     {
     public:
-        PlaylistTableListBoxModel(const std::shared_ptr<std::vector<std::string>> trackTitles);
+        PlaylistTableListBoxModel(const std::shared_ptr<std::vector<TrackModel>> trackTitles);
         int getNumRows() override;
 
         void paintRowBackground(
@@ -55,12 +84,15 @@ public:
             bool isRowSelected,
             Component* existingComponentToUpdate
         ) override;
-        const std::shared_ptr<std::vector<std::string>> trackTitles;
+        const std::shared_ptr<std::vector<TrackModel>> trackTitles;
     };
+
+    void addTrack(TrackModel track);
+    void removeTrackAt(unsigned index);
 
 private:
 
-    std::shared_ptr<std::vector<std::string>> trackTitles;
+    std::shared_ptr<std::vector<TrackModel>> trackTitles;
     TableListBox playlistDataGrid;
     PlaylistTableListBoxModel playlistDataGridBoxModel;
 	

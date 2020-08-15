@@ -10,6 +10,7 @@
 
 #include <JuceHeader.h>
 #include "PlaylistAggregateComponent.h"
+#include "PlaylistGridModel.h"
 
 //==============================================================================
 PlaylistAggregateComponent::PlaylistAggregateComponent() :
@@ -75,7 +76,46 @@ void PlaylistAggregateComponent::resized()
 
 void PlaylistAggregateComponent::AddFileCallback(const String& message)
 {
+
+
     DBG(message);
+    WildcardFileFilter wildcardFilter("*.mp3", String(), "Mp3 files");
+
+    FileBrowserComponent browser(FileBrowserComponent::canSelectFiles | FileBrowserComponent::openMode | FileBrowserComponent::canSelectMultipleItems,
+        File(),
+        &wildcardFilter,
+        nullptr);
+    
+    FileChooserDialogBox dialogBox("Open some audio files",
+        "Please choose some audio files that you want to import in the playlist...",
+        browser,
+        false,
+        Colours::lightgrey);
+
+
+    AudioFormatManager formatManager;
+    formatManager.registerBasicFormats();
+	
+    if (dialogBox.show())
+    {
+    	for(int counter = 0; counter < browser.getNumSelectedFiles() ; ++counter)
+    	{
+            File selectedFile = browser.getSelectedFile(counter);
+            std::unique_ptr<AudioFormatReader> formatReader(formatManager.createReaderFor(selectedFile));
+
+            PlaylistGrid::TrackModel track(
+                selectedFile.getFileName(),
+                selectedFile.getFullPathName(),
+                formatReader->getFormatName(),
+                formatReader->bitsPerSample,
+                formatReader->numChannels,
+                formatReader->sampleRate,
+                formatReader->lengthInSamples
+            );
+            playlistGrid.addTrack(track);
+    	}
+
+    }
 }
 
 void PlaylistAggregateComponent::AddFolderCallback(const String& message)
