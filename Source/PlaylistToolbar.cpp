@@ -100,9 +100,10 @@ void PlaylistToolbar::PlaylistToolbarItemFactory::getAllToolbarItemIds(Array<int
 void PlaylistToolbar::PlaylistToolbarItemFactory::getDefaultItemSet(Array<int>& ids)
 {
     ids.add(static_cast<int>(PlaylistToolbarItemIds::addFile));
-    ids.add(static_cast<int>(PlaylistToolbarItemIds::addFolder));
+    //ids.add(static_cast<int>(PlaylistToolbarItemIds::addFolder));
     ids.add(static_cast<int>(PlaylistToolbarItemIds::deleteFiles));
     ids.add(separatorBarId);
+    ids.add(flexibleSpacerId);
     ids.add(static_cast<int>(PlaylistToolbarItemIds::loadPlaylist));
     ids.add(static_cast<int>(PlaylistToolbarItemIds::savePlaylist));
 }

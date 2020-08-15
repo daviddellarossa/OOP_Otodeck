@@ -53,6 +53,11 @@ private:
     private:
         std::function<void(const String& message)> callback;
     };
+
+    const static String APPFOLDERNAME;
+    const static String PLAYLISTFILEEXTENSION;
+
+    const static String APPFOLDERFULLPATH();
 	
     PlaylistMediator playlistMediator;
     PlaylistGrid playlistGrid;

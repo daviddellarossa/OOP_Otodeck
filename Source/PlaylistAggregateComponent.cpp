@@ -82,7 +82,7 @@ void PlaylistAggregateComponent::AddFileCallback(const String& message)
     WildcardFileFilter wildcardFilter("*.mp3", String(), "Mp3 files");
 
     FileBrowserComponent browser(FileBrowserComponent::canSelectFiles | FileBrowserComponent::openMode | FileBrowserComponent::canSelectMultipleItems,
-        File(),
+        File::getSpecialLocation(File::SpecialLocationType::userHomeDirectory).getFullPathName(),
         &wildcardFilter,
         nullptr);
     
@@ -130,11 +130,85 @@ void PlaylistAggregateComponent::DeleteFilesCallback(const String& message)
 
 void PlaylistAggregateComponent::LoadPlaylistCallback(const String& message)
 {
-    DBG(message);
+
+    WildcardFileFilter wildcardFilter("*" + PLAYLISTFILEEXTENSION, String(), "Oto files");
+
+    FileBrowserComponent browser(FileBrowserComponent::canSelectFiles | FileBrowserComponent::openMode,
+        File(APPFOLDERFULLPATH()) ,
+        &wildcardFilter,
+        nullptr);
+
+    FileChooserDialogBox dialogBox("Open an Oto playlist file",
+        "Please choose a playlist to import...",
+        browser,
+        false,
+        Colours::lightgrey);
+
+    if (!dialogBox.show())
+    {
+        return;
+    }
+    auto playlistFileInputStream = browser.getSelectedFile(0).createInputStream();
+    while(!playlistFileInputStream->isExhausted())
+    {
+        auto line = playlistFileInputStream->readNextLine();
+    	//parse
+    }
+
+
 }
 
 void PlaylistAggregateComponent::SavePlaylistCallback(const String& message)
 {
-    DBG(message);
+    WildcardFileFilter wildcardFilter("*" + PLAYLISTFILEEXTENSION, String(), "Oto files");
+
+    auto appFolder = File(APPFOLDERFULLPATH());
+	
+    if (!appFolder.exists() && appFolder.createDirectory().failed())
+    {
+        AlertWindow::showMessageBox(AlertWindow::WarningIcon, "Otodecks",
+            "Unable to create the application folder " + appFolder.getFullPathName());
+    }
+	
+    FileBrowserComponent browser(FileBrowserComponent::canSelectFiles | FileBrowserComponent::warnAboutOverwriting | FileBrowserComponent::saveMode,
+        appFolder,
+        &wildcardFilter,
+        nullptr);
+
+    FileChooserDialogBox dialogBox("Save an Oto playlist file",
+        "Save the current playlist into an Oto file...",
+        browser,
+        true,
+        Colours::lightgrey);
+
+    if (!dialogBox.show())
+    {
+        return;
+    }
+    if(browser.getSelectedFile(0).create().failed())
+    {
+        AlertWindow::showMessageBox(AlertWindow::WarningIcon, "Otodecks",
+            "Unable to create the playlist file " + browser.getSelectedFile(0).getFullPathName());
+        return;
+    }
+	if(browser.getSelectedFile(0).replaceWithText("This is a test"))
+	{
+        AlertWindow::showMessageBox(AlertWindow::InfoIcon, "Otodecks",
+            "Playlist file created successfully" + browser.getSelectedFile(0).getFullPathName());
+        return;
+	}
+	
+    AlertWindow::showMessageBox(AlertWindow::WarningIcon, "Otodecks",
+        "Unable to edit the playlist file " + browser.getSelectedFile(0).getFullPathName());
+	
 }
 
+const String PlaylistAggregateComponent::APPFOLDERNAME{ "OtoDecks" };
+const String PlaylistAggregateComponent::PLAYLISTFILEEXTENSION{ ".oto" };
+const String PlaylistAggregateComponent::APPFOLDERFULLPATH()
+{
+    std::stringstream ss;
+    ss << File::addTrailingSeparator(File::getSpecialLocation(File::SpecialLocationType::userApplicationDataDirectory).getFullPathName());
+    ss << APPFOLDERNAME;
+    return ss.str();
+}
