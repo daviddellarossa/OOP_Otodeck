@@ -74,6 +74,22 @@ void PlaylistAggregateComponent::resized()
 
 }
 
+PlaylistGrid::TrackModel PlaylistAggregateComponent::convertFileToTrack(const File& selectedFile, const std::unique_ptr<AudioFormatReader>& formatReader)
+{
+
+	PlaylistGrid::TrackModel track(
+		selectedFile.getFileName(),
+		selectedFile.getFullPathName(),
+		formatReader->getFormatName(),
+		formatReader->bitsPerSample,
+		formatReader->numChannels,
+		formatReader->sampleRate,
+		formatReader->lengthInSamples
+	);
+    return track;
+
+}
+
 void PlaylistAggregateComponent::AddFileCallback(const String& message)
 {
 
@@ -101,18 +117,13 @@ void PlaylistAggregateComponent::AddFileCallback(const String& message)
     	for(int counter = 0; counter < browser.getNumSelectedFiles() ; ++counter)
     	{
             File selectedFile = browser.getSelectedFile(counter);
-            std::unique_ptr<AudioFormatReader> formatReader(formatManager.createReaderFor(selectedFile));
 
-            PlaylistGrid::TrackModel track(
-                selectedFile.getFileName(),
-                selectedFile.getFullPathName(),
-                formatReader->getFormatName(),
-                formatReader->bitsPerSample,
-                formatReader->numChannels,
-                formatReader->sampleRate,
-                formatReader->lengthInSamples
+            playlistGrid.addTrack(
+                convertFileToTrack(
+	                browser.getSelectedFile(counter), 
+	                std::unique_ptr<AudioFormatReader>(formatManager.createReaderFor(selectedFile))
+                )
             );
-            playlistGrid.addTrack(track);
     	}
 
     }
@@ -148,11 +159,34 @@ void PlaylistAggregateComponent::LoadPlaylistCallback(const String& message)
     {
         return;
     }
-    auto playlistFileInputStream = browser.getSelectedFile(0).createInputStream();
+
+    AlertWindow::showOkCancelBox(AlertWindow::WarningIcon, "Otodecks",
+        "The current playlist will be replaced permanently. Continue?");
+
+    playlistGrid.clearTracks();
+
+    AudioFormatManager formatManager;
+    formatManager.registerBasicFormats();
+
+	
+	auto playlistFileInputStream = browser.getSelectedFile(0).createInputStream();
+
     while(!playlistFileInputStream->isExhausted())
     {
         auto line = playlistFileInputStream->readNextLine();
-    	//parse
+        File trackFile(line);
+        if(!trackFile.existsAsFile())
+        {
+            DBG(line << " is not a valid file.");
+            continue;
+        }
+
+        playlistGrid.addTrack(
+            convertFileToTrack(
+                trackFile,
+                std::unique_ptr<AudioFormatReader>(formatManager.createReaderFor(trackFile))
+            )
+        );
     }
 
 
@@ -191,10 +225,15 @@ void PlaylistAggregateComponent::SavePlaylistCallback(const String& message)
             "Unable to create the playlist file " + browser.getSelectedFile(0).getFullPathName());
         return;
     }
-	if(browser.getSelectedFile(0).replaceWithText("This is a test"))
+
+    auto tracks = this->playlistGrid.getTracks();
+    std::stringstream ss;
+    std::for_each(tracks->begin(), tracks->end(), [&ss](const PlaylistGrid::TrackModel track) { ss << track.toString() << '\n'; });
+	
+	if(browser.getSelectedFile(0).replaceWithText(ss.str()))
 	{
         AlertWindow::showMessageBox(AlertWindow::InfoIcon, "Otodecks",
-            "Playlist file created successfully" + browser.getSelectedFile(0).getFullPathName());
+            "Playlist file created successfully\n" + browser.getSelectedFile(0).getFullPathName());
         return;
 	}
 	

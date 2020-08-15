@@ -76,18 +76,7 @@ void PlaylistGrid::addTrack(TrackModel track)
 
 void PlaylistGrid::removeSelectedTracks()
 {
-
     auto index = playlistDataGrid.getSelectedRow();
-	
-	//SparseSet<int> selectedRows{ playlistDataGrid.getSelectedRows() };
-	//
- //   for(auto range : selectedRows.getRanges())
- //   {
-	//    for(auto iterator = range.getStart(); range.getEnd(); ++iterator )
-	//    {
-	//	    
-	//    }
- //   }
 	
 	if(index < trackTitles->size())
 	{
@@ -98,9 +87,20 @@ void PlaylistGrid::removeSelectedTracks()
     this->playlistDataGrid.updateContent();
 }
 
-SparseSet<int> PlaylistGrid::getSelectedRows()
+SparseSet<int> PlaylistGrid::getSelectedRowsIndices()
 {
     return playlistDataGrid.getSelectedRows();
+}
+
+void PlaylistGrid::clearTracks()
+{
+    this->trackTitles->clear();
+    this->playlistDataGrid.updateContent();
+}
+
+std::shared_ptr<std::vector<PlaylistGrid::TrackModel>> PlaylistGrid::getTracks()const
+{
+    return this->trackTitles;
 }
 
 PlaylistGrid::PlaylistTableListBoxModel::PlaylistTableListBoxModel(const std::shared_ptr<std::vector<TrackModel>> trackTitles) : trackTitles(trackTitles)
@@ -192,6 +192,11 @@ unsigned PlaylistGrid::TrackModel::lengthInSeconds() const
         return lengthInSamples / sampleRate;
     else
         return 0;
+}
+
+String PlaylistGrid::TrackModel::toString() const
+{
+    return this->filePath;
 }
 
 PlaylistGrid::TrackModel::TrackModel(

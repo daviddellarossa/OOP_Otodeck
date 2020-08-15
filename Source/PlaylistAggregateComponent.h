@@ -26,6 +26,7 @@ public:
 
     void paint (juce::Graphics&) override;
     void resized() override;
+    PlaylistGrid::TrackModel convertFileToTrack(const File& selectedFile, const std::unique_ptr<AudioFormatReader>& formatReader);
 
     void AddFileCallback(const String& message);
     void AddFolderCallback(const String& message);

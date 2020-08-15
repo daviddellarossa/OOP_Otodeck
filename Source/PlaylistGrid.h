@@ -48,6 +48,7 @@ public:
         double sampleRate;
         int64 lengthInSamples;
         unsigned lengthInSeconds() const;
+        String toString() const;
     };
 
 
@@ -89,7 +90,9 @@ public:
 
     void addTrack(TrackModel track);
     void removeSelectedTracks();
-    SparseSet<int> getSelectedRows();
+    SparseSet<int> getSelectedRowsIndices();
+    std::shared_ptr<std::vector<TrackModel>> getTracks() const;
+    void clearTracks();
 private:
 
     std::shared_ptr<std::vector<TrackModel>> trackTitles;
