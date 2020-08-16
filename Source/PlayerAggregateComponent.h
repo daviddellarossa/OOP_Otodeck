@@ -31,8 +31,12 @@ public:
     void PauseCallback(const String& message);
     void StopCallback(const String& message);
 
-private:
+    void setCurrentFile(String filePath);
+    String getCurrentFile() const;
 
+private:
+    String currentFilePath;
+    Label currentFileLabel;
     PlayerToolbar playerToolbar;
     AudioPlayer audioPlayer;
 

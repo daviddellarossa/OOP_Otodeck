@@ -41,9 +41,9 @@ private:
 
     	enum class PlayerToolbarItemIds
     	{
-    		stop = 0,
-    		play = 1,
-    		pause = 2,
+    		stop = 1,
+    		play = 2,
+    		pause = 3,
     	};
 
         void getAllToolbarItemIds(Array <int>& ids) override;

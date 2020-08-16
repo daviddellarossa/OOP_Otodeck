@@ -12,6 +12,7 @@
 #include "DJAudioPlayer.h"
 #include "DeckGUI.h"
 #include "PlaylistAggregateComponent.h"
+#include "PlayerAggregateComponent.h"
 //#include "PlaylistToolbar.h"
 
 //==============================================================================
@@ -51,8 +52,12 @@ private:
     MixerAudioSource mixerSource; 
 
     //PlaylistToolbar playlistToolbar;
-    PlaylistAggregateComponent playlistAggregateComponent;
-	
+    PlaylistAggregateComponent leftPlaylist;
+    PlaylistAggregateComponent rightPlaylist;
+
+    PlayerAggregateComponent leftPlayer;
+    PlayerAggregateComponent rightPlayer;
+
     
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (MainComponent)
 };

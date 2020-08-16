@@ -13,7 +13,7 @@ MainComponent::MainComponent()
 {
     // Make sure you set the size of the component after
     // you add any child components.
-    setSize (800, 600);
+    setSize (1200, 900);
 
     // Some platforms require permissions to open input channels so request that here
     if (RuntimePermissions::isRequired (RuntimePermissions::recordAudio)
@@ -30,8 +30,12 @@ MainComponent::MainComponent()
 
     addAndMakeVisible(deckGUI1); 
     addAndMakeVisible(deckGUI2);
-    addAndMakeVisible(playlistAggregateComponent);
-    //playlistAggregateComponent.setBounds(0, getHeight() / 2, getWidth(), getHeight() / 2);
+    addAndMakeVisible(leftPlaylist);
+    addAndMakeVisible(rightPlaylist);
+    addAndMakeVisible(leftPlayer);
+    addAndMakeVisible(rightPlayer);
+
+    //leftPlaylist.setBounds(0, getHeight() / 2, getWidth(), getHeight() / 2);
     formatManager.registerBasicFormats();
 }
 
@@ -80,9 +84,42 @@ void MainComponent::paint (Graphics& g)
 
 void MainComponent::resized()
 {
-    deckGUI1.setBounds(0, 0, getWidth()/2, getHeight()/2);
-    deckGUI2.setBounds(getWidth()/2, 0, getWidth()/2, getHeight()/2);
-    playlistAggregateComponent.setBounds(0, getHeight() / 2, getWidth(), getHeight() / 2);
+    Array<Grid::TrackInfo> columns;
+
+
+    Grid controlLayout;
+    controlLayout.templateColumns = {
+        Grid::TrackInfo(1_fr),
+        Grid::TrackInfo(1_fr),
+        Grid::TrackInfo(1_fr),
+        Grid::TrackInfo(1_fr)
+    };
+
+    controlLayout.templateRows = {
+		Grid::TrackInfo(1_fr),
+        Grid::TrackInfo(3_fr),
+		Grid::TrackInfo(1_fr),
+        Grid::TrackInfo(2_fr),
+		Grid::TrackInfo(3_fr),
+    };
+
+    controlLayout.items = {
+        GridItem(deckGUI1).withArea(1, 1, 3, 3),
+		GridItem(deckGUI2).withArea(1, 3, 3, 5),
+
+        GridItem(leftPlayer).withArea(4, 1, 4, 3),
+		GridItem(rightPlayer).withArea(4, 3, 4, 5),
+
+        GridItem(leftPlaylist).withArea(5, 1, 5, 3),
+        GridItem(rightPlaylist).withArea(5, 3, 5, 5),
+
+    };
+
+    controlLayout.performLayout(getLocalBounds());
+    //deckGUI1.setBounds(0, 0, getWidth()/2, getHeight()/2);
+    //deckGUI2.setBounds(getWidth()/2, 0, getWidth()/2, getHeight()/2);
+    //leftPlaylist.setBounds(0, getHeight() / 2, getWidth(), getHeight() / 2);
+    //leftPlayer.setBounds(0, getHeight() / 2, getWidth(), getHeight() / 2);
 
 }
 
