@@ -51,9 +51,6 @@ public:
         String toString() const;
     };
 
-
-
-	
     class PlaylistTableListBoxModel : public TableListBoxModel
     {
     public:
@@ -93,6 +90,9 @@ public:
     SparseSet<int> getSelectedRowsIndices();
     std::shared_ptr<std::vector<TrackModel>> getTracks() const;
     void clearTracks();
+
+    PlaylistTableListBoxModel& GetModel();
+	
 private:
 
     std::shared_ptr<std::vector<TrackModel>> trackTitles;

@@ -56,7 +56,6 @@ private:
 
     const static String APPFOLDERNAME;
     const static String PLAYLISTFILEEXTENSION;
-
     const static String APPFOLDERFULLPATH();
 	
     PlaylistGrid playlistGrid;

@@ -76,7 +76,6 @@ void PlaylistAggregateComponent::resized()
 
 PlaylistGrid::TrackModel PlaylistAggregateComponent::convertFileToTrack(const File& selectedFile, const std::unique_ptr<AudioFormatReader>& formatReader)
 {
-
 	PlaylistGrid::TrackModel track(
 		selectedFile.getFileName(),
 		selectedFile.getFullPathName(),
