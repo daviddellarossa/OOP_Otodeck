@@ -89,7 +89,7 @@ void PlayerAggregateComponent::setCurrentTrack(String filePath)
 	if(File(filePath).existsAsFile())
 	{
         this->currentTrackPath = filePath;
-        //this->setCurrentTrack(filePath);
+        this->currentTrackLabel.setText(currentTrackPath, dontSendNotification);
 	}
 }
 
