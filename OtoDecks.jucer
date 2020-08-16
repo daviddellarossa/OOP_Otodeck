@@ -4,8 +4,18 @@
               jucerFormatVersion="1">
   <MAINGROUP id="mcJZqF" name="OtoDecks">
     <GROUP id="{356C603F-01E1-55B2-02A0-F2D89D9A59E6}" name="Source">
+      <GROUP id="{581B5207-4392-DB68-7C44-E248F23B85E5}" name="Player">
+        <FILE id="dvaBxC" name="AudioPlayer.cpp" compile="1" resource="0" file="Source/assets/AudioPlayer.cpp"/>
+        <FILE id="oC3rZJ" name="AudioPlayer.h" compile="0" resource="0" file="Source/assets/AudioPlayer.h"/>
+        <FILE id="mjN67Z" name="PlayerAggregateComponent.cpp" compile="1" resource="0"
+              file="Source/assets/PlayerAggregateComponent.cpp"/>
+        <FILE id="EvMmni" name="PlayerAggregateComponent.h" compile="0" resource="0"
+              file="Source/assets/PlayerAggregateComponent.h"/>
+        <FILE id="N3URYk" name="PlayerToolbar.cpp" compile="1" resource="0"
+              file="Source/assets/PlayerToolbar.cpp"/>
+        <FILE id="UHAhJZ" name="PlayerToolbar.h" compile="0" resource="0" file="Source/assets/PlayerToolbar.h"/>
+      </GROUP>
       <FILE id="vx2b84" name="Icons.zip" compile="0" resource="1" file="Source/assets/Icons.zip"/>
-      <GROUP id="{87084339-740C-905F-919D-EB35242D079B}" name="Assets"/>
       <GROUP id="{43D08731-AD5D-3A86-B683-B1C13AE44BE5}" name="Playlist">
         <FILE id="O53Dsp" name="PlaylistAggregateComponent.cpp" compile="1"
               resource="0" file="Source/PlaylistAggregateComponent.cpp"/>

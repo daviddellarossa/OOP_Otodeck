@@ -9,7 +9,7 @@
 namespace BinaryData
 {
     extern const char*   Icons_zip;
-    const int            Icons_zipSize = 2382;
+    const int            Icons_zipSize = 3437;
 
     // Number of elements in the namedResourceList and originalFileNames arrays.
     const int namedResourceListSize = 1;

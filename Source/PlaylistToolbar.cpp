@@ -114,44 +114,37 @@ ToolbarItemComponent* PlaylistToolbar::PlaylistToolbarItemFactory::createItem(in
 	{
         case static_cast<int>(PlaylistToolbarItemIds::addFile) :
             return createButtonFromZipFileSVG(
-                static_cast<int>(PlaylistToolbarItemIds::addFile),
+                itemId,
                 "Add file",
                 "AddFile.svg"
             );
-            break;
         case static_cast<int>(PlaylistToolbarItemIds::addFolder) :
             return createButtonFromZipFileSVG(
-                static_cast<int>(PlaylistToolbarItemIds::addFolder),
+                itemId,
                 "Add folder",
                 "AddFolder.svg"
             );
-            break;
 		case static_cast<int>(PlaylistToolbarItemIds::deleteFiles) :
             return createButtonFromZipFileSVG(
-                static_cast<int>(PlaylistToolbarItemIds::deleteFiles),
+                itemId,
                 "Delete files",
                 "Delete.svg"
             );
-            break;
 		case static_cast<int>(PlaylistToolbarItemIds::loadPlaylist) :
             return createButtonFromZipFileSVG(
-                static_cast<int>(PlaylistToolbarItemIds::loadPlaylist),
+                itemId,
                 "Load playlist",
                 "LoadPlaylist.svg"
             );
-            break;
 		case static_cast<int>(PlaylistToolbarItemIds::savePlaylist) :
             return createButtonFromZipFileSVG(
-                static_cast<int>(PlaylistToolbarItemIds::savePlaylist),
+                itemId,
                 "Save playlist",
                 "SavePlaylist.svg"
             );
-            break;
-		
 		default:
-            break;
+            return nullptr;
 	}
-    return nullptr;
 }
 
 void PlaylistToolbar::PlaylistToolbarItemFactory::setButtonListener(Listener* listener)
