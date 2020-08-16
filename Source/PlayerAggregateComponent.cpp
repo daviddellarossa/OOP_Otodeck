@@ -21,14 +21,15 @@ PlayerAggregateComponent::PlayerAggregateComponent() :
     // initialise any special settings that your component needs.
     addAndMakeVisible(this->playerToolbar);
     addAndMakeVisible(this->audioPlayer);
-    addAndMakeVisible(this->currentFileLabel);
+    addAndMakeVisible(this->currentTrackLabel);
 	
     playerToolbar.setBounds(0, 0, getWidth(), getHeight());
-    currentFileLabel.setBounds(0, 0, getWidth(), getHeight());
+    currentTrackLabel.setBounds(0, 0, getWidth(), getHeight());
 
     playerToolbar.PlayEventBroadcaster.addActionListener(&PlayListener);
     playerToolbar.PauseEventBroadcaster.addActionListener(&PauseListener);
     playerToolbar.StopEventBroadcaster.addActionListener(&StopListener);
+
 }
 
 PlayerAggregateComponent::~PlayerAggregateComponent()
@@ -62,7 +63,7 @@ void PlayerAggregateComponent::resized()
     FlexBox controlLayout;
     controlLayout.flexWrap = FlexBox::Wrap::noWrap;
     controlLayout.flexDirection = FlexBox::Direction::column;
-    controlLayout.items.add(FlexItem(getWidth(), 32.0f, currentFileLabel));
+    controlLayout.items.add(FlexItem(getWidth(), 32.0f, currentTrackLabel));
     controlLayout.items.add(FlexItem(audioPlayer).withMinHeight(100).withMaxHeight(getHeight()).withFlex(1));
     controlLayout.items.add(FlexItem(static_cast<float>(getWidth()), 32.0f, playerToolbar));
     controlLayout.performLayout(getLocalBounds().toFloat());
@@ -83,10 +84,16 @@ void PlayerAggregateComponent::StopCallback(const String& message)
     DBG(message);
 }
 
-void PlayerAggregateComponent::setCurrentFile(String filePath)
+void PlayerAggregateComponent::setCurrentTrack(String filePath)
 {
 	if(File(filePath).existsAsFile())
 	{
-        this->setCurrentFile(filePath);
+        this->currentTrackPath = filePath;
+        //this->setCurrentTrack(filePath);
 	}
+}
+
+String PlayerAggregateComponent::getCurrentTrack() const
+{
+    return this->currentTrackPath;
 }

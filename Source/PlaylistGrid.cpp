@@ -13,8 +13,8 @@
 
 //==============================================================================
 PlaylistGrid::PlaylistGrid() :
-    trackTitles{new std::vector<TrackModel>()},
-	playlistDataGridBoxModel(this->trackTitles)
+    tracks{new std::vector<TrackModel>()},
+	playlistDataGridBoxModel(this->tracks)
 {
     // In your constructor, you should add any child components, and
     // initialise any special settings that your component needs.
@@ -24,7 +24,6 @@ PlaylistGrid::PlaylistGrid() :
     playlistDataGrid.getHeader().addColumn("Track title", 1, 400);
     playlistDataGrid.getHeader().addColumn("Length", 2, 80);
     playlistDataGrid.getHeader().addColumn("Sample rate", 3, 100);
-
 
 }
 
@@ -61,7 +60,7 @@ void PlaylistGrid::resized()
 
 void PlaylistGrid::addTrack(TrackModel track)
 {
-	for(auto iterator = trackTitles->begin(); iterator < trackTitles->end(); ++iterator)
+	for(auto iterator = tracks->begin(); iterator < tracks->end(); ++iterator)
 	{
         if (iterator->filePath == track.filePath)
         {
@@ -70,7 +69,7 @@ void PlaylistGrid::addTrack(TrackModel track)
         }
 
 	}
-    trackTitles->push_back(track);
+    tracks->push_back(track);
     this->playlistDataGrid.updateContent();
 }
 
@@ -78,11 +77,11 @@ void PlaylistGrid::removeSelectedTracks()
 {
     auto index = playlistDataGrid.getSelectedRow();
 	
-	if(index < trackTitles->size())
+	if(index < tracks->size())
 	{
-        auto iterator = trackTitles->begin();
+        auto iterator = tracks->begin();
         iterator += index;
-        trackTitles->erase(iterator);
+        tracks->erase(iterator);
 	}
     this->playlistDataGrid.updateContent();
 }
@@ -94,24 +93,29 @@ SparseSet<int> PlaylistGrid::getSelectedRowsIndices()
 
 void PlaylistGrid::clearTracks()
 {
-    this->trackTitles->clear();
+    this->tracks->clear();
     this->playlistDataGrid.updateContent();
+}
+
+PlaylistGrid::PlaylistTableListBoxModel& PlaylistGrid::getGridBoxModel()
+{
+    return this->playlistDataGridBoxModel;
 }
 
 
 std::shared_ptr<std::vector<PlaylistGrid::TrackModel>> PlaylistGrid::getTracks()const
 {
-    return this->trackTitles;
+    return this->tracks;
 }
 
-PlaylistGrid::PlaylistTableListBoxModel::PlaylistTableListBoxModel(const std::shared_ptr<std::vector<TrackModel>> trackTitles) : trackTitles(trackTitles)
+PlaylistGrid::PlaylistTableListBoxModel::PlaylistTableListBoxModel(const std::shared_ptr<std::vector<TrackModel>> trackTitles) : tracks(trackTitles)
 {
 
 }
 
 int PlaylistGrid::PlaylistTableListBoxModel::getNumRows()
 {
-    return trackTitles->size();
+    return tracks->size();
 }
 
 void PlaylistGrid::PlaylistTableListBoxModel::paintRowBackground(Graphics& graphics, int rowNumber, int width, int height,
@@ -130,7 +134,7 @@ void PlaylistGrid::PlaylistTableListBoxModel::paintRowBackground(Graphics& graph
 void PlaylistGrid::PlaylistTableListBoxModel::paintCell(Graphics& graphics, int rowNumber, int columnId, int width, int height,
 	bool rowIsSelected)
 {
-    const auto track = trackTitles->at(rowNumber);
+    const auto track = tracks->at(rowNumber);
     const int hours = static_cast<int>(track.lengthInSeconds() / 3600);
     const int minutes = static_cast<int>(track.lengthInSeconds() / 60);
     const int seconds = static_cast<int>(track.lengthInSeconds() % 60);
@@ -165,9 +169,17 @@ void PlaylistGrid::PlaylistTableListBoxModel::paintCell(Graphics& graphics, int 
     );
 }
 
-void PlaylistGrid::PlaylistTableListBoxModel::cellClicked(int rowNumber, int columnId, const MouseEvent&)
+
+
+//void PlaylistGrid::PlaylistTableListBoxModel::cellClicked(int rowNumber, int columnId, const MouseEvent& e)
+//{
+//
+//    DBG("Cell clicked");
+//}
+
+void PlaylistGrid::PlaylistTableListBoxModel::cellDoubleClicked(int rowNumber, int columnId, const MouseEvent& event)
 {
-    DBG("Cell clicked");
+    ItemDoubleClickedEventBroadcaster.sendActionMessage(this->tracks.get()->at(rowNumber).filePath);
 }
 
 Component* PlaylistGrid::PlaylistTableListBoxModel::refreshComponentForCell(int rowNumber, int columnId,

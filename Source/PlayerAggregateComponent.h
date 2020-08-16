@@ -31,12 +31,12 @@ public:
     void PauseCallback(const String& message);
     void StopCallback(const String& message);
 
-    void setCurrentFile(String filePath);
-    String getCurrentFile() const;
+    void setCurrentTrack(String filePath);
+    String getCurrentTrack() const;
 
 private:
-    String currentFilePath;
-    Label currentFileLabel;
+    String currentTrackPath;
+    Label currentTrackLabel;
     PlayerToolbar playerToolbar;
     AudioPlayer audioPlayer;
 

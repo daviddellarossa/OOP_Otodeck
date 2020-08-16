@@ -28,12 +28,14 @@ public:
     void resized() override;
 
     void AddFileCallback(const String& message);
-    void AddFolderCallback(const String& message);
+    void AddFolderCallback(const String& message) const;
     void DeleteFilesCallback(const String& message);
     void LoadPlaylistCallback(const String& message);
-    void SavePlaylistCallback(const String& message);
+    void SavePlaylistCallback(const String& message) const;
 
+    void ItemDoubleClickedCallback(const String& message) const;
 
+    ActionBroadcaster TrackSelectedToPlayEventBroadcaster;
 private:
 
 
@@ -52,5 +54,7 @@ private:
     ExternalCallbackActionListener LoadPlaylistListener;
     ExternalCallbackActionListener SavePlaylistListener;
 
+    ExternalCallbackActionListener ItemDoubleClickedListener;
+	
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (PlaylistAggregateComponent)
 };

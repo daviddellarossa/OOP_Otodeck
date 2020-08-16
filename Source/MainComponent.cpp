@@ -9,7 +9,9 @@
 #include "MainComponent.h"
 
 //==============================================================================
-MainComponent::MainComponent()
+MainComponent::MainComponent() :
+    TrackSelectedToPlayLeftListener([this](const String& message) { TrackSelectedToPlayCallback(message, this->leftPlayer); }),
+    TrackSelectedToPlayRightListener([this](const String& message) { TrackSelectedToPlayCallback(message, this->rightPlayer); })
 {
     // Make sure you set the size of the component after
     // you add any child components.
@@ -37,6 +39,10 @@ MainComponent::MainComponent()
 
     //leftPlaylist.setBounds(0, getHeight() / 2, getWidth(), getHeight() / 2);
     formatManager.registerBasicFormats();
+
+    leftPlaylist.TrackSelectedToPlayEventBroadcaster.addActionListener(&TrackSelectedToPlayLeftListener);
+    rightPlaylist.TrackSelectedToPlayEventBroadcaster.addActionListener(&TrackSelectedToPlayRightListener);
+
 }
 
 MainComponent::~MainComponent()
@@ -123,3 +129,10 @@ void MainComponent::resized()
 
 }
 
+void MainComponent::TrackSelectedToPlayCallback(const String& message, PlayerAggregateComponent& player) 
+{
+    player.setCurrentTrack(message);
+}
+//void MainComponent::TrackSelectedToPlayRightCallback(const String& message) const
+//{
+//}

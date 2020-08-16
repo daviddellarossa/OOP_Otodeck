@@ -74,15 +74,19 @@ public:
             bool rowIsSelected
         ) override;
 
-        virtual void cellClicked(int rowNumber, int columnId, const MouseEvent&) override;
+        //virtual void cellClicked(int rowNumber, int columnId, const MouseEvent&) override;
 
+        void cellDoubleClicked(int rowNumber, int columnId, const MouseEvent&) override;
+    	
         Component* refreshComponentForCell(
             int rowNumber,
             int columnId,
             bool isRowSelected,
             Component* existingComponentToUpdate
         ) override;
-        const std::shared_ptr<std::vector<TrackModel>> trackTitles;
+        const std::shared_ptr<std::vector<TrackModel>> tracks;
+
+        ActionBroadcaster ItemDoubleClickedEventBroadcaster;
     };
 
     void addTrack(TrackModel track);
@@ -91,9 +95,11 @@ public:
     std::shared_ptr<std::vector<TrackModel>> getTracks() const;
     void clearTracks();
 
+    PlaylistTableListBoxModel& getGridBoxModel();
+
 private:
 
-    std::shared_ptr<std::vector<TrackModel>> trackTitles;
+    std::shared_ptr<std::vector<TrackModel>> tracks;
     TableListBox playlistDataGrid;
     PlaylistTableListBoxModel playlistDataGridBoxModel;
 	

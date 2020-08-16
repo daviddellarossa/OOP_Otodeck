@@ -36,6 +36,9 @@ public:
     void paint (Graphics& g) override;
     void resized() override;
 
+    void TrackSelectedToPlayCallback(const String& message, PlayerAggregateComponent& player);
+    //void TrackSelectedToPlayRightCallback(const String& message) const;
+
 private:
     //==============================================================================
     // Your private member variables go here...
@@ -58,6 +61,7 @@ private:
     PlayerAggregateComponent leftPlayer;
     PlayerAggregateComponent rightPlayer;
 
-    
+    ExternalCallbackActionListener TrackSelectedToPlayLeftListener;
+    ExternalCallbackActionListener TrackSelectedToPlayRightListener;
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (MainComponent)
 };

@@ -18,7 +18,8 @@ PlaylistAggregateComponent::PlaylistAggregateComponent() :
 	AddFolderListener([this](const String& message) {AddFolderCallback(message); }),
 	DeleteFilesListener([this](const String& message) {DeleteFilesCallback(message); }),
 	LoadPlaylistListener([this](const String& message) {LoadPlaylistCallback(message); }),
-	SavePlaylistListener([this](const String& message) {SavePlaylistCallback(message); })
+	SavePlaylistListener([this](const String& message) {SavePlaylistCallback(message); }),
+    ItemDoubleClickedListener([this](const String& message) {ItemDoubleClickedCallback(message); })
 {
     // In your constructor, you should add any child components, and
     // initialise any special settings that your component needs.
@@ -33,6 +34,8 @@ PlaylistAggregateComponent::PlaylistAggregateComponent() :
     playlistToolbar.DeleteFilesEventBroadcaster.addActionListener(&DeleteFilesListener);
     playlistToolbar.LoadPlaylistEventBroadcaster.addActionListener(&LoadPlaylistListener);
     playlistToolbar.SavePlaylistEventBroadcaster.addActionListener(&SavePlaylistListener);
+
+    playlistGrid.getGridBoxModel().ItemDoubleClickedEventBroadcaster.addActionListener(&ItemDoubleClickedListener);
 }
 
 PlaylistAggregateComponent::~PlaylistAggregateComponent()
@@ -128,7 +131,7 @@ void PlaylistAggregateComponent::AddFileCallback(const String& message)
     }
 }
 
-void PlaylistAggregateComponent::AddFolderCallback(const String& message)
+void PlaylistAggregateComponent::AddFolderCallback(const String& message) const
 {
     DBG(message);
 }
@@ -191,7 +194,7 @@ void PlaylistAggregateComponent::LoadPlaylistCallback(const String& message)
 
 }
 
-void PlaylistAggregateComponent::SavePlaylistCallback(const String& message)
+void PlaylistAggregateComponent::SavePlaylistCallback(const String& message) const
 {
     WildcardFileFilter wildcardFilter("*" + PLAYLISTFILEEXTENSION, String(), "Oto files");
 
@@ -239,6 +242,12 @@ void PlaylistAggregateComponent::SavePlaylistCallback(const String& message)
     AlertWindow::showMessageBox(AlertWindow::WarningIcon, "Otodecks",
         "Unable to edit the playlist file " + browser.getSelectedFile(0).getFullPathName());
 	
+}
+
+void PlaylistAggregateComponent::ItemDoubleClickedCallback(const String& message) const
+{
+    TrackSelectedToPlayEventBroadcaster.sendActionMessage(message);
+    DBG("File double-clicked: " << message);
 }
 
 const String PlaylistAggregateComponent::APPFOLDERNAME{ "OtoDecks" };
