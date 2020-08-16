@@ -14,14 +14,6 @@
         <FILE id="UykOHc" name="PlaylistGrid.cpp" compile="1" resource="0"
               file="Source/PlaylistGrid.cpp"/>
         <FILE id="JW8uob" name="PlaylistGrid.h" compile="0" resource="0" file="Source/PlaylistGrid.h"/>
-        <FILE id="jrdhyq" name="PlaylistGridModel.cpp" compile="1" resource="0"
-              file="Source/PlaylistGridModel.cpp"/>
-        <FILE id="X78it2" name="PlaylistGridModel.h" compile="0" resource="0"
-              file="Source/PlaylistGridModel.h"/>
-        <FILE id="cmthia" name="PlaylistMediator.cpp" compile="1" resource="0"
-              file="Source/PlaylistMediator.cpp"/>
-        <FILE id="PJiWZO" name="PlaylistMediator.h" compile="0" resource="0"
-              file="Source/PlaylistMediator.h"/>
         <FILE id="HQruyt" name="PlaylistToolbar.cpp" compile="1" resource="0"
               file="Source/PlaylistToolbar.cpp"/>
         <FILE id="f6YTWl" name="PlaylistToolbar.h" compile="0" resource="0"
