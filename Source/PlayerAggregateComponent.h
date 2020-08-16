@@ -11,6 +11,9 @@
 #pragma once
 
 #include <JuceHeader.h>
+#include "ExternalCallbackActionListener.h"
+#include "PlayerToolbar.h"
+#include "AudioPlayer.h"
 
 //==============================================================================
 /*
@@ -24,6 +27,18 @@ public:
     void paint (juce::Graphics&) override;
     void resized() override;
 
+    void PlayCallback(const String& message);
+    void PauseCallback(const String& message);
+    void StopCallback(const String& message);
+
 private:
+
+    PlayerToolbar playerToolbar;
+    AudioPlayer audioPlayer;
+
+    ExternalCallbackActionListener StopListener;
+    ExternalCallbackActionListener PlayListener;
+    ExternalCallbackActionListener PauseListener;
+	
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (PlayerAggregateComponent)
 };

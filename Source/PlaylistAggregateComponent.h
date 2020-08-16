@@ -13,6 +13,7 @@
 #include <JuceHeader.h>
 #include "PlaylistGrid.h"
 #include "PlaylistToolbar.h"
+#include "ExternalCallbackActionListener.h"
 
 //==============================================================================
 /*
@@ -25,7 +26,6 @@ public:
 
     void paint (juce::Graphics&) override;
     void resized() override;
-    PlaylistGrid::TrackModel convertFileToTrack(const File& selectedFile, const std::unique_ptr<AudioFormatReader>& formatReader);
 
     void AddFileCallback(const String& message);
     void AddFolderCallback(const String& message);
@@ -36,23 +36,8 @@ public:
 
 private:
 
-    class PlaylistActionListener : public ActionListener
-    {
-      
-    public:
-        PlaylistActionListener(
-            const std::function<void(const String& message)>& callback
-        ) : callback(callback)
-        {
 
-        }
-        void actionListenerCallback(const String& message) override
-        {
-            this->callback(message);
-        }
-    private:
-        std::function<void(const String& message)> callback;
-    };
+    PlaylistGrid::TrackModel convertFileToTrack(const File& selectedFile, const std::unique_ptr<AudioFormatReader>& formatReader);
 
     const static String APPFOLDERNAME;
     const static String PLAYLISTFILEEXTENSION;
@@ -61,11 +46,11 @@ private:
     PlaylistGrid playlistGrid;
     PlaylistToolbar playlistToolbar;
 	
-    PlaylistActionListener AddFileListener;
-    PlaylistActionListener AddFolderListener;
-    PlaylistActionListener DeleteFilesListener;
-    PlaylistActionListener LoadPlaylistListener;
-    PlaylistActionListener SavePlaylistListener;
+    ExternalCallbackActionListener AddFileListener;
+    ExternalCallbackActionListener AddFolderListener;
+    ExternalCallbackActionListener DeleteFilesListener;
+    ExternalCallbackActionListener LoadPlaylistListener;
+    ExternalCallbackActionListener SavePlaylistListener;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (PlaylistAggregateComponent)
 };

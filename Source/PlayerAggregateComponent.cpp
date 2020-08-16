@@ -12,11 +12,20 @@
 #include "PlayerAggregateComponent.h"
 
 //==============================================================================
-PlayerAggregateComponent::PlayerAggregateComponent()
+PlayerAggregateComponent::PlayerAggregateComponent() :
+    PlayListener([this](const String& message) {PlayCallback(message); }),
+    PauseListener([this](const String& message) {PauseCallback(message); }),
+    StopListener([this](const String& message) {StopCallback(message); })
 {
     // In your constructor, you should add any child components, and
     // initialise any special settings that your component needs.
+    addAndMakeVisible(this->playerToolbar);
+    addAndMakeVisible(this->audioPlayer);
+    playerToolbar.setBounds(0, 0, getWidth(), getHeight());
 
+    playerToolbar.PlayEventBroadcaster.addActionListener(&PlayListener);
+    playerToolbar.PauseEventBroadcaster.addActionListener(&PauseListener);
+    playerToolbar.StopEventBroadcaster.addActionListener(&StopListener);
 }
 
 PlayerAggregateComponent::~PlayerAggregateComponent()
@@ -47,5 +56,25 @@ void PlayerAggregateComponent::resized()
 {
     // This method is where you should set the bounds of any child
     // components that your component contains..
+    FlexBox controlLayout;
+    controlLayout.flexWrap = FlexBox::Wrap::noWrap;
+    controlLayout.flexDirection = FlexBox::Direction::column;
+    controlLayout.items.add(FlexItem(audioPlayer).withMinHeight(100).withMaxHeight(getHeight()).withFlex(1));
+    controlLayout.items.add(FlexItem(static_cast<float>(getWidth()), 32.0f, playerToolbar));
+    controlLayout.performLayout(getLocalBounds().toFloat());
+}
 
+void PlayerAggregateComponent::PlayCallback(const String& message)
+{
+    DBG(message);
+}
+
+void PlayerAggregateComponent::PauseCallback(const String& message)
+{
+    DBG(message);
+}
+
+void PlayerAggregateComponent::StopCallback(const String& message)
+{
+    DBG(message);
 }
