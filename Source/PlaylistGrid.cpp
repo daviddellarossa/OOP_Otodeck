@@ -98,10 +98,6 @@ void PlaylistGrid::clearTracks()
     this->playlistDataGrid.updateContent();
 }
 
-PlaylistGrid::PlaylistTableListBoxModel& PlaylistGrid::GetModel()
-{
-    return this->playlistDataGridBoxModel;
-}
 
 std::shared_ptr<std::vector<PlaylistGrid::TrackModel>> PlaylistGrid::getTracks()const
 {
