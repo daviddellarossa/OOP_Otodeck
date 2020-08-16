@@ -11,7 +11,6 @@
 #pragma once
 
 #include <JuceHeader.h>
-#include "PlaylistMediator.h"
 #include "PlaylistGrid.h"
 #include "PlaylistToolbar.h"
 
@@ -60,7 +59,6 @@ private:
 
     const static String APPFOLDERFULLPATH();
 	
-    PlaylistMediator playlistMediator;
     PlaylistGrid playlistGrid;
     PlaylistToolbar playlistToolbar;
 	

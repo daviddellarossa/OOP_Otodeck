@@ -10,7 +10,7 @@
 
 #include <JuceHeader.h>
 #include "PlaylistAggregateComponent.h"
-#include "PlaylistGridModel.h"
+
 
 //==============================================================================
 PlaylistAggregateComponent::PlaylistAggregateComponent() :
