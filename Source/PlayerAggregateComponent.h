@@ -14,14 +14,19 @@
 #include "ExternalCallbackActionListener.h"
 #include "PlayerToolbar.h"
 #include "AudioPlayer.h"
+#include "WaveformDisplay.h"
 
 //==============================================================================
 /*
 */
-class PlayerAggregateComponent  : public juce::Component
+class PlayerAggregateComponent  : public juce::Component, public Timer
 {
 public:
-    PlayerAggregateComponent(AudioPlayer& audioPlayer);
+    PlayerAggregateComponent(
+        AudioPlayer& audioPlayer, 
+        AudioFormatManager& formatManagerToUse,
+        AudioThumbnailCache& cacheToUse
+    );
     ~PlayerAggregateComponent() override;
 
     void paint (juce::Graphics&) override;
@@ -34,11 +39,15 @@ public:
     void setCurrentTrack(String filePath);
     String getCurrentTrack() const;
 
+    void timerCallback() override;
+
 private:
     String currentTrackPath;
     Label currentTrackLabel;
     PlayerToolbar playerToolbar;
     AudioPlayer& audioPlayer;
+
+    WaveformDisplay waveformDisplay;
 
     ExternalCallbackActionListener StopListener;
     ExternalCallbackActionListener PlayListener;

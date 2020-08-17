@@ -12,8 +12,12 @@
 #include "PlayerAggregateComponent.h"
 
 //==============================================================================
-PlayerAggregateComponent::PlayerAggregateComponent(AudioPlayer& audioPlayer) :
+PlayerAggregateComponent::PlayerAggregateComponent(
+    AudioPlayer& audioPlayer,
+    AudioFormatManager& formatManagerToUse,
+    AudioThumbnailCache& cacheToUse) :
     audioPlayer(audioPlayer),
+    waveformDisplay(formatManagerToUse, cacheToUse),
     StopListener([this](const String& message) {StopCallback(message); }),
     PlayListener([this](const String& message) {PlayCallback(message); }),
 	PauseListener([this](const String& message) {PauseCallback(message); })
@@ -23,6 +27,7 @@ PlayerAggregateComponent::PlayerAggregateComponent(AudioPlayer& audioPlayer) :
     addAndMakeVisible(this->playerToolbar);
     //addAndMakeVisible(this->audioPlayer);
     addAndMakeVisible(this->currentTrackLabel);
+    addAndMakeVisible(waveformDisplay);
 	
     playerToolbar.setBounds(0, 0, getWidth(), getHeight());
     currentTrackLabel.setBounds(0, 0, getWidth(), getHeight());
@@ -31,10 +36,12 @@ PlayerAggregateComponent::PlayerAggregateComponent(AudioPlayer& audioPlayer) :
     playerToolbar.PauseEventBroadcaster.addActionListener(&PauseListener);
     playerToolbar.StopEventBroadcaster.addActionListener(&StopListener);
 
+    startTimer(500);
 }
 
 PlayerAggregateComponent::~PlayerAggregateComponent()
 {
+    stopTimer();
 }
 
 void PlayerAggregateComponent::paint (juce::Graphics& g)
@@ -65,7 +72,7 @@ void PlayerAggregateComponent::resized()
     controlLayout.flexWrap = FlexBox::Wrap::noWrap;
     controlLayout.flexDirection = FlexBox::Direction::column;
     controlLayout.items.add(FlexItem(getWidth(), 32.0f, currentTrackLabel));
-    controlLayout.items.add(FlexItem(/*audioPlayer*/).withMinHeight(100).withMaxHeight(getHeight()).withFlex(1));
+    controlLayout.items.add(FlexItem(waveformDisplay).withMinHeight(100).withMaxHeight(getHeight()).withFlex(1));
     controlLayout.items.add(FlexItem(static_cast<float>(getWidth()), 32.0f, playerToolbar));
     controlLayout.performLayout(getLocalBounds().toFloat());
 }
@@ -97,10 +104,18 @@ void PlayerAggregateComponent::setCurrentTrack(String filePath)
         this->currentTrackPath = filePath;
         this->currentTrackLabel.setText(currentTrackPath, dontSendNotification);
 		this->audioPlayer.loadURL(URL{track});
+        waveformDisplay.loadURL(URL{ track });
 	}
 }
 
 String PlayerAggregateComponent::getCurrentTrack() const
 {
     return this->currentTrackPath;
+}
+
+void PlayerAggregateComponent::timerCallback()
+{
+    //std::cout << "DeckGUI::timerCallback" << std::endl;
+    waveformDisplay.setPositionRelative(
+        audioPlayer.getPositionRelative());
 }

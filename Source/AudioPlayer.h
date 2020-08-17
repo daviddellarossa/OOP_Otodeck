@@ -20,7 +20,6 @@ class AudioPlayer  : public juce::AudioSource
 {
 public:
     AudioPlayer(AudioFormatManager& _formatManager);
-    ~AudioPlayer() = default;
 	
     void prepareToPlay(int samplesPerBlockExpected, double sampleRate) override;
     void getNextAudioBlock(const AudioSourceChannelInfo& bufferToFill) override;
