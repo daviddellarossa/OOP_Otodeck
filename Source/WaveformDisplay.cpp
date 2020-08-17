@@ -113,6 +113,19 @@ void WaveformDisplay::setPositionRelative(double pos)
 
 }
 
+void WaveformDisplay::mouseDrag(const MouseEvent& event)
+{
+    if (!fileLoaded) return;
+	
+    double relativePosition = event.getPosition().getX() / static_cast<double>(getWidth());
+    if (relativePosition < 0)
+        relativePosition = 0;
+    if (relativePosition > 1)
+        relativePosition = 1;
+
+    PositionChangedBroadcaster.sendActionMessage(static_cast<String>(relativePosition));
+}
+
 
 
 

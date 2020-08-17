@@ -20,7 +20,8 @@ PlayerAggregateComponent::PlayerAggregateComponent(
     waveformDisplay(formatManagerToUse, cacheToUse),
     StopListener([this](const String& message) {StopCallback(message); }),
     PlayListener([this](const String& message) {PlayCallback(message); }),
-	PauseListener([this](const String& message) {PauseCallback(message); })
+	PauseListener([this](const String& message) {PauseCallback(message); }),
+    PositionChangedListener([this](const String& message) {positionChangedCallback(message); })
 {
     // In your constructor, you should add any child components, and
     // initialise any special settings that your component needs.
@@ -37,7 +38,9 @@ PlayerAggregateComponent::PlayerAggregateComponent(
     playerToolbar.PauseEventBroadcaster.addActionListener(&PauseListener);
     playerToolbar.StopEventBroadcaster.addActionListener(&StopListener);
 
-    startTimer(500);
+    waveformDisplay.PositionChangedBroadcaster.addActionListener(&PositionChangedListener);
+
+    startTimer(100);
 }
 
 PlayerAggregateComponent::~PlayerAggregateComponent()
@@ -95,6 +98,12 @@ void PlayerAggregateComponent::StopCallback(const String& message)
     this->audioPlayer.stop();
     this->audioPlayer.setPosition(0.0);
     DBG(message);
+}
+
+void PlayerAggregateComponent::positionChangedCallback(const String& message)
+{
+    this->audioPlayer.setPositionRelative(message.getDoubleValue());
+    //DBG("New relative position: " << message.getDoubleValue());
 }
 
 void PlayerAggregateComponent::setCurrentTrack(String filePath)

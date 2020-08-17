@@ -15,8 +15,9 @@
 //==============================================================================
 /*
 */
-class WaveformDisplay    : public Component, 
-                           public ChangeListener
+class WaveformDisplay :
+	public Component, 
+	public ChangeListener
 {
 public:
     WaveformDisplay( AudioFormatManager & 	formatManagerToUse,
@@ -32,6 +33,10 @@ public:
 
     /** set the relative position of the playhead*/
     void setPositionRelative(double pos);
+
+    virtual void mouseDrag(const MouseEvent& event);
+
+    ActionBroadcaster PositionChangedBroadcaster;
 
 private:
     AudioThumbnail audioThumb;

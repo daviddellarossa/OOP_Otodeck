@@ -36,6 +36,8 @@ public:
     void PauseCallback(const String& message);
     void StopCallback(const String& message);
 
+    void positionChangedCallback(const String& message);
+
     void setCurrentTrack(String filePath);
     String getCurrentTrack() const;
 
@@ -52,6 +54,8 @@ private:
     ExternalCallbackActionListener StopListener;
     ExternalCallbackActionListener PlayListener;
     ExternalCallbackActionListener PauseListener;
+
+    ExternalCallbackActionListener PositionChangedListener;
 	
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (PlayerAggregateComponent)
 };
