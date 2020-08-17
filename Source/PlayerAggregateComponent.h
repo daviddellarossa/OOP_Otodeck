@@ -21,7 +21,7 @@
 class PlayerAggregateComponent  : public juce::Component
 {
 public:
-    PlayerAggregateComponent(AudioPlayer* audioPlayer);
+    PlayerAggregateComponent(AudioPlayer& audioPlayer);
     ~PlayerAggregateComponent() override;
 
     void paint (juce::Graphics&) override;
@@ -38,7 +38,7 @@ private:
     String currentTrackPath;
     Label currentTrackLabel;
     PlayerToolbar playerToolbar;
-    AudioPlayer* audioPlayer;
+    AudioPlayer& audioPlayer;
 
     ExternalCallbackActionListener StopListener;
     ExternalCallbackActionListener PlayListener;

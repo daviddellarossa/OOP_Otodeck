@@ -14,8 +14,8 @@ MainComponent::MainComponent() :
     TrackSelectedToPlayRightListener([this](const String& message) { TrackSelectedToPlayCallback(message, this->rightPlayerComponent); }),
 	leftPlayer(formatManager),
 	rightPlayer(formatManager),
-	leftPlayerComponent(&leftPlayer),
-	rightPlayerComponent(&rightPlayer)
+	leftPlayerComponent(leftPlayer),
+	rightPlayerComponent(rightPlayer)
 {
     // Make sure you set the size of the component after
     // you add any child components.

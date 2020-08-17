@@ -12,7 +12,7 @@
 #include "PlayerAggregateComponent.h"
 
 //==============================================================================
-PlayerAggregateComponent::PlayerAggregateComponent(AudioPlayer* audioPlayer) :
+PlayerAggregateComponent::PlayerAggregateComponent(AudioPlayer& audioPlayer) :
     audioPlayer(audioPlayer),
     StopListener([this](const String& message) {StopCallback(message); }),
     PlayListener([this](const String& message) {PlayCallback(message); }),
@@ -72,19 +72,20 @@ void PlayerAggregateComponent::resized()
 
 void PlayerAggregateComponent::PlayCallback(const String& message)
 {
-    this->audioPlayer->start();
+    this->audioPlayer.start();
     DBG(message);
 }
 
 void PlayerAggregateComponent::PauseCallback(const String& message)
 {
-    this->audioPlayer->stop();
+    this->audioPlayer.stop();
     DBG(message);
 }
 
 void PlayerAggregateComponent::StopCallback(const String& message)
 {
-    this->audioPlayer->stop();
+    this->audioPlayer.stop();
+    this->audioPlayer.setPosition(0.0);
     DBG(message);
 }
 
@@ -95,7 +96,7 @@ void PlayerAggregateComponent::setCurrentTrack(String filePath)
 	{
         this->currentTrackPath = filePath;
         this->currentTrackLabel.setText(currentTrackPath, dontSendNotification);
-		this->audioPlayer->loadURL(URL{track});
+		this->audioPlayer.loadURL(URL{track});
 	}
 }
 
