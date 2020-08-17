@@ -13,6 +13,7 @@
 #include "../JuceLibraryCode/JuceHeader.h"
 #include "DJAudioPlayer.h"
 #include "WaveformDisplay.h"
+#include "AudioPlayer.h"
 
 //==============================================================================
 /*
@@ -24,7 +25,7 @@ class DeckGUI    : public Component,
                    public Timer
 {
 public:
-    DeckGUI(DJAudioPlayer* player, 
+    DeckGUI(AudioPlayer* player,
            AudioFormatManager & 	formatManagerToUse,
            AudioThumbnailCache & 	cacheToUse );
     ~DeckGUI();
@@ -55,7 +56,7 @@ private:
 
     WaveformDisplay waveformDisplay;
 
-    DJAudioPlayer* player; 
+    AudioPlayer* player;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (DeckGUI)
 };

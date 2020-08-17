@@ -12,15 +12,16 @@
 #include "PlayerAggregateComponent.h"
 
 //==============================================================================
-PlayerAggregateComponent::PlayerAggregateComponent() :
+PlayerAggregateComponent::PlayerAggregateComponent(AudioPlayer* audioPlayer) :
+    audioPlayer(audioPlayer),
+    StopListener([this](const String& message) {StopCallback(message); }),
     PlayListener([this](const String& message) {PlayCallback(message); }),
-    PauseListener([this](const String& message) {PauseCallback(message); }),
-    StopListener([this](const String& message) {StopCallback(message); })
+	PauseListener([this](const String& message) {PauseCallback(message); })
 {
     // In your constructor, you should add any child components, and
     // initialise any special settings that your component needs.
     addAndMakeVisible(this->playerToolbar);
-    addAndMakeVisible(this->audioPlayer);
+    //addAndMakeVisible(this->audioPlayer);
     addAndMakeVisible(this->currentTrackLabel);
 	
     playerToolbar.setBounds(0, 0, getWidth(), getHeight());
@@ -64,32 +65,37 @@ void PlayerAggregateComponent::resized()
     controlLayout.flexWrap = FlexBox::Wrap::noWrap;
     controlLayout.flexDirection = FlexBox::Direction::column;
     controlLayout.items.add(FlexItem(getWidth(), 32.0f, currentTrackLabel));
-    controlLayout.items.add(FlexItem(audioPlayer).withMinHeight(100).withMaxHeight(getHeight()).withFlex(1));
+    controlLayout.items.add(FlexItem(/*audioPlayer*/).withMinHeight(100).withMaxHeight(getHeight()).withFlex(1));
     controlLayout.items.add(FlexItem(static_cast<float>(getWidth()), 32.0f, playerToolbar));
     controlLayout.performLayout(getLocalBounds().toFloat());
 }
 
 void PlayerAggregateComponent::PlayCallback(const String& message)
 {
+    this->audioPlayer->start();
     DBG(message);
 }
 
 void PlayerAggregateComponent::PauseCallback(const String& message)
 {
+    this->audioPlayer->stop();
     DBG(message);
 }
 
 void PlayerAggregateComponent::StopCallback(const String& message)
 {
+    this->audioPlayer->stop();
     DBG(message);
 }
 
 void PlayerAggregateComponent::setCurrentTrack(String filePath)
 {
-	if(File(filePath).existsAsFile())
+    File track(filePath);
+	if(track.existsAsFile())
 	{
         this->currentTrackPath = filePath;
         this->currentTrackLabel.setText(currentTrackPath, dontSendNotification);
+		this->audioPlayer->loadURL(URL{track});
 	}
 }
 

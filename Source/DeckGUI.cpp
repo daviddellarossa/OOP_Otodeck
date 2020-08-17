@@ -12,7 +12,7 @@
 #include "DeckGUI.h"
 
 //==============================================================================
-DeckGUI::DeckGUI(DJAudioPlayer* _player, 
+DeckGUI::DeckGUI(AudioPlayer* _player,
                 AudioFormatManager & 	formatManagerToUse,
                 AudioThumbnailCache & 	cacheToUse
            ) : player(_player), 

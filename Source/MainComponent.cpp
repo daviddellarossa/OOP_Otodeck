@@ -10,8 +10,12 @@
 
 //==============================================================================
 MainComponent::MainComponent() :
-    TrackSelectedToPlayLeftListener([this](const String& message) { TrackSelectedToPlayCallback(message, this->leftPlayer); }),
-    TrackSelectedToPlayRightListener([this](const String& message) { TrackSelectedToPlayCallback(message, this->rightPlayer); })
+    TrackSelectedToPlayLeftListener([this](const String& message) { TrackSelectedToPlayCallback(message, this->leftPlayerComponent); }),
+    TrackSelectedToPlayRightListener([this](const String& message) { TrackSelectedToPlayCallback(message, this->rightPlayerComponent); }),
+	leftPlayer(formatManager),
+	rightPlayer(formatManager),
+	leftPlayerComponent(&leftPlayer),
+	rightPlayerComponent(&rightPlayer)
 {
     // Make sure you set the size of the component after
     // you add any child components.
@@ -32,16 +36,16 @@ MainComponent::MainComponent() :
 
     addAndMakeVisible(deckGUI1); 
     addAndMakeVisible(deckGUI2);
-    addAndMakeVisible(leftPlaylist);
-    addAndMakeVisible(rightPlaylist);
-    addAndMakeVisible(leftPlayer);
-    addAndMakeVisible(rightPlayer);
+    addAndMakeVisible(leftPlaylistComponent);
+    addAndMakeVisible(rightPlaylistComponent);
+    addAndMakeVisible(leftPlayerComponent);
+    addAndMakeVisible(rightPlayerComponent);
 
-    //leftPlaylist.setBounds(0, getHeight() / 2, getWidth(), getHeight() / 2);
+    //leftPlaylistComponent.setBounds(0, getHeight() / 2, getWidth(), getHeight() / 2);
     formatManager.registerBasicFormats();
 
-    leftPlaylist.TrackSelectedToPlayEventBroadcaster.addActionListener(&TrackSelectedToPlayLeftListener);
-    rightPlaylist.TrackSelectedToPlayEventBroadcaster.addActionListener(&TrackSelectedToPlayRightListener);
+    leftPlaylistComponent.TrackSelectedToPlayEventBroadcaster.addActionListener(&TrackSelectedToPlayLeftListener);
+    rightPlaylistComponent.TrackSelectedToPlayEventBroadcaster.addActionListener(&TrackSelectedToPlayRightListener);
 
 }
 
@@ -54,13 +58,21 @@ MainComponent::~MainComponent()
 //==============================================================================
 void MainComponent::prepareToPlay (int samplesPerBlockExpected, double sampleRate)
 {
-    player1.prepareToPlay(samplesPerBlockExpected, sampleRate);
-    player2.prepareToPlay(samplesPerBlockExpected, sampleRate);
+    //player1.prepareToPlay(samplesPerBlockExpected, sampleRate);
+    //player2.prepareToPlay(samplesPerBlockExpected, sampleRate);
+
+    leftPlayer.prepareToPlay(samplesPerBlockExpected, sampleRate);
+    rightPlayer.prepareToPlay(samplesPerBlockExpected, sampleRate);
+
+	
     
     mixerSource.prepareToPlay(samplesPerBlockExpected, sampleRate);
 
-    mixerSource.addInputSource(&player1, false);
-    mixerSource.addInputSource(&player2, false);
+    //mixerSource.addInputSource(&player1, false);
+    //mixerSource.addInputSource(&player2, false);
+
+    mixerSource.addInputSource(&leftPlayer, false);
+    mixerSource.addInputSource(&rightPlayer, false);
 
  }
 void MainComponent::getNextAudioBlock (const AudioSourceChannelInfo& bufferToFill)
@@ -74,8 +86,11 @@ void MainComponent::releaseResources()
     // restarted due to a setting change.
 
     // For more details, see the help for AudioProcessor::releaseResources()
-    player1.releaseResources();
-    player2.releaseResources();
+    leftPlayer.releaseResources();
+    rightPlayer.releaseResources();
+	
+    //player1.releaseResources();
+    //player2.releaseResources();
     mixerSource.releaseResources();
 }
 
@@ -113,19 +128,19 @@ void MainComponent::resized()
         GridItem(deckGUI1).withArea(1, 1, 3, 3),
 		GridItem(deckGUI2).withArea(1, 3, 3, 5),
 
-        GridItem(leftPlayer).withArea(4, 1, 4, 3),
-		GridItem(rightPlayer).withArea(4, 3, 4, 5),
+        GridItem(leftPlayerComponent).withArea(4, 1, 4, 3),
+		GridItem(rightPlayerComponent).withArea(4, 3, 4, 5),
 
-        GridItem(leftPlaylist).withArea(5, 1, 5, 3),
-        GridItem(rightPlaylist).withArea(5, 3, 5, 5),
+        GridItem(leftPlaylistComponent).withArea(5, 1, 5, 3),
+        GridItem(rightPlaylistComponent).withArea(5, 3, 5, 5),
 
     };
 
     controlLayout.performLayout(getLocalBounds());
     //deckGUI1.setBounds(0, 0, getWidth()/2, getHeight()/2);
     //deckGUI2.setBounds(getWidth()/2, 0, getWidth()/2, getHeight()/2);
-    //leftPlaylist.setBounds(0, getHeight() / 2, getWidth(), getHeight() / 2);
-    //leftPlayer.setBounds(0, getHeight() / 2, getWidth(), getHeight() / 2);
+    //leftPlaylistComponent.setBounds(0, getHeight() / 2, getWidth(), getHeight() / 2);
+    //leftPlayerComponent.setBounds(0, getHeight() / 2, getWidth(), getHeight() / 2);
 
 }
 
@@ -133,6 +148,4 @@ void MainComponent::TrackSelectedToPlayCallback(const String& message, PlayerAgg
 {
     player.setCurrentTrack(message);
 }
-//void MainComponent::TrackSelectedToPlayRightCallback(const String& message) const
-//{
-//}
+

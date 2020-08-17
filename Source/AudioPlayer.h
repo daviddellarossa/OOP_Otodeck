@@ -11,19 +11,39 @@
 #pragma once
 
 #include <JuceHeader.h>
+#include "AudioPlayerSource.h"
 
 //==============================================================================
 /*
 */
-class AudioPlayer  : public juce::Component
+class AudioPlayer  : public juce::AudioSource
 {
 public:
-    AudioPlayer();
-    ~AudioPlayer() override;
+    AudioPlayer(AudioFormatManager& _formatManager);
+    ~AudioPlayer() = default;
+	
+    void prepareToPlay(int samplesPerBlockExpected, double sampleRate) override;
+    void getNextAudioBlock(const AudioSourceChannelInfo& bufferToFill) override;
+    void releaseResources() override;
 
-    void paint (juce::Graphics&) override;
-    void resized() override;
+    void loadURL(URL audioURL);
+    void setGain(double gain);
+    void setSpeed(double ratio);
+    void setPosition(double posInSecs);
+    void setPositionRelative(double pos);
+
+
+    void start();
+    void stop();
+
+    /** get the relative position of the playhead */
+    double getPositionRelative();
 
 private:
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (AudioPlayer)
+    AudioFormatManager& formatManager;
+    std::unique_ptr<AudioFormatReaderSource> readerSource;
+    AudioTransportSource transportSource;
+    ResamplingAudioSource resampleSource{ &transportSource, false, 2 };
+	
+    //JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (AudioPlayer)
 };

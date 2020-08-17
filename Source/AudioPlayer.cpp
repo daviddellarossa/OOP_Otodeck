@@ -2,50 +2,100 @@
   ==============================================================================
 
     AudioPlayer.cpp
-    Created: 16 Aug 2020 8:26:02am
+    Created: 17 Aug 2020 6:54:04pm
     Author:  david
 
   ==============================================================================
 */
 
-#include <JuceHeader.h>
 #include "AudioPlayer.h"
 
-//==============================================================================
-AudioPlayer::AudioPlayer()
+AudioPlayer::AudioPlayer(AudioFormatManager& _formatManager)
+	:formatManager(_formatManager)
 {
-    // In your constructor, you should add any child components, and
-    // initialise any special settings that your component needs.
+    
+}
+//AudioPlayer::~AudioPlayer()
+//{
+//
+//}
+
+void AudioPlayer::prepareToPlay(int samplesPerBlockExpected, double sampleRate)
+{
+    transportSource.prepareToPlay(samplesPerBlockExpected, sampleRate);
+    resampleSource.prepareToPlay(samplesPerBlockExpected, sampleRate);
+}
+void AudioPlayer::getNextAudioBlock(const AudioSourceChannelInfo& bufferToFill)
+{
+    resampleSource.getNextAudioBlock(bufferToFill);
 
 }
-
-AudioPlayer::~AudioPlayer()
+void AudioPlayer::releaseResources()
 {
+    transportSource.releaseResources();
+    resampleSource.releaseResources();
 }
 
-void AudioPlayer::paint (juce::Graphics& g)
+void AudioPlayer::loadURL(URL audioURL)
 {
-    /* This demo code just fills the component's background and
-       draws some placeholder text to get you started.
+    auto* reader = formatManager.createReaderFor(audioURL.createInputStream(false));
+    if (reader != nullptr) // good file!
+    {
+        std::unique_ptr<AudioFormatReaderSource> newSource(new AudioFormatReaderSource(reader,
+            true));
+        transportSource.setSource(newSource.get(), 0, nullptr, reader->sampleRate);
+        readerSource.reset(newSource.release());
+    }
+}
+void AudioPlayer::setGain(double gain)
+{
+    if (gain < 0 || gain > 1.0)
+    {
+        std::cout << "AudioPlayer::setGain gain should be between 0 and 1" << std::endl;
+    }
+    else {
+        transportSource.setGain(gain);
+    }
 
-       You should replace everything in this method with your own
-       drawing code..
-    */
-
-    g.fillAll (getLookAndFeel().findColour (juce::ResizableWindow::backgroundColourId));   // clear the background
-
-    g.setColour (juce::Colours::grey);
-    g.drawRect (getLocalBounds(), 1);   // draw an outline around the component
-
-    g.setColour (juce::Colours::white);
-    g.setFont (14.0f);
-    g.drawText ("AudioPlayer", getLocalBounds(),
-                juce::Justification::centred, true);   // draw some placeholder text
+}
+void AudioPlayer::setSpeed(double ratio)
+{
+    if (ratio < 0 || ratio > 100.0)
+    {
+        std::cout << "AudioPlayer::setSpeed ratio should be between 0 and 100" << std::endl;
+    }
+    else {
+        resampleSource.setResamplingRatio(ratio);
+    }
+}
+void AudioPlayer::setPosition(double posInSecs)
+{
+    transportSource.setPosition(posInSecs);
 }
 
-void AudioPlayer::resized()
+void AudioPlayer::setPositionRelative(double pos)
 {
-    // This method is where you should set the bounds of any child
-    // components that your component contains..
+    if (pos < 0 || pos > 1.0)
+    {
+        std::cout << "AudioPlayer::setPositionRelative pos should be between 0 and 1" << std::endl;
+    }
+    else {
+        double posInSecs = transportSource.getLengthInSeconds() * pos;
+        setPosition(posInSecs);
+    }
+}
 
+
+void AudioPlayer::start()
+{
+    transportSource.start();
+}
+void AudioPlayer::stop()
+{
+    transportSource.stop();
+}
+
+double AudioPlayer::getPositionRelative()
+{
+    return transportSource.getCurrentPosition() / transportSource.getLengthInSeconds();
 }

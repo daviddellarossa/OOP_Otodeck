@@ -13,6 +13,7 @@
 #include "DeckGUI.h"
 #include "PlaylistAggregateComponent.h"
 #include "PlayerAggregateComponent.h"
+#include "AudioPlayer.h"
 //#include "PlaylistToolbar.h"
 
 //==============================================================================
@@ -46,20 +47,25 @@ private:
     AudioFormatManager formatManager;
     AudioThumbnailCache thumbCache{100}; 
 
-    DJAudioPlayer player1{formatManager};
-    DeckGUI deckGUI1{&player1, formatManager, thumbCache}; 
+    //DJAudioPlayer player1{formatManager};
+    //DeckGUI deckGUI1{&player1, formatManager, thumbCache}; 
 
-    DJAudioPlayer player2{formatManager};
-    DeckGUI deckGUI2{&player2, formatManager, thumbCache}; 
+    //DJAudioPlayer player2{formatManager};
+    /*DeckGUI deckGUI2{&player2, formatManager, thumbCache}; */
 
     MixerAudioSource mixerSource; 
 
     //PlaylistToolbar playlistToolbar;
-    PlaylistAggregateComponent leftPlaylist;
-    PlaylistAggregateComponent rightPlaylist;
+    PlaylistAggregateComponent leftPlaylistComponent;
+    PlaylistAggregateComponent rightPlaylistComponent;
 
-    PlayerAggregateComponent leftPlayer;
-    PlayerAggregateComponent rightPlayer;
+    AudioPlayer leftPlayer;
+    AudioPlayer rightPlayer;
+
+    DeckGUI deckGUI1{ &leftPlayer, formatManager, thumbCache };
+    DeckGUI deckGUI2{ &rightPlayer, formatManager, thumbCache };
+    PlayerAggregateComponent leftPlayerComponent;
+    PlayerAggregateComponent rightPlayerComponent;
 
     ExternalCallbackActionListener TrackSelectedToPlayLeftListener;
     ExternalCallbackActionListener TrackSelectedToPlayRightListener;
