@@ -16,7 +16,7 @@ WaveformDisplay::WaveformDisplay(AudioFormatManager & 	formatManagerToUse,
                                  AudioThumbnailCache & 	cacheToUse) :
                                  audioThumb(1000, formatManagerToUse, cacheToUse), 
                                  fileLoaded(false), 
-                                 position(0)
+                                 position{0}
                           
 {
     // In your constructor, you should add any child components, and
@@ -54,7 +54,7 @@ void WaveformDisplay::paint (Graphics& g)
         1.0f
       );
       g.setColour(Colours::lightgreen);
-      g.drawRect(position * getWidth(), 0, getWidth() / 20, getHeight());
+      g.drawRect( static_cast<int>(position * getWidth()), 0, 10, getHeight());
     }
     else 
     {
@@ -99,11 +99,18 @@ void WaveformDisplay::setPositionRelative(double pos)
 {
   if (pos != position)
   {
-    position = pos;
+  	if (isnan(pos))
+  	{
+        position = 0;
+  	}
+    else
+    {
+        position = pos;
+    }
+
     repaint();
   }
 
-  
 }
 
 

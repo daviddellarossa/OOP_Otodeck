@@ -31,7 +31,8 @@ PlayerAggregateComponent::PlayerAggregateComponent(
 	
     playerToolbar.setBounds(0, 0, getWidth(), getHeight());
     currentTrackLabel.setBounds(0, 0, getWidth(), getHeight());
-
+    waveformDisplay.setBounds(0, 0, getWidth(), getHeight());
+	
     playerToolbar.PlayEventBroadcaster.addActionListener(&PlayListener);
     playerToolbar.PauseEventBroadcaster.addActionListener(&PauseListener);
     playerToolbar.StopEventBroadcaster.addActionListener(&StopListener);
