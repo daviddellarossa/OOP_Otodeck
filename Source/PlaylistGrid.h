@@ -15,7 +15,9 @@
 //==============================================================================
 /*
 */
-class PlaylistGrid  : public juce::Component
+class PlaylistGrid  :
+public juce::Component,
+public FileDragAndDropTarget
 {
 public:
     PlaylistGrid();
@@ -49,6 +51,8 @@ public:
         int64 lengthInSamples;
         unsigned lengthInSeconds() const;
         String toString() const;
+
+        static TrackModel FromFile(const String& filepath, AudioFormatManager& formatReader);
     };
 
     class PlaylistTableListBoxModel : public TableListBoxModel
@@ -95,10 +99,13 @@ public:
     std::shared_ptr<std::vector<TrackModel>> getTracks() const;
     void clearTracks();
 
+    bool isInterestedInFileDrag(const StringArray& files) override;
+    void filesDropped(const StringArray& files, int x, int y) override;
+
     PlaylistTableListBoxModel& getGridBoxModel();
 
 private:
-
+    AudioFormatManager formatManager;
     std::shared_ptr<std::vector<TrackModel>> tracks;
     TableListBox playlistDataGrid;
     PlaylistTableListBoxModel playlistDataGridBoxModel;

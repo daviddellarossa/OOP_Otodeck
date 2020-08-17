@@ -18,7 +18,8 @@
 class PlaylistComponent :
 	public juce::Component,
 	public TableListBoxModel,
-    public Button::Listener
+    public Button::Listener,
+    public FileDragAndDropTarget
 {
 public:
     PlaylistComponent();

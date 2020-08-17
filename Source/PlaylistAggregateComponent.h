@@ -18,7 +18,8 @@
 //==============================================================================
 /*
 */
-class PlaylistAggregateComponent  : public juce::Component
+class PlaylistAggregateComponent  :
+	public juce::Component
 {
 public:
     PlaylistAggregateComponent();

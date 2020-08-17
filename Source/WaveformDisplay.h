@@ -34,7 +34,9 @@ public:
     /** set the relative position of the playhead*/
     void setPositionRelative(double pos);
 
-    virtual void mouseDrag(const MouseEvent& event);
+    virtual void mouseDrag(const MouseEvent& event) override;
+	virtual void mouseDown(const MouseEvent& event) override;
+	virtual void mouseUp(const MouseEvent& event) override;
 
     ActionBroadcaster PositionChangedBroadcaster;
 

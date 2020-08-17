@@ -14,10 +14,11 @@
 //==============================================================================
 PlayerAggregateComponent::PlayerAggregateComponent(
     AudioPlayer& audioPlayer,
-    AudioFormatManager& formatManagerToUse,
-    AudioThumbnailCache& cacheToUse) :
+    AudioFormatManager& formatManager,
+    AudioThumbnailCache& cache) :
+	formatManager(formatManager),
     audioPlayer(audioPlayer),
-    waveformDisplay(formatManagerToUse, cacheToUse),
+    waveformDisplay(formatManager, cache),
     StopListener([this](const String& message) {StopCallback(message); }),
     PlayListener([this](const String& message) {PlayCallback(message); }),
 	PauseListener([this](const String& message) {PauseCallback(message); }),
@@ -128,4 +129,25 @@ void PlayerAggregateComponent::timerCallback()
     //std::cout << "DeckGUI::timerCallback" << std::endl;
     waveformDisplay.setPositionRelative(
         audioPlayer.getPositionRelative());
+}
+
+bool PlayerAggregateComponent::isInterestedInFileDrag(const StringArray& files)
+{
+    if (files.size() != 1) return false;
+
+    File file(files[0]);
+    return formatManager.findFormatForFileExtension(file.getFileExtension());
+}
+
+void PlayerAggregateComponent::filesDropped(const StringArray& files, int x, int y)
+{
+	if(files.size() == 1)
+	{
+        File file(files[0]);
+            if (!formatManager.findFormatForFileExtension(file.getFileExtension()))
+            {
+	            return;
+            }
+        this->setCurrentTrack(files[0]);
+	}
 }

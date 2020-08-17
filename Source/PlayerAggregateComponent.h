@@ -19,13 +19,16 @@
 //==============================================================================
 /*
 */
-class PlayerAggregateComponent  : public juce::Component, public Timer
+class PlayerAggregateComponent  :
+	public juce::Component,
+	public Timer,
+    public FileDragAndDropTarget
 {
 public:
     PlayerAggregateComponent(
         AudioPlayer& audioPlayer, 
-        AudioFormatManager& formatManagerToUse,
-        AudioThumbnailCache& cacheToUse
+        AudioFormatManager& formatManager,
+        AudioThumbnailCache& cache
     );
     ~PlayerAggregateComponent() override;
 
@@ -43,12 +46,15 @@ public:
 
     void timerCallback() override;
 
+    bool isInterestedInFileDrag(const StringArray& files) override;
+    void filesDropped(const StringArray& files, int x, int y) override;
+
 private:
     String currentTrackPath;
     Label currentTrackLabel;
     PlayerToolbar playerToolbar;
     AudioPlayer& audioPlayer;
-
+    AudioFormatManager& formatManager;
     WaveformDisplay waveformDisplay;
 
     ExternalCallbackActionListener StopListener;

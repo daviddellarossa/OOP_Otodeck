@@ -61,7 +61,6 @@ void WaveformDisplay::paint (Graphics& g)
       g.setFont (20.0f);
       g.drawText ("File not loaded...", getLocalBounds(),
                   Justification::centred, true);   // draw some placeholder text
-
     }
 }
 
@@ -124,6 +123,26 @@ void WaveformDisplay::mouseDrag(const MouseEvent& event)
         relativePosition = 1;
 
     PositionChangedBroadcaster.sendActionMessage(static_cast<String>(relativePosition));
+}
+
+void WaveformDisplay::mouseDown(const MouseEvent& event)
+{
+    if (!fileLoaded) return;
+
+    setMouseCursor(MouseCursor::DraggingHandCursor);
+	
+    double relativePosition = event.getPosition().getX() / static_cast<double>(getWidth());
+    if (relativePosition < 0)
+        relativePosition = 0;
+    if (relativePosition > 1)
+        relativePosition = 1;
+
+    PositionChangedBroadcaster.sendActionMessage(static_cast<String>(relativePosition));
+}
+
+void WaveformDisplay::mouseUp(const MouseEvent& event)
+{
+    setMouseCursor(MouseCursor::NormalCursor);
 }
 
 

@@ -25,6 +25,7 @@ PlaylistGrid::PlaylistGrid() :
     playlistDataGrid.getHeader().addColumn("Length", 2, 80);
     playlistDataGrid.getHeader().addColumn("Sample rate", 3, 100);
 
+    formatManager.registerBasicFormats();
 }
 
 PlaylistGrid::~PlaylistGrid()
@@ -95,6 +96,33 @@ void PlaylistGrid::clearTracks()
 {
     this->tracks->clear();
     this->playlistDataGrid.updateContent();
+}
+
+bool PlaylistGrid::isInterestedInFileDrag(const StringArray& files)
+{
+    if (files.size() == 0) return false;
+    bool result = true;
+
+    for (auto fileString : files)
+    {
+        File file(fileString);
+        result &= (formatManager.findFormatForFileExtension(file.getFileExtension()) != nullptr);
+    }
+	
+    return result;
+}
+
+void PlaylistGrid::filesDropped(const StringArray& files, int x, int y)
+{
+    if (files.size() == 0) return;
+    for (auto fileString : files)
+    {
+        File file(fileString);
+        if(formatManager.findFormatForFileExtension(file.getFileExtension()))
+        {
+            addTrack(TrackModel::FromFile(fileString, formatManager));
+        }
+    }
 }
 
 PlaylistGrid::PlaylistTableListBoxModel& PlaylistGrid::getGridBoxModel()
@@ -170,13 +198,6 @@ void PlaylistGrid::PlaylistTableListBoxModel::paintCell(Graphics& graphics, int 
 }
 
 
-
-//void PlaylistGrid::PlaylistTableListBoxModel::cellClicked(int rowNumber, int columnId, const MouseEvent& e)
-//{
-//
-//    DBG("Cell clicked");
-//}
-
 void PlaylistGrid::PlaylistTableListBoxModel::cellDoubleClicked(int rowNumber, int columnId, const MouseEvent& event)
 {
     ItemDoubleClickedEventBroadcaster.sendActionMessage(this->tracks.get()->at(rowNumber).filePath);
@@ -185,18 +206,6 @@ void PlaylistGrid::PlaylistTableListBoxModel::cellDoubleClicked(int rowNumber, i
 Component* PlaylistGrid::PlaylistTableListBoxModel::refreshComponentForCell(int rowNumber, int columnId,
 	bool isRowSelected, Component* existingComponentToUpdate)
 {
-    //if (columnId == 2)
-    //{
-    //    if (existingComponentToUpdate == nullptr)
-    //    {
-    //        TextButton* btn = new TextButton("play");
-    //        btn->addListener(this);
-    //        String id{ std::to_string(rowNumber) };
-    //        btn->setComponentID(id);
-
-    //        existingComponentToUpdate = btn;
-    //    }
-    //}
     return  existingComponentToUpdate;
 }
 unsigned PlaylistGrid::TrackModel::lengthInSeconds() const
@@ -210,6 +219,23 @@ unsigned PlaylistGrid::TrackModel::lengthInSeconds() const
 String PlaylistGrid::TrackModel::toString() const
 {
     return this->filePath;
+}
+
+PlaylistGrid::TrackModel PlaylistGrid::TrackModel::FromFile(const String& filepath, AudioFormatManager& formatManager)
+{
+    File selectedFile(filepath);
+    std::unique_ptr<AudioFormatReader> formatReader(formatManager.createReaderFor(selectedFile));
+	
+    PlaylistGrid::TrackModel track(
+        selectedFile.getFileName(),
+        selectedFile.getFullPathName(),
+        formatReader->getFormatName(),
+        formatReader->bitsPerSample,
+        formatReader->numChannels,
+        formatReader->sampleRate,
+        formatReader->lengthInSamples
+    );
+    return track;
 }
 
 PlaylistGrid::TrackModel::TrackModel(
