@@ -16,7 +16,6 @@
 #include "MixerAggregateComponent.h"
 #include "ScratchAggregateComponent.h"
 
-
 //==============================================================================
 /*
     This component lives inside our window, and this is where you should put all
@@ -42,6 +41,8 @@ public:
 
     void SpeedChangedCallback(const String& message, PlayerAggregateComponent& player);
 
+    void VolumeChangedCallback(const String& message, PlayerAggregateComponent& player);
+	
 private:
     //==============================================================================
     // Your private member variables go here...
@@ -58,18 +59,26 @@ private:
     AudioPlayer leftPlayer;
     AudioPlayer rightPlayer;
 
-    DeckGUI deckGUI1{ &leftPlayer, formatManager, thumbCache };
-    DeckGUI deckGUI2{ &rightPlayer, formatManager, thumbCache };
+    //DeckGUI deckGUI1{ &leftPlayer, formatManager, thumbCache };
+    //DeckGUI deckGUI2{ &rightPlayer, formatManager, thumbCache };
     PlayerAggregateComponent leftPlayerComponent;
     PlayerAggregateComponent rightPlayerComponent;
 
     ScratchAggregateComponent leftScratchDock;
     ScratchAggregateComponent rightScratchDock;
 
+	//Listeners from PlaylistAggregateComponent
     ExternalCallbackActionListener TrackSelectedToPlayLeftListener;
     ExternalCallbackActionListener TrackSelectedToPlayRightListener;
+
+	//Listeners from ScratchAggregateComponent
     ExternalCallbackActionListener SpeedChangedLeftListener;
     ExternalCallbackActionListener SpeedChangedRightListener;
+
+	//Listener for MixerAggregateComponent
+    ExternalCallbackActionListener LeftVolumeChangedListener;
+    ExternalCallbackActionListener RightVolumeChangedListener;
+
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (MainComponent)
 };

@@ -12,6 +12,9 @@
 
 #include <JuceHeader.h>
 
+#include "ExternalCallbackSliderListener.h"
+#include "MixerChannel.h"
+
 //==============================================================================
 /*
 */
@@ -24,6 +27,17 @@ public:
     void paint (juce::Graphics&) override;
     void resized() override;
 
+    void volumeChangedCallback(double value, ActionBroadcaster& broadcaster) const;
+
+    ActionBroadcaster LeftVolumeChangedBroadcaster;
+    ActionBroadcaster RightVolumeChangedBroadcaster;
+
 private:
+
+    ExternalCallbackSliderListener LeftVolumeChangedListener;
+    ExternalCallbackSliderListener RightVolumeChangedListener;
+
+    MixerChannel leftChannel;
+    MixerChannel rightChannel;
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (MixerAggregateComponent)
 };

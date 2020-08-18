@@ -156,3 +156,8 @@ void PlayerAggregateComponent::setSpeed(double speed)
 {
     audioPlayer.setSpeed(speed);
 }
+
+void PlayerAggregateComponent::setGain(double gain)
+{
+    audioPlayer.setGain(gain);
+}

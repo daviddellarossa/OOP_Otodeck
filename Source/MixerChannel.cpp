@@ -11,12 +11,17 @@
 #include <JuceHeader.h>
 #include "MixerChannel.h"
 
+class ExternalCallbackSliderListener;
 //==============================================================================
-MixerChannel::MixerChannel()
+MixerChannel::MixerChannel(Listener* _volumeChangedListener)
 {
     // In your constructor, you should add any child components, and
     // initialise any special settings that your component needs.
+    addAndMakeVisible(volumeSlider);
 
+    volumeSlider.setSliderStyle(Slider::LinearVertical);
+    volumeSlider.addListener(_volumeChangedListener);
+    volumeSlider.setRange(0.0, 1.0);
 }
 
 MixerChannel::~MixerChannel()
@@ -47,5 +52,34 @@ void MixerChannel::resized()
 {
     // This method is where you should set the bounds of any child
     // components that your component contains..
+    Grid layout;
+	
+    layout.templateColumns = {
+    Grid::TrackInfo(2_fr),
+    Grid::TrackInfo(1_fr),
+    };
 
+    layout.templateRows = {
+	    Grid::TrackInfo(2_fr),
+	    Grid::TrackInfo(1_fr),
+	    Grid::TrackInfo(1_fr),
+	    Grid::TrackInfo(1_fr),
+	    Grid::TrackInfo(1_fr),
+    };
+
+    layout.items = {
+        GridItem(volumeSlider).withArea(1, 2, 6, 3),
+    };
+
+    layout.performLayout(getLocalBounds());
+}
+
+void MixerChannel::setVolume(double value)
+{
+    this->volumeSlider.setValue(value);
+}
+
+double MixerChannel::getVolume() const
+{
+    return this->volumeSlider.getValue();
 }

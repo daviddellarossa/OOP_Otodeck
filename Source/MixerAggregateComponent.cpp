@@ -12,10 +12,26 @@
 #include "MixerAggregateComponent.h"
 
 //==============================================================================
-MixerAggregateComponent::MixerAggregateComponent()
+MixerAggregateComponent::MixerAggregateComponent() :
+    LeftVolumeChangedListener([this](double value) { volumeChangedCallback(value, LeftVolumeChangedBroadcaster); }),
+    RightVolumeChangedListener([this](double value) { volumeChangedCallback(value, RightVolumeChangedBroadcaster); }),
+	leftChannel(&LeftVolumeChangedListener),
+	rightChannel(&RightVolumeChangedListener)
 {
+
     // In your constructor, you should add any child components, and
     // initialise any special settings that your component needs.
+    addAndMakeVisible(leftChannel);
+    addAndMakeVisible(rightChannel);
+
+    leftChannel.setBounds(0, 0, getWidth(), getHeight());
+    rightChannel.setBounds(0, 0, getWidth(), getHeight());
+
+    leftChannel.setVolume(1.0);
+	rightChannel.setVolume(1.0);
+	
+    //LeftVolumeChangedBroadcaster.sendActionMessage(std::to_string(leftChannel.getVolume()));
+    //RightVolumeChangedBroadcaster.sendActionMessage(std::to_string(rightChannel.getVolume()));
 
 }
 
@@ -47,5 +63,28 @@ void MixerAggregateComponent::resized()
 {
     // This method is where you should set the bounds of any child
     // components that your component contains..
+    Grid layout;
 
+    layout.templateColumns = {
+		Grid::TrackInfo(1_fr),
+		Grid::TrackInfo(1_fr),
+    };
+
+    layout.templateRows = {
+        Grid::TrackInfo(4_fr),
+        Grid::TrackInfo(1_fr),
+    };
+
+    layout.items = {
+		GridItem(leftChannel).withArea(1, 1, 2, 2),
+        GridItem(rightChannel).withArea(1, 2, 2, 3),
+    };
+    layout.performLayout(getLocalBounds());
+}
+
+
+
+void MixerAggregateComponent::volumeChangedCallback(double value, ActionBroadcaster& broadcaster) const
+{
+    broadcaster.sendActionMessage(std::to_string(value));
 }

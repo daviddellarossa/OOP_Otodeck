@@ -10,14 +10,18 @@
 
 //==============================================================================
 MainComponent::MainComponent() :
-    TrackSelectedToPlayLeftListener([this](const String& message) { TrackSelectedToPlayCallback(message, this->leftPlayerComponent); }),
+    leftPlayer(formatManager),
+    rightPlayer(formatManager),
+	TrackSelectedToPlayLeftListener([this](const String& message) { TrackSelectedToPlayCallback(message, this->leftPlayerComponent); }),
     TrackSelectedToPlayRightListener([this](const String& message) { TrackSelectedToPlayCallback(message, this->rightPlayerComponent); }),
     SpeedChangedLeftListener([this](const String& message) { SpeedChangedCallback(message, leftPlayerComponent); }),
     SpeedChangedRightListener([this](const String& message) { SpeedChangedCallback(message, rightPlayerComponent); }),
-	leftPlayer(formatManager),
-	rightPlayer(formatManager),
-	leftPlayerComponent(leftPlayer, formatManager, thumbCache),
-	rightPlayerComponent(rightPlayer, formatManager, thumbCache)
+    LeftVolumeChangedListener([this](const String& message) { VolumeChangedCallback(message, leftPlayerComponent); }),
+    RightVolumeChangedListener([this](const String& message) { VolumeChangedCallback(message, rightPlayerComponent); }),
+    leftPlayerComponent(leftPlayer, formatManager, thumbCache),
+    rightPlayerComponent(rightPlayer, formatManager, thumbCache)
+
+
 {
     // Make sure you set the size of the component after
     // you add any child components.
@@ -52,6 +56,9 @@ MainComponent::MainComponent() :
 
     leftScratchDock.SpeedChangedBroadcaster.addActionListener(&SpeedChangedLeftListener);
     rightScratchDock.SpeedChangedBroadcaster.addActionListener(&SpeedChangedRightListener);
+
+    mixerPanelComponent.LeftVolumeChangedBroadcaster.addActionListener(&LeftVolumeChangedListener);
+    mixerPanelComponent.RightVolumeChangedBroadcaster.addActionListener(&RightVolumeChangedListener);
 
 }
 
@@ -147,5 +154,10 @@ void MainComponent::SpeedChangedCallback(const String& message, PlayerAggregateC
 {
 	
     player.setSpeed(message.getDoubleValue());
+}
+
+void MainComponent::VolumeChangedCallback(const String& message, PlayerAggregateComponent& player)
+{
+    player.setGain(message.getDoubleValue());
 }
 
