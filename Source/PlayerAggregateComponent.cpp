@@ -151,3 +151,8 @@ void PlayerAggregateComponent::filesDropped(const StringArray& files, int x, int
         this->setCurrentTrack(files[0]);
 	}
 }
+
+void PlayerAggregateComponent::setSpeed(double speed)
+{
+    audioPlayer.setSpeed(speed);
+}

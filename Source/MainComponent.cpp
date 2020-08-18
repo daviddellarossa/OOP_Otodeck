@@ -12,6 +12,8 @@
 MainComponent::MainComponent() :
     TrackSelectedToPlayLeftListener([this](const String& message) { TrackSelectedToPlayCallback(message, this->leftPlayerComponent); }),
     TrackSelectedToPlayRightListener([this](const String& message) { TrackSelectedToPlayCallback(message, this->rightPlayerComponent); }),
+    SpeedChangedLeftListener([this](const String& message) { SpeedChangedCallback(message, leftPlayerComponent); }),
+    SpeedChangedRightListener([this](const String& message) { SpeedChangedCallback(message, rightPlayerComponent); }),
 	leftPlayer(formatManager),
 	rightPlayer(formatManager),
 	leftPlayerComponent(leftPlayer, formatManager, thumbCache),
@@ -34,18 +36,22 @@ MainComponent::MainComponent() :
         setAudioChannels (0, 2);
     }  
 
-    addAndMakeVisible(deckGUI1); 
-    addAndMakeVisible(deckGUI2);
+    addAndMakeVisible(mixerPanelComponent);
     addAndMakeVisible(leftPlaylistComponent);
     addAndMakeVisible(rightPlaylistComponent);
     addAndMakeVisible(leftPlayerComponent);
     addAndMakeVisible(rightPlayerComponent);
+    addAndMakeVisible(leftScratchDock);
+    addAndMakeVisible(rightScratchDock);
 
     //leftPlaylistComponent.setBounds(0, getHeight() / 2, getWidth(), getHeight() / 2);
     formatManager.registerBasicFormats();
 
     leftPlaylistComponent.TrackSelectedToPlayEventBroadcaster.addActionListener(&TrackSelectedToPlayLeftListener);
     rightPlaylistComponent.TrackSelectedToPlayEventBroadcaster.addActionListener(&TrackSelectedToPlayRightListener);
+
+    leftScratchDock.SpeedChangedBroadcaster.addActionListener(&SpeedChangedLeftListener);
+    rightScratchDock.SpeedChangedBroadcaster.addActionListener(&SpeedChangedRightListener);
 
 }
 
@@ -58,22 +64,13 @@ MainComponent::~MainComponent()
 //==============================================================================
 void MainComponent::prepareToPlay (int samplesPerBlockExpected, double sampleRate)
 {
-    //player1.prepareToPlay(samplesPerBlockExpected, sampleRate);
-    //player2.prepareToPlay(samplesPerBlockExpected, sampleRate);
-
     leftPlayer.prepareToPlay(samplesPerBlockExpected, sampleRate);
-    rightPlayer.prepareToPlay(samplesPerBlockExpected, sampleRate);
-
-	
+    rightPlayer.prepareToPlay(samplesPerBlockExpected, sampleRate);	
     
     mixerSource.prepareToPlay(samplesPerBlockExpected, sampleRate);
 
-    //mixerSource.addInputSource(&player1, false);
-    //mixerSource.addInputSource(&player2, false);
-
     mixerSource.addInputSource(&leftPlayer, false);
     mixerSource.addInputSource(&rightPlayer, false);
-
  }
 void MainComponent::getNextAudioBlock (const AudioSourceChannelInfo& bufferToFill)
 {
@@ -88,9 +85,7 @@ void MainComponent::releaseResources()
     // For more details, see the help for AudioProcessor::releaseResources()
     leftPlayer.releaseResources();
     rightPlayer.releaseResources();
-	
-    //player1.releaseResources();
-    //player2.releaseResources();
+
     mixerSource.releaseResources();
 }
 
@@ -125,8 +120,11 @@ void MainComponent::resized()
     };
 
     controlLayout.items = {
-        GridItem(deckGUI1).withArea(1, 1, 3, 3),
-		GridItem(deckGUI2).withArea(1, 3, 3, 5),
+
+        GridItem(leftScratchDock).withArea(2, 1, 4, 2),
+		GridItem(rightScratchDock).withArea(2, 4, 4, 5),
+
+        GridItem(mixerPanelComponent).withArea(1, 2, 4, 4),
 
         GridItem(leftPlayerComponent).withArea(4, 1, 4, 3),
 		GridItem(rightPlayerComponent).withArea(4, 3, 4, 5),
@@ -137,15 +135,17 @@ void MainComponent::resized()
     };
 
     controlLayout.performLayout(getLocalBounds());
-    //deckGUI1.setBounds(0, 0, getWidth()/2, getHeight()/2);
-    //deckGUI2.setBounds(getWidth()/2, 0, getWidth()/2, getHeight()/2);
-    //leftPlaylistComponent.setBounds(0, getHeight() / 2, getWidth(), getHeight() / 2);
-    //leftPlayerComponent.setBounds(0, getHeight() / 2, getWidth(), getHeight() / 2);
 
 }
 
 void MainComponent::TrackSelectedToPlayCallback(const String& message, PlayerAggregateComponent& player) 
 {
     player.setCurrentTrack(message);
+}
+
+void MainComponent::SpeedChangedCallback(const String& message, PlayerAggregateComponent& player)
+{
+	
+    player.setSpeed(message.getDoubleValue());
 }
 

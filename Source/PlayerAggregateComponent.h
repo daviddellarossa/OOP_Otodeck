@@ -48,6 +48,7 @@ public:
 
     bool isInterestedInFileDrag(const StringArray& files) override;
     void filesDropped(const StringArray& files, int x, int y) override;
+    void setSpeed(double speed);
 
 private:
     String currentTrackPath;

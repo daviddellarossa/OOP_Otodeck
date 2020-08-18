@@ -9,12 +9,13 @@
 #pragma once
 
 #include "../JuceLibraryCode/JuceHeader.h"
-#include "DJAudioPlayer.h"
 #include "DeckGUI.h"
 #include "PlaylistAggregateComponent.h"
 #include "PlayerAggregateComponent.h"
 #include "AudioPlayer.h"
-//#include "PlaylistToolbar.h"
+#include "MixerAggregateComponent.h"
+#include "ScratchAggregateComponent.h"
+
 
 //==============================================================================
 /*
@@ -38,7 +39,8 @@ public:
     void resized() override;
 
     void TrackSelectedToPlayCallback(const String& message, PlayerAggregateComponent& player);
-    //void TrackSelectedToPlayRightCallback(const String& message) const;
+
+    void SpeedChangedCallback(const String& message, PlayerAggregateComponent& player);
 
 private:
     //==============================================================================
@@ -47,15 +49,9 @@ private:
     AudioFormatManager formatManager;
     AudioThumbnailCache thumbCache{100}; 
 
-    //DJAudioPlayer player1{formatManager};
-    //DeckGUI deckGUI1{&player1, formatManager, thumbCache}; 
+    MixerAudioSource mixerSource;
+    MixerAggregateComponent mixerPanelComponent;
 
-    //DJAudioPlayer player2{formatManager};
-    /*DeckGUI deckGUI2{&player2, formatManager, thumbCache}; */
-
-    MixerAudioSource mixerSource; 
-
-    //PlaylistToolbar playlistToolbar;
     PlaylistAggregateComponent leftPlaylistComponent;
     PlaylistAggregateComponent rightPlaylistComponent;
 
@@ -67,7 +63,13 @@ private:
     PlayerAggregateComponent leftPlayerComponent;
     PlayerAggregateComponent rightPlayerComponent;
 
+    ScratchAggregateComponent leftScratchDock;
+    ScratchAggregateComponent rightScratchDock;
+
     ExternalCallbackActionListener TrackSelectedToPlayLeftListener;
     ExternalCallbackActionListener TrackSelectedToPlayRightListener;
+    ExternalCallbackActionListener SpeedChangedLeftListener;
+    ExternalCallbackActionListener SpeedChangedRightListener;
+
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (MainComponent)
 };

@@ -16,8 +16,8 @@
 /*
 */
 class PlaylistGrid  :
-public juce::Component,
-public FileDragAndDropTarget
+	public juce::Component,
+	public FileDragAndDropTarget
 {
 public:
     PlaylistGrid();
