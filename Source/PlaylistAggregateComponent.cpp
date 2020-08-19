@@ -19,15 +19,21 @@ PlaylistAggregateComponent::PlaylistAggregateComponent() :
 	DeleteFilesListener([this](const String& message) {DeleteFilesCallback(message); }),
 	LoadPlaylistListener([this](const String& message) {LoadPlaylistCallback(message); }),
 	SavePlaylistListener([this](const String& message) {SavePlaylistCallback(message); }),
-    ItemDoubleClickedListener([this](const String& message) {ItemDoubleClickedCallback(message); })
+    ItemDoubleClickedListener([this](const String& message) {ItemDoubleClickedCallback(message); }),
+    searchTextChangedListener([this](const String& message) { SearchTextChangedCallback(message); })
 {
     // In your constructor, you should add any child components, and
     // initialise any special settings that your component needs.
 
 	addAndMakeVisible(this->playlistToolbar);
     addAndMakeVisible(this->playlistGrid);
-    playlistToolbar.setBounds(0, 0, getWidth(), getHeight());
+    addAndMakeVisible(this->searchBox);
 
+	
+    playlistToolbar.setBounds(0, 0, getWidth(), getHeight());
+    searchBox.setBounds(0, 0, getWidth(), getHeight());
+    searchBox.setTextToShowWhenEmpty("Search...", Colours::grey);
+	
 	//Register EventListeners to PlaylistToolbar Broadcasters
     playlistToolbar.AddFileEventBroadcaster.addActionListener(&AddFileListener);
     playlistToolbar.AddFolderEventBroadcaster.addActionListener(&AddFolderListener);
@@ -36,6 +42,9 @@ PlaylistAggregateComponent::PlaylistAggregateComponent() :
     playlistToolbar.SavePlaylistEventBroadcaster.addActionListener(&SavePlaylistListener);
 
     playlistGrid.getGridBoxModel().ItemDoubleClickedEventBroadcaster.addActionListener(&ItemDoubleClickedListener);
+
+	searchBox.addListener(&searchTextChangedListener);
+
 }
 
 PlaylistAggregateComponent::~PlaylistAggregateComponent()
@@ -67,28 +76,25 @@ void PlaylistAggregateComponent::resized()
     // This method is where you should set the bounds of any child
     // components that your component contains..
     //
-    FlexBox controlLayout;
-    controlLayout.flexWrap = FlexBox::Wrap::noWrap;
-    controlLayout.flexDirection = FlexBox::Direction::column;
-    controlLayout.items.add(FlexItem(static_cast<float>(getWidth()), 32.0f,playlistToolbar));
-    controlLayout.items.add(FlexItem(playlistGrid).withMinHeight(100).withMaxHeight(getHeight()).withFlex(1));
-    controlLayout.performLayout(getLocalBounds().toFloat());
-   
+    //
+    Grid layout;
 
-}
+    layout.templateColumns = {
+    Grid::TrackInfo(2_fr),
+    Grid::TrackInfo(1_fr),
+    };
 
-PlaylistGrid::TrackModel PlaylistAggregateComponent::convertFileToTrack(const File& selectedFile, const std::unique_ptr<AudioFormatReader>& formatReader)
-{
-	PlaylistGrid::TrackModel track(
-		selectedFile.getFileName(),
-		selectedFile.getFullPathName(),
-		formatReader->getFormatName(),
-		formatReader->bitsPerSample,
-		formatReader->numChannels,
-		formatReader->sampleRate,
-		formatReader->lengthInSamples
-	);
-    return track;
+    layout.templateRows = {
+        Grid::TrackInfo(32_px),
+        Grid::TrackInfo(1_fr),
+    };
+
+    layout.items = {
+        GridItem(playlistToolbar).withArea(1, 1, 2, 2),
+        GridItem(searchBox).withArea(1, 2, 2, 3),
+        GridItem(playlistGrid).withArea(2, 1, 3, 3),
+    };
+    layout.performLayout(getLocalBounds());
 
 }
 
@@ -119,15 +125,11 @@ void PlaylistAggregateComponent::AddFileCallback(const String& message)
     	for(int counter = 0; counter < browser.getNumSelectedFiles() ; ++counter)
     	{
             File selectedFile = browser.getSelectedFile(counter);
-
-            playlistGrid.addTrack(
-                convertFileToTrack(
-	                browser.getSelectedFile(counter), 
-	                std::unique_ptr<AudioFormatReader>(formatManager.createReaderFor(selectedFile))
-                )
+    		
+            playlistGrid.addTrack(               
+                PlaylistGrid::TrackModel::FromFile(browser.getSelectedFile(counter).getFullPathName(), formatManager)
             );
     	}
-
     }
 }
 
@@ -184,14 +186,9 @@ void PlaylistAggregateComponent::LoadPlaylistCallback(const String& message)
         }
 
         playlistGrid.addTrack(
-            convertFileToTrack(
-                trackFile,
-                std::unique_ptr<AudioFormatReader>(formatManager.createReaderFor(trackFile))
-            )
+            PlaylistGrid::TrackModel::FromFile(trackFile.getFullPathName(), formatManager)
         );
     }
-
-
 }
 
 void PlaylistAggregateComponent::SavePlaylistCallback(const String& message) const
@@ -248,6 +245,12 @@ void PlaylistAggregateComponent::ItemDoubleClickedCallback(const String& message
 {
     TrackSelectedToPlayEventBroadcaster.sendActionMessage(message);
     DBG("File double-clicked: " << message);
+}
+
+void PlaylistAggregateComponent::SearchTextChangedCallback(const String& message)
+{
+    playlistGrid.setSearchText(message);
+    DBG(message);
 }
 
 const String PlaylistAggregateComponent::APPFOLDERNAME{ "OtoDecks" };

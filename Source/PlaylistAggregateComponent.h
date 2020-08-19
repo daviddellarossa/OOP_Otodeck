@@ -14,12 +14,15 @@
 #include "PlaylistGrid.h"
 #include "PlaylistToolbar.h"
 #include "ExternalCallbackActionListener.h"
+#include "ExternalCallbackTextEditorListener.h"
 
 //==============================================================================
 /*
 */
 class PlaylistAggregateComponent  :
-	public juce::Component
+	public juce::Component,
+    public TextEditor::Listener
+
 {
 public:
     PlaylistAggregateComponent();
@@ -36,11 +39,10 @@ public:
 
     void ItemDoubleClickedCallback(const String& message) const;
 
+    void SearchTextChangedCallback(const String& message);
+
     ActionBroadcaster TrackSelectedToPlayEventBroadcaster;
 private:
-
-
-    PlaylistGrid::TrackModel convertFileToTrack(const File& selectedFile, const std::unique_ptr<AudioFormatReader>& formatReader);
 
     const static String APPFOLDERNAME;
     const static String PLAYLISTFILEEXTENSION;
@@ -48,6 +50,7 @@ private:
 	
     PlaylistGrid playlistGrid;
     PlaylistToolbar playlistToolbar;
+    TextEditor searchBox;
 	
     ExternalCallbackActionListener AddFileListener;
     ExternalCallbackActionListener AddFolderListener;
@@ -56,6 +59,8 @@ private:
     ExternalCallbackActionListener SavePlaylistListener;
 
     ExternalCallbackActionListener ItemDoubleClickedListener;
+
+    ExternalCallbackTextEditorListener searchTextChangedListener;
 	
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (PlaylistAggregateComponent)
 };

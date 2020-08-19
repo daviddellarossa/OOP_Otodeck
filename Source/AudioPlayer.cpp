@@ -28,7 +28,7 @@ void AudioPlayer::prepareToPlay(int samplesPerBlockExpected, double sampleRate)
 void AudioPlayer::getNextAudioBlock(const AudioSourceChannelInfo& bufferToFill)
 {
     resampleSource.getNextAudioBlock(bufferToFill);
-
+    
 }
 void AudioPlayer::releaseResources()
 {

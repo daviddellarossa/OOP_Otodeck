@@ -172,7 +172,6 @@ ToolbarButton* PlaylistToolbar::PlaylistToolbarItemFactory::createButtonFromZipF
             }
         }
     }
-
     auto button = new ToolbarButton(
         itemId,
         text,

@@ -90,7 +90,9 @@ public:
         ) override;
         const std::shared_ptr<std::vector<TrackModel>> tracks;
 
+    	
         ActionBroadcaster ItemDoubleClickedEventBroadcaster;
+        String searchText;
     };
 
     void addTrack(TrackModel track);
@@ -101,6 +103,8 @@ public:
 
     bool isInterestedInFileDrag(const StringArray& files) override;
     void filesDropped(const StringArray& files, int x, int y) override;
+
+    void setSearchText(String text);
 
     PlaylistTableListBoxModel& getGridBoxModel();
 

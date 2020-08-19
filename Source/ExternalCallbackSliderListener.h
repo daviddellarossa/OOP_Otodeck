@@ -17,7 +17,7 @@ class ExternalCallbackSliderListener : public Slider::Listener
 
 public:
 	ExternalCallbackSliderListener(
-		const std::function<void(double value)>& callback
+		const std::function<void(double value)> callback
 	) : callback(callback)
 	{
 		

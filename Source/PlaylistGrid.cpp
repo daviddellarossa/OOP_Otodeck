@@ -125,6 +125,12 @@ void PlaylistGrid::filesDropped(const StringArray& files, int x, int y)
     }
 }
 
+void PlaylistGrid::setSearchText(String text)
+{
+    playlistDataGridBoxModel.searchText = text;
+    this->repaint();
+}
+
 PlaylistGrid::PlaylistTableListBoxModel& PlaylistGrid::getGridBoxModel()
 {
     return this->playlistDataGridBoxModel;
@@ -184,6 +190,11 @@ void PlaylistGrid::PlaylistTableListBoxModel::paintCell(Graphics& graphics, int 
         break;
     default:
         break;
+	}
+
+	if(searchText.length()> 0 && track.fileName.contains(searchText))
+	{
+        graphics.setColour(Colours::red);
 	}
 	
     graphics.drawText(
