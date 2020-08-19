@@ -4,6 +4,29 @@
               jucerFormatVersion="1">
   <MAINGROUP id="mcJZqF" name="OtoDecks">
     <GROUP id="{356C603F-01E1-55B2-02A0-F2D89D9A59E6}" name="Source">
+      <FILE id="qfou7c" name="ExternalCallbackTextEditorListener.cpp" compile="1"
+            resource="0" file="Source/ExternalCallbackTextEditorListener.cpp"/>
+      <FILE id="ZSOoNt" name="ExternalCallbackTextEditorListener.h" compile="0"
+            resource="0" file="Source/ExternalCallbackTextEditorListener.h"/>
+      <FILE id="xCnzRb" name="ExternalCallbackSliderListener.cpp" compile="1"
+            resource="0" file="Source/ExternalCallbackSliderListener.cpp"/>
+      <FILE id="Toa54R" name="ExternalCallbackSliderListener.h" compile="0"
+            resource="0" file="Source/ExternalCallbackSliderListener.h"/>
+      <GROUP id="{ACFE0F84-76FC-C95C-2BD1-9103635D2454}" name="ScratchPanel">
+        <FILE id="a3kh2l" name="ScratchAggregateComponent.cpp" compile="1"
+              resource="0" file="Source/ScratchAggregateComponent.cpp"/>
+        <FILE id="LkgcKW" name="ScratchAggregateComponent.h" compile="0" resource="0"
+              file="Source/ScratchAggregateComponent.h"/>
+      </GROUP>
+      <GROUP id="{822ED00F-2340-22E2-DDF0-6671B71899FD}" name="Mixer">
+        <FILE id="IBc7pW" name="MixerAggregateComponent.cpp" compile="1" resource="0"
+              file="Source/MixerAggregateComponent.cpp"/>
+        <FILE id="yEvRb2" name="MixerAggregateComponent.h" compile="0" resource="0"
+              file="Source/MixerAggregateComponent.h"/>
+        <FILE id="hr1HoY" name="MixerChannel.cpp" compile="1" resource="0"
+              file="Source/MixerChannel.cpp"/>
+        <FILE id="muigNa" name="MixerChannel.h" compile="0" resource="0" file="Source/MixerChannel.h"/>
+      </GROUP>
       <FILE id="kR9Qff" name="ExternalCallbackActionListener.cpp" compile="1"
             resource="0" file="Source/ExternalCallbackActionListener.cpp"/>
       <FILE id="u1Kl5K" name="ExternalCallbackActionListener.h" compile="0"
@@ -11,6 +34,10 @@
       <GROUP id="{581B5207-4392-DB68-7C44-E248F23B85E5}" name="Player">
         <FILE id="C177Wl" name="AudioPlayer.cpp" compile="1" resource="0" file="Source/AudioPlayer.cpp"/>
         <FILE id="IDz7tO" name="AudioPlayer.h" compile="0" resource="0" file="Source/AudioPlayer.h"/>
+        <FILE id="AeyWjT" name="AudioPlayerSource.cpp" compile="1" resource="0"
+              file="Source/AudioPlayerSource.cpp"/>
+        <FILE id="S6m0hO" name="AudioPlayerSource.h" compile="0" resource="0"
+              file="Source/AudioPlayerSource.h"/>
         <FILE id="bhwcXr" name="PlayerAggregateComponent.cpp" compile="1" resource="0"
               file="Source/PlayerAggregateComponent.cpp"/>
         <FILE id="Rm5EDN" name="PlayerAggregateComponent.h" compile="0" resource="0"

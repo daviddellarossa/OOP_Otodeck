@@ -19,6 +19,8 @@ PlaylistAggregateComponent::PlaylistAggregateComponent() :
 	DeleteFilesListener([this](const String& message) {DeleteFilesCallback(message); }),
 	LoadPlaylistListener([this](const String& message) {LoadPlaylistCallback(message); }),
 	SavePlaylistListener([this](const String& message) {SavePlaylistCallback(message); }),
+    OpenFileInPlayerListener([this](const String& message) {OpenFileInPlayerCallback(message); }),
+
     ItemDoubleClickedListener([this](const String& message) {ItemDoubleClickedCallback(message); }),
     searchTextChangedListener([this](const String& message) { SearchTextChangedCallback(message); })
 {
@@ -40,6 +42,8 @@ PlaylistAggregateComponent::PlaylistAggregateComponent() :
     playlistToolbar.DeleteFilesEventBroadcaster.addActionListener(&DeleteFilesListener);
     playlistToolbar.LoadPlaylistEventBroadcaster.addActionListener(&LoadPlaylistListener);
     playlistToolbar.SavePlaylistEventBroadcaster.addActionListener(&SavePlaylistListener);
+    playlistToolbar.OpenFileInPlayerEventBroadcaster.addActionListener(&OpenFileInPlayerListener);
+
 
     playlistGrid.getGridBoxModel().ItemDoubleClickedEventBroadcaster.addActionListener(&ItemDoubleClickedListener);
 
@@ -239,6 +243,16 @@ void PlaylistAggregateComponent::SavePlaylistCallback(const String& message) con
     AlertWindow::showMessageBox(AlertWindow::WarningIcon, "Otodecks",
         "Unable to edit the playlist file " + browser.getSelectedFile(0).getFullPathName());
 	
+}
+
+void PlaylistAggregateComponent::OpenFileInPlayerCallback(const String& message)
+{
+	
+    auto selectedIndices = playlistGrid.getSelectedRowsIndices();
+    if (selectedIndices.getNumRanges() == 0)
+        return;
+	
+    TrackSelectedToPlayEventBroadcaster.sendActionMessage(playlistGrid.getTracks()->at(selectedIndices.getRange(0).getStart()).filePath);
 }
 
 void PlaylistAggregateComponent::ItemDoubleClickedCallback(const String& message) const

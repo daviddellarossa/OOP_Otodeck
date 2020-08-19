@@ -43,10 +43,10 @@ void PlaylistToolbar::paint (juce::Graphics& g)
     g.setColour (juce::Colours::grey);
     g.drawRect (getLocalBounds(), 1);   // draw an outline around the component
 
-    g.setColour (juce::Colours::white);
-    g.setFont (14.0f);
-    g.drawText ("PlaylistToolbar", getLocalBounds(),
-                juce::Justification::centred, true);   // draw some placeholder text
+    //g.setColour (juce::Colours::white);
+    //g.setFont (14.0f);
+    //g.drawText ("PlaylistToolbar", getLocalBounds(),
+    //            juce::Justification::centred, true);   // draw some placeholder text
 }
 
 void PlaylistToolbar::resized()
@@ -79,7 +79,10 @@ void PlaylistToolbar::buttonClicked(Button* button)
             case static_cast<int>(PlaylistToolbarItemFactory::PlaylistToolbarItemIds::savePlaylist) :
                 SavePlaylistEventBroadcaster.sendActionMessage("Save Playlist");
             break;
-			default:
+            case static_cast<int>(PlaylistToolbarItemFactory::PlaylistToolbarItemIds::openFileInPlayer) :
+                OpenFileInPlayerEventBroadcaster.sendActionMessage("Open File In Player");
+                break;
+            default:
             break;
 		}
 	}
@@ -92,6 +95,7 @@ void PlaylistToolbar::PlaylistToolbarItemFactory::getAllToolbarItemIds(Array<int
     ids.add(static_cast<int>(PlaylistToolbarItemIds::deleteFiles));
     ids.add(static_cast<int>(PlaylistToolbarItemIds::loadPlaylist));
     ids.add(static_cast<int>(PlaylistToolbarItemIds::savePlaylist));
+    ids.add(static_cast<int>(PlaylistToolbarItemIds::openFileInPlayer));
     ids.add(separatorBarId);
     ids.add(spacerId);
     ids.add(flexibleSpacerId);
@@ -102,8 +106,15 @@ void PlaylistToolbar::PlaylistToolbarItemFactory::getDefaultItemSet(Array<int>& 
     ids.add(static_cast<int>(PlaylistToolbarItemIds::addFile));
     //ids.add(static_cast<int>(PlaylistToolbarItemIds::addFolder));
     ids.add(static_cast<int>(PlaylistToolbarItemIds::deleteFiles));
+    ids.add(spacerId);
+    ids.add(static_cast<int>(PlaylistToolbarItemIds::deleteFiles));
     ids.add(separatorBarId);
     ids.add(flexibleSpacerId);
+    ids.add(separatorBarId);
+    ids.add(static_cast<int>(PlaylistToolbarItemIds::openFileInPlayer));
+    ids.add(separatorBarId);
+    ids.add(flexibleSpacerId);
+    ids.add(separatorBarId);
     ids.add(static_cast<int>(PlaylistToolbarItemIds::loadPlaylist));
     ids.add(static_cast<int>(PlaylistToolbarItemIds::savePlaylist));
 }
@@ -142,6 +153,13 @@ ToolbarItemComponent* PlaylistToolbar::PlaylistToolbarItemFactory::createItem(in
                 "Save playlist",
                 "SavePlaylist.svg"
             );
+            case static_cast<int>(PlaylistToolbarItemIds::openFileInPlayer) :
+                return createButtonFromZipFileSVG(
+                    itemId,
+                    "Open File in player",
+                    "LoadFileInPlayer.svg"
+                );
+
 		default:
             return nullptr;
 	}

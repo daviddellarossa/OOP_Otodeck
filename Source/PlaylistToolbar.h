@@ -33,6 +33,7 @@ public:
     ActionBroadcaster DeleteFilesEventBroadcaster;
     ActionBroadcaster LoadPlaylistEventBroadcaster;
     ActionBroadcaster SavePlaylistEventBroadcaster;
+    ActionBroadcaster OpenFileInPlayerEventBroadcaster;
 private:
     class PlaylistToolbarItemFactory : public ToolbarItemFactory
         {
@@ -45,7 +46,8 @@ private:
                 addFolder = 2,
                 deleteFiles = 3,
                 loadPlaylist = 4,
-                savePlaylist = 5
+                savePlaylist = 5,
+                openFileInPlayer = 6
             };
 
             void getAllToolbarItemIds(Array <int>& ids) override;

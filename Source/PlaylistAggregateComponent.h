@@ -36,7 +36,9 @@ public:
     void DeleteFilesCallback(const String& message);
     void LoadPlaylistCallback(const String& message);
     void SavePlaylistCallback(const String& message) const;
+    void OpenFileInPlayerCallback(const String& message);
 
+	
     void ItemDoubleClickedCallback(const String& message) const;
 
     void SearchTextChangedCallback(const String& message);
@@ -57,6 +59,7 @@ private:
     ExternalCallbackActionListener DeleteFilesListener;
     ExternalCallbackActionListener LoadPlaylistListener;
     ExternalCallbackActionListener SavePlaylistListener;
+    ExternalCallbackActionListener OpenFileInPlayerListener;
 
     ExternalCallbackActionListener ItemDoubleClickedListener;
 
