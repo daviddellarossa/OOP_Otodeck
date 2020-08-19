@@ -46,7 +46,8 @@ public:
 private:
     //==============================================================================
     // Your private member variables go here...
-     
+
+    TooltipWindow tooltipWindow;
     AudioFormatManager formatManager;
     AudioThumbnailCache thumbCache{100}; 
 

@@ -40,6 +40,7 @@ MainComponent::MainComponent() :
         setAudioChannels (0, 2);
     }  
 
+    addAndMakeVisible(tooltipWindow);
     addAndMakeVisible(mixerPanelComponent);
     addAndMakeVisible(leftPlaylistComponent);
     addAndMakeVisible(rightPlaylistComponent);

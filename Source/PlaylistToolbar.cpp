@@ -65,13 +65,13 @@ void PlaylistToolbar::buttonClicked(Button* button)
 		switch(toolbarButton->getItemId())
 		{
             case static_cast<int>(PlaylistToolbarItemFactory::PlaylistToolbarItemIds::addFile) :
-                AddFileEventBroadcaster.sendActionMessage("Add File");
+                AddFileEventBroadcaster.sendActionMessage("Add Files");
             break;
             case static_cast<int>(PlaylistToolbarItemFactory::PlaylistToolbarItemIds::addFolder) :
                 AddFolderEventBroadcaster.sendActionMessage("Add Folder");
             break;
             case static_cast<int>(PlaylistToolbarItemFactory::PlaylistToolbarItemIds::deleteFiles) :
-                DeleteFilesEventBroadcaster.sendActionMessage("Delete Files");
+                DeleteFilesEventBroadcaster.sendActionMessage("Delete File");
             break;
             case static_cast<int>(PlaylistToolbarItemFactory::PlaylistToolbarItemIds::loadPlaylist) :
                 LoadPlaylistEventBroadcaster.sendActionMessage("Load Playlist");
@@ -104,9 +104,6 @@ void PlaylistToolbar::PlaylistToolbarItemFactory::getAllToolbarItemIds(Array<int
 void PlaylistToolbar::PlaylistToolbarItemFactory::getDefaultItemSet(Array<int>& ids)
 {
     ids.add(static_cast<int>(PlaylistToolbarItemIds::addFile));
-    //ids.add(static_cast<int>(PlaylistToolbarItemIds::addFolder));
-    ids.add(static_cast<int>(PlaylistToolbarItemIds::deleteFiles));
-    ids.add(spacerId);
     ids.add(static_cast<int>(PlaylistToolbarItemIds::deleteFiles));
     ids.add(separatorBarId);
     ids.add(flexibleSpacerId);
@@ -196,6 +193,8 @@ ToolbarButton* PlaylistToolbar::PlaylistToolbarItemFactory::createButtonFromZipF
         iconsFromZipFile[iconNames.indexOf(filename)]->createCopy(),
         nullptr
     );
+    button->setTooltip(text);
+	
     if(this->buttonEventListener != nullptr)
     {
         button->addListener(buttonEventListener);

@@ -149,6 +149,9 @@ ToolbarButton* PlayerToolbar::PlayerToolbarItemFactory::createButtonFromZipFileS
         iconsFromZipFile[iconNames.indexOf(filename)]->createCopy(),
         nullptr
     );
+
+    button->setTooltip(text);
+	
     if (this->buttonEventListener != nullptr)
     {
         button->addListener(buttonEventListener);
