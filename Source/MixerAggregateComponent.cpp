@@ -14,9 +14,9 @@
 //==============================================================================
 MixerAggregateComponent::MixerAggregateComponent() :
     LeftVolumeChangedListener([this](double value) { volumeChangedCallback(value, LeftVolumeChangedBroadcaster); }),
-    RightVolumeChangedListener([this](double value) { volumeChangedCallback(value, RightVolumeChangedBroadcaster); }),
-	leftChannel(&LeftVolumeChangedListener),
-	rightChannel(&RightVolumeChangedListener)
+    RightVolumeChangedListener([this](double value) { volumeChangedCallback(value, RightVolumeChangedBroadcaster); }) //,
+	//leftChannel(&LeftVolumeChangedListener),
+	//rightChannel(&RightVolumeChangedListener)
 {
 
     // In your constructor, you should add any child components, and

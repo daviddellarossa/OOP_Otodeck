@@ -21,7 +21,9 @@
     This component lives inside our window, and this is where you should put all
     your controls and content.
 */
-class MainComponent   : public AudioAppComponent
+class MainComponent :
+    public AudioAppComponent
+
 {
 public:
     //==============================================================================
@@ -39,9 +41,14 @@ public:
 
     void TrackSelectedToPlayCallback(const String& message, PlayerAggregateComponent& player);
 
-    void SpeedChangedCallback(const String& message, PlayerAggregateComponent& player);
+    //void SpeedChangedCallback(const String& message, PlayerAggregateComponent& player);
 
     void VolumeChangedCallback(const String& message, PlayerAggregateComponent& player);
+
+    void audioCallback(AudioIODeviceCallback* newCallback);
+
+    //void volumeChangedCallback1(double value);
+
 	
 private:
     //==============================================================================
@@ -52,7 +59,7 @@ private:
     AudioThumbnailCache thumbCache{100}; 
 
     MixerAudioSource mixerSource;
-    MixerAggregateComponent mixerPanelComponent;
+    //MixerAggregateComponent mixerPanelComponent;
 
     PlaylistAggregateComponent leftPlaylistComponent;
     PlaylistAggregateComponent rightPlaylistComponent;
@@ -65,20 +72,23 @@ private:
     PlayerAggregateComponent leftPlayerComponent;
     PlayerAggregateComponent rightPlayerComponent;
 
-    ScratchAggregateComponent leftScratchDock;
-    ScratchAggregateComponent rightScratchDock;
+    //ScratchAggregateComponent leftScratchDock;
+    //ScratchAggregateComponent rightScratchDock;
 
 	//Listeners from PlaylistAggregateComponent
     ExternalCallbackActionListener TrackSelectedToPlayLeftListener;
     ExternalCallbackActionListener TrackSelectedToPlayRightListener;
 
 	//Listeners from ScratchAggregateComponent
-    ExternalCallbackActionListener SpeedChangedLeftListener;
-    ExternalCallbackActionListener SpeedChangedRightListener;
+    //ExternalCallbackActionListener SpeedChangedLeftListener;
+    //ExternalCallbackActionListener SpeedChangedRightListener;
 
 	//Listener for MixerAggregateComponent
     ExternalCallbackActionListener LeftVolumeChangedListener;
-    ExternalCallbackActionListener RightVolumeChangedListener;
+    //ExternalCallbackActionListener RightVolumeChangedListener;
+
+    MixerChannel leftChannel;
+    //ExternalCallbackSliderListener LeftVolumeChangedListener1;
 
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (MainComponent)

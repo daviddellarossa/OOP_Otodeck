@@ -85,6 +85,11 @@ void AudioPlayer::setPositionRelative(double pos)
     }
 }
 
+bool AudioPlayer::isPlaying()
+{
+    return transportSource.isPlaying();
+}
+
 
 void AudioPlayer::start()
 {

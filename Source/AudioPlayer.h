@@ -30,7 +30,7 @@ public:
     void setSpeed(double ratio);
     void setPosition(double posInSecs);
     void setPositionRelative(double pos);
-
+    bool isPlaying();
 
     void start();
     void stop();

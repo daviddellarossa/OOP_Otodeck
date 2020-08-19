@@ -12,14 +12,16 @@
 MainComponent::MainComponent() :
     leftPlayer(formatManager),
     rightPlayer(formatManager),
-	TrackSelectedToPlayLeftListener([this](const String& message) { TrackSelectedToPlayCallback(message, this->leftPlayerComponent); }),
+    TrackSelectedToPlayLeftListener([this](const String& message) { TrackSelectedToPlayCallback(message, this->leftPlayerComponent); }),
     TrackSelectedToPlayRightListener([this](const String& message) { TrackSelectedToPlayCallback(message, this->rightPlayerComponent); }),
-    SpeedChangedLeftListener([this](const String& message) { SpeedChangedCallback(message, leftPlayerComponent); }),
-    SpeedChangedRightListener([this](const String& message) { SpeedChangedCallback(message, rightPlayerComponent); }),
+    //SpeedChangedLeftListener([this](const String& message) { SpeedChangedCallback(message, leftPlayerComponent); }),
+    //SpeedChangedRightListener([this](const String& message) { SpeedChangedCallback(message, rightPlayerComponent); }),
     LeftVolumeChangedListener([this](const String& message) { VolumeChangedCallback(message, leftPlayerComponent); }),
-    RightVolumeChangedListener([this](const String& message) { VolumeChangedCallback(message, rightPlayerComponent); }),
+    //RightVolumeChangedListener([this](const String& message) { VolumeChangedCallback(message, rightPlayerComponent); }),
     leftPlayerComponent(leftPlayer, formatManager, thumbCache),
-    rightPlayerComponent(rightPlayer, formatManager, thumbCache)
+    rightPlayerComponent(rightPlayer, formatManager, thumbCache) //,
+    //LeftVolumeChangedListener1([this](double value) { volumeChangedCallback1(value); }),
+    //leftChannel(&LeftVolumeChangedListener1)
 
 
 {
@@ -41,25 +43,28 @@ MainComponent::MainComponent() :
     }  
 
     addAndMakeVisible(tooltipWindow);
-    addAndMakeVisible(mixerPanelComponent);
+    //addAndMakeVisible(mixerPanelComponent);
     addAndMakeVisible(leftPlaylistComponent);
     addAndMakeVisible(rightPlaylistComponent);
     addAndMakeVisible(leftPlayerComponent);
     addAndMakeVisible(rightPlayerComponent);
-    addAndMakeVisible(leftScratchDock);
-    addAndMakeVisible(rightScratchDock);
-
+    //addAndMakeVisible(leftScratchDock);
+    //addAndMakeVisible(rightScratchDock);
+    addAndMakeVisible(leftChannel);
+    leftChannel.setVolume(1.0);
     //leftPlaylistComponent.setBounds(0, getHeight() / 2, getWidth(), getHeight() / 2);
     formatManager.registerBasicFormats();
 
     leftPlaylistComponent.TrackSelectedToPlayEventBroadcaster.addActionListener(&TrackSelectedToPlayLeftListener);
     rightPlaylistComponent.TrackSelectedToPlayEventBroadcaster.addActionListener(&TrackSelectedToPlayRightListener);
 
-    leftScratchDock.SpeedChangedBroadcaster.addActionListener(&SpeedChangedLeftListener);
-    rightScratchDock.SpeedChangedBroadcaster.addActionListener(&SpeedChangedRightListener);
+    //leftScratchDock.SpeedChangedBroadcaster.addActionListener(&SpeedChangedLeftListener);
+    //rightScratchDock.SpeedChangedBroadcaster.addActionListener(&SpeedChangedRightListener);
 
-    mixerPanelComponent.LeftVolumeChangedBroadcaster.addActionListener(&LeftVolumeChangedListener);
-    mixerPanelComponent.RightVolumeChangedBroadcaster.addActionListener(&RightVolumeChangedListener);
+    //mixerPanelComponent.LeftVolumeChangedBroadcaster.addActionListener(&LeftVolumeChangedListener);
+    //mixerPanelComponent.RightVolumeChangedBroadcaster.addActionListener(&RightVolumeChangedListener);
+
+	leftChannel.VolumeChangedBroadcaster.addActionListener(&LeftVolumeChangedListener);
 
 }
 
@@ -76,13 +81,21 @@ void MainComponent::prepareToPlay (int samplesPerBlockExpected, double sampleRat
     rightPlayer.prepareToPlay(samplesPerBlockExpected, sampleRate);	
     
     mixerSource.prepareToPlay(samplesPerBlockExpected, sampleRate);
-
     mixerSource.addInputSource(&leftPlayer, false);
     mixerSource.addInputSource(&rightPlayer, false);
  }
 void MainComponent::getNextAudioBlock (const AudioSourceChannelInfo& bufferToFill)
 {
     mixerSource.getNextAudioBlock(bufferToFill);
+
+	if(leftPlayer.isPlaying() || rightPlayer.isPlaying())
+	{
+        auto leftLevel = bufferToFill.buffer->getRMSLevel(0, bufferToFill.startSample, bufferToFill.numSamples);
+        auto rightLevel = bufferToFill.buffer->getRMSLevel(1, bufferToFill.startSample, bufferToFill.numSamples);
+        auto leftMagnitude = bufferToFill.buffer->getMagnitude(0, bufferToFill.startSample, bufferToFill.numSamples);
+        auto rightMagnitude = bufferToFill.buffer->getMagnitude(0, bufferToFill.startSample, bufferToFill.numSamples);
+	}
+	
 }
 
 void MainComponent::releaseResources()
@@ -93,7 +106,6 @@ void MainComponent::releaseResources()
     // For more details, see the help for AudioProcessor::releaseResources()
     leftPlayer.releaseResources();
     rightPlayer.releaseResources();
-
     mixerSource.releaseResources();
 }
 
@@ -113,32 +125,35 @@ void MainComponent::resized()
 
     Grid controlLayout;
     controlLayout.templateColumns = {
+        Grid::TrackInfo(3_fr),
         Grid::TrackInfo(1_fr),
         Grid::TrackInfo(1_fr),
-        Grid::TrackInfo(1_fr),
-        Grid::TrackInfo(1_fr)
+        Grid::TrackInfo(3_fr)
     };
 
     controlLayout.templateRows = {
 		Grid::TrackInfo(1_fr),
-        Grid::TrackInfo(3_fr),
-		Grid::TrackInfo(1_fr),
-        Grid::TrackInfo(2_fr),
-		Grid::TrackInfo(3_fr),
+        Grid::TrackInfo(1_fr),
+		//Grid::TrackInfo(1_fr),
+  //      Grid::TrackInfo(2_fr),
+		//Grid::TrackInfo(3_fr),
     };
 
     controlLayout.items = {
 
-        GridItem(leftScratchDock).withArea(2, 1, 4, 2),
-		GridItem(rightScratchDock).withArea(2, 4, 4, 5),
+        //      GridItem(leftScratchDock).withArea(2, 1, 4, 2),
+              //GridItem(rightScratchDock).withArea(2, 4, 4, 5),
 
-        GridItem(mixerPanelComponent).withArea(1, 2, 4, 4),
+        //      GridItem(mixerPanelComponent).withArea(1, 2, 4, 4),
 
-        GridItem(leftPlayerComponent).withArea(4, 1, 4, 3),
-		GridItem(rightPlayerComponent).withArea(4, 3, 4, 5),
+        GridItem(leftChannel).withArea(1, 2, 2, 3),
+    	
 
-        GridItem(leftPlaylistComponent).withArea(5, 1, 5, 3),
-        GridItem(rightPlaylistComponent).withArea(5, 3, 5, 5),
+        GridItem(leftPlayerComponent).withArea(1, 1, 2, 2),
+		GridItem(rightPlayerComponent).withArea(1, 4, 2, 5),
+
+        GridItem(leftPlaylistComponent).withArea(2, 1, 3, 3),
+        GridItem(rightPlaylistComponent).withArea(2, 3, 3, 5),
 
     };
 
@@ -151,14 +166,25 @@ void MainComponent::TrackSelectedToPlayCallback(const String& message, PlayerAgg
     player.setCurrentTrack(message);
 }
 
-void MainComponent::SpeedChangedCallback(const String& message, PlayerAggregateComponent& player)
-{
-	
-    player.setSpeed(message.getDoubleValue());
-}
+//void MainComponent::SpeedChangedCallback(const String& message, PlayerAggregateComponent& player)
+//{
+//	
+//    player.setSpeed(message.getDoubleValue());
+//}
 
 void MainComponent::VolumeChangedCallback(const String& message, PlayerAggregateComponent& player)
 {
     player.setGain(message.getDoubleValue());
 }
+
+void MainComponent::audioCallback(AudioIODeviceCallback* newCallback)
+{
+	
+}
+
+//void MainComponent::volumeChangedCallback1(double value)
+//{
+//    leftPlayer.setGain(value);
+//
+//}
 
