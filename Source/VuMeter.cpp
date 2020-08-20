@@ -41,14 +41,23 @@ void VuMeter::paint (juce::Graphics& g)
     g.setColour (juce::Colours::grey);
     g.drawRect (getLocalBounds(), 1);   // draw an outline around the component
 
-    g.setColour (juce::Colours::white);
-    g.setFont (14.0f);
-    g.drawText ("VuMeter", getLocalBounds(),
-                juce::Justification::centred, true);   // draw some placeholder text
+    //g.setColour (juce::Colours::white);
+    //g.setFont (14.0f);
+    //g.drawText ("VuMeter", getLocalBounds(),
+    //            juce::Justification::centred, true);   // draw some placeholder text
 
     g.setColour(Colours::green);
-    g.fillRect(getGreenRectangle());
-    
+    g.fillRect(getColouredRectangle(green));
+
+    g.setColour(Colours::yellow);
+    g.fillRect(getColouredRectangle(yellow));
+	
+    g.setColour(Colours::orange);
+    g.fillRect(getColouredRectangle(orange));
+	
+    g.setColour(Colours::red);
+    g.fillRect(getColouredRectangle(red));
+	
     g.setColour(Colours::white);
     g.drawRect(getRectangle());
 
@@ -82,29 +91,30 @@ Rectangle<float> VuMeter::getRectangle() const
     );
 }
 
-Rectangle<float> VuMeter::getGreenRectangle() const
+Rectangle<float> VuMeter::getColouredRectangle(const Range<float>& range) const
 {
-    auto rectangle = getRectangle();
+    const auto baseRectangle = getRectangle();
+    auto rectangle(baseRectangle);
+
     auto level = this->rmsLevel * this->gain;
     if (level > 1) level = 1;
-	
-    float _height = 0;
+
+    float yRelative = 0.0f;
+
     if (level == 0) {
-        _height = 0;
+        yRelative = range.getStart();
     }
-	else if(level > green.getEnd())
-	{
-        _height = rectangle.getHeight() * green.getEnd();
-	} else
-	{
-        _height = rectangle.getHeight() * rmsLevel;
-	}
-    return Rectangle<float>(
-        getWidth() * (1 - width) / 2,
-        rectangle.getHeight() + rectangle.getY() - _height,
-        getWidth() * width,
-        _height
-    );
+    else if (level > range.getEnd())
+    {
+        yRelative = range.getEnd();
+    }
+    else if (level > range.getStart())
+    {
+        yRelative = level;
+    }
+    rectangle.setY(baseRectangle.getY() + baseRectangle.getHeight() * (1 - yRelative));
+    rectangle.setHeight(baseRectangle.getHeight() * (yRelative - range.getStart()));
+    return rectangle;
 }
 
 void VuMeter::timerCallback()

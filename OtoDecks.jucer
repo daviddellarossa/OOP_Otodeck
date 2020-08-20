@@ -26,6 +26,8 @@
         <FILE id="hr1HoY" name="MixerChannel.cpp" compile="1" resource="0"
               file="Source/MixerChannel.cpp"/>
         <FILE id="muigNa" name="MixerChannel.h" compile="0" resource="0" file="Source/MixerChannel.h"/>
+        <FILE id="qUp5ym" name="VuMeter.cpp" compile="1" resource="0" file="Source/VuMeter.cpp"/>
+        <FILE id="T6fJv5" name="VuMeter.h" compile="0" resource="0" file="Source/VuMeter.h"/>
       </GROUP>
       <FILE id="kR9Qff" name="ExternalCallbackActionListener.cpp" compile="1"
             resource="0" file="Source/ExternalCallbackActionListener.cpp"/>

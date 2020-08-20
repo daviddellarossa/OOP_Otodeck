@@ -35,18 +35,18 @@ public:
     
 private:
     Rectangle<float> getRectangle() const ;
-    Rectangle<float> getGreenRectangle() const;
-	
+    Rectangle<float> getColouredRectangle(const Range<float>& range) const;
+
     const Atomic<Level>& atomicLevel;
 	
     virtual void timerCallback() override;
 
     const float width = 0.1;
     const float height = 0.9;
-    const Range<float> green{0.0, 0.5};
-    const Range<float> yellow{ 0.5, 2 / 3 };
-    const Range<float> orange{ 2 / 3, 5 / 6 };
-    const Range<float> red{ 5 / 6, 1 };
+    const Range<float> green{0.0f, 0.5f};
+    const Range<float> yellow{ 0.5f, 2 / 3.0f };
+    const Range<float> orange{ 2 / 3.0f, 5 / 6.0f };
+    const Range<float> red{ 5 / 6.0f, 1 };
     double rmsLevel;
     double magnitude;
     float gain = 2;
