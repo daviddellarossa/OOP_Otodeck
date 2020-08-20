@@ -17,10 +17,11 @@ MainComponent::MainComponent() :
     //SpeedChangedLeftListener([this](const String& message) { SpeedChangedCallback(message, leftPlayerComponent); }),
     //SpeedChangedRightListener([this](const String& message) { SpeedChangedCallback(message, rightPlayerComponent); }),
     LeftVolumeChangedListener([this](const String& message) { VolumeChangedCallback(message, leftPlayerComponent); }),
-    //RightVolumeChangedListener([this](const String& message) { VolumeChangedCallback(message, rightPlayerComponent); }),
+    RightVolumeChangedListener([this](const String& message) { VolumeChangedCallback(message, rightPlayerComponent); }),
     leftPlayerComponent(leftPlayer, formatManager, thumbCache),
     rightPlayerComponent(rightPlayer, formatManager, thumbCache) ,
-	leftVuMeter(leftLevel)
+	leftVuMeter(leftLevel),
+	rightVuMeter(rightLevel)
     //LeftVolumeChangedListener1([this](double value) { volumeChangedCallback1(value); }),
     //leftChannel(&LeftVolumeChangedListener1)
 
@@ -28,7 +29,7 @@ MainComponent::MainComponent() :
 {
     // Make sure you set the size of the component after
     // you add any child components.
-    setSize (1200, 900);
+    setSize (1200, 600);
 
     // Some platforms require permissions to open input channels so request that here
     if (RuntimePermissions::isRequired (RuntimePermissions::recordAudio)
@@ -53,8 +54,13 @@ MainComponent::MainComponent() :
     //addAndMakeVisible(rightScratchDock);
     addAndMakeVisible(leftChannel);
     addAndMakeVisible(leftVuMeter);
+    addAndMakeVisible(rightChannel);
+    addAndMakeVisible(rightVuMeter);
+
 	
     leftChannel.setVolume(1.0);
+    rightChannel.setVolume(1.0);
+	
     //leftPlaylistComponent.setBounds(0, getHeight() / 2, getWidth(), getHeight() / 2);
     formatManager.registerBasicFormats();
 
@@ -68,6 +74,7 @@ MainComponent::MainComponent() :
     //mixerPanelComponent.RightVolumeChangedBroadcaster.addActionListener(&RightVolumeChangedListener);
 
 	leftChannel.VolumeChangedBroadcaster.addActionListener(&LeftVolumeChangedListener);
+    rightChannel.VolumeChangedBroadcaster.addActionListener(&RightVolumeChangedListener);
 
 }
 
@@ -96,16 +103,19 @@ void MainComponent::getNextAudioBlock (const AudioSourceChannelInfo& bufferToFil
 	{
         if (true) {
             auto leftRmsLevel = bufferToFill.buffer->getRMSLevel(0, bufferToFill.startSample, bufferToFill.numSamples/2);
-            auto rightLevel = bufferToFill.buffer->getRMSLevel(1, bufferToFill.startSample, bufferToFill.numSamples);
+            auto rightRmsLevel = bufferToFill.buffer->getRMSLevel(1, bufferToFill.startSample, bufferToFill.numSamples);
             auto leftMagnitude = bufferToFill.buffer->getMagnitude(0, bufferToFill.startSample, bufferToFill.numSamples/2);
             auto rightMagnitude = bufferToFill.buffer->getMagnitude(0, bufferToFill.startSample, bufferToFill.numSamples);
             //VuMeter::Level level{ leftLevel, leftMagnitude };
             leftLevel.set({ leftRmsLevel, leftMagnitude });
+            rightLevel.set({ rightRmsLevel, rightMagnitude });
         	//leftVuMeter.setLevel(leftLevel);
         }
 	}else
 	{
         leftLevel.set({ 0.0, 0.0 });
+        rightLevel.set({ 0.0, 0.0 });
+
         //leftVuMeter.setLevel(0.0);
 	}
 	
@@ -143,10 +153,12 @@ void MainComponent::resized()
     controlLayout.alignItems = Grid::AlignItems::center;
 	
     controlLayout.templateColumns = {
-        Grid::TrackInfo(3_fr),
         Grid::TrackInfo(1_fr),
-        Grid::TrackInfo(1_fr),
-        Grid::TrackInfo(3_fr)
+        Grid::TrackInfo(64_px),
+        Grid::TrackInfo(32_px),
+        Grid::TrackInfo(32_px),
+        Grid::TrackInfo(64_px),
+        Grid::TrackInfo(1_fr)
     };
 
     controlLayout.templateRows = {
@@ -166,13 +178,15 @@ void MainComponent::resized()
 
         GridItem(leftChannel).withArea(1, 2, 2, 3),
         GridItem(leftVuMeter).withArea(1, 3, 2, 4).withJustifySelf(GridItem::JustifySelf::center).withAlignSelf(GridItem::AlignSelf::center),
+        GridItem(rightVuMeter).withArea(1, 4, 2, 5).withJustifySelf(GridItem::JustifySelf::center).withAlignSelf(GridItem::AlignSelf::center),
+        GridItem(rightChannel).withArea(1, 5, 2, 6),
 
 
         GridItem(leftPlayerComponent).withArea(1, 1, 2, 2),
-		GridItem(rightPlayerComponent).withArea(1, 4, 2, 5),
+		GridItem(rightPlayerComponent).withArea(1, 6, 2, 7),
 
-        GridItem(leftPlaylistComponent).withArea(2, 1, 3, 3),
-        GridItem(rightPlaylistComponent).withArea(2, 3, 3, 5),
+        GridItem(leftPlaylistComponent).withArea(2, 1, 3, 4),
+        GridItem(rightPlaylistComponent).withArea(2, 4, 3, 7),
 
     };
 

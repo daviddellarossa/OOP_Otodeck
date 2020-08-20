@@ -41,7 +41,7 @@ private:
 	
     virtual void timerCallback() override;
 
-    const float width = 0.1;
+    const float width = 0.4;
     const float height = 0.9;
     const Range<float> green{0.0f, 0.5f};
     const Range<float> yellow{ 0.5f, 2 / 3.0f };

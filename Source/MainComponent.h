@@ -51,6 +51,7 @@ public:
     //void volumeChangedCallback1(double value);
 
     Atomic<Level> leftLevel;
+    Atomic<Level> rightLevel;
 private:
     //==============================================================================
     // Your private member variables go here...
@@ -86,12 +87,14 @@ private:
 
 	//Listener for MixerAggregateComponent
     ExternalCallbackActionListener LeftVolumeChangedListener;
-    //ExternalCallbackActionListener RightVolumeChangedListener;
+    ExternalCallbackActionListener RightVolumeChangedListener;
 
     MixerChannel leftChannel;
+    MixerChannel rightChannel;
     //ExternalCallbackSliderListener LeftVolumeChangedListener1;
 
     VuMeter leftVuMeter;
+    VuMeter rightVuMeter;
 
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (MainComponent)
