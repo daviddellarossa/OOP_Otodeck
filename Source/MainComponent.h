@@ -15,6 +15,7 @@
 #include "AudioPlayer.h"
 #include "MixerAggregateComponent.h"
 #include "ScratchAggregateComponent.h"
+#include "VuMeter.h"
 
 //==============================================================================
 /*
@@ -49,7 +50,7 @@ public:
 
     //void volumeChangedCallback1(double value);
 
-	
+    Atomic<Level> leftLevel;
 private:
     //==============================================================================
     // Your private member variables go here...
@@ -89,6 +90,8 @@ private:
 
     MixerChannel leftChannel;
     //ExternalCallbackSliderListener LeftVolumeChangedListener1;
+
+    VuMeter leftVuMeter;
 
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (MainComponent)

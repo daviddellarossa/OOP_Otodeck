@@ -19,7 +19,8 @@ MainComponent::MainComponent() :
     LeftVolumeChangedListener([this](const String& message) { VolumeChangedCallback(message, leftPlayerComponent); }),
     //RightVolumeChangedListener([this](const String& message) { VolumeChangedCallback(message, rightPlayerComponent); }),
     leftPlayerComponent(leftPlayer, formatManager, thumbCache),
-    rightPlayerComponent(rightPlayer, formatManager, thumbCache) //,
+    rightPlayerComponent(rightPlayer, formatManager, thumbCache) ,
+	leftVuMeter(leftLevel)
     //LeftVolumeChangedListener1([this](double value) { volumeChangedCallback1(value); }),
     //leftChannel(&LeftVolumeChangedListener1)
 
@@ -51,6 +52,8 @@ MainComponent::MainComponent() :
     //addAndMakeVisible(leftScratchDock);
     //addAndMakeVisible(rightScratchDock);
     addAndMakeVisible(leftChannel);
+    addAndMakeVisible(leftVuMeter);
+	
     leftChannel.setVolume(1.0);
     //leftPlaylistComponent.setBounds(0, getHeight() / 2, getWidth(), getHeight() / 2);
     formatManager.registerBasicFormats();
@@ -87,13 +90,23 @@ void MainComponent::prepareToPlay (int samplesPerBlockExpected, double sampleRat
 void MainComponent::getNextAudioBlock (const AudioSourceChannelInfo& bufferToFill)
 {
     mixerSource.getNextAudioBlock(bufferToFill);
+    //const MessageManagerLock mmLock;
 
 	if(leftPlayer.isPlaying() || rightPlayer.isPlaying())
 	{
-        auto leftLevel = bufferToFill.buffer->getRMSLevel(0, bufferToFill.startSample, bufferToFill.numSamples);
-        auto rightLevel = bufferToFill.buffer->getRMSLevel(1, bufferToFill.startSample, bufferToFill.numSamples);
-        auto leftMagnitude = bufferToFill.buffer->getMagnitude(0, bufferToFill.startSample, bufferToFill.numSamples);
-        auto rightMagnitude = bufferToFill.buffer->getMagnitude(0, bufferToFill.startSample, bufferToFill.numSamples);
+        if (true) {
+            auto leftRmsLevel = bufferToFill.buffer->getRMSLevel(0, bufferToFill.startSample, bufferToFill.numSamples/2);
+            auto rightLevel = bufferToFill.buffer->getRMSLevel(1, bufferToFill.startSample, bufferToFill.numSamples);
+            auto leftMagnitude = bufferToFill.buffer->getMagnitude(0, bufferToFill.startSample, bufferToFill.numSamples/2);
+            auto rightMagnitude = bufferToFill.buffer->getMagnitude(0, bufferToFill.startSample, bufferToFill.numSamples);
+            //VuMeter::Level level{ leftLevel, leftMagnitude };
+            leftLevel.set({ leftRmsLevel, leftMagnitude });
+        	//leftVuMeter.setLevel(leftLevel);
+        }
+	}else
+	{
+        leftLevel.set({ 0.0, 0.0 });
+        //leftVuMeter.setLevel(0.0);
 	}
 	
 }
@@ -124,6 +137,11 @@ void MainComponent::resized()
 
 
     Grid controlLayout;
+    controlLayout.justifyContent = Grid::JustifyContent::spaceAround;
+    controlLayout.alignContent = Grid::AlignContent::spaceAround;
+    controlLayout.justifyItems = Grid::JustifyItems::center;
+    controlLayout.alignItems = Grid::AlignItems::center;
+	
     controlLayout.templateColumns = {
         Grid::TrackInfo(3_fr),
         Grid::TrackInfo(1_fr),
@@ -147,7 +165,8 @@ void MainComponent::resized()
         //      GridItem(mixerPanelComponent).withArea(1, 2, 4, 4),
 
         GridItem(leftChannel).withArea(1, 2, 2, 3),
-    	
+        GridItem(leftVuMeter).withArea(1, 3, 2, 4).withJustifySelf(GridItem::JustifySelf::center).withAlignSelf(GridItem::AlignSelf::center),
+
 
         GridItem(leftPlayerComponent).withArea(1, 1, 2, 2),
 		GridItem(rightPlayerComponent).withArea(1, 4, 2, 5),
