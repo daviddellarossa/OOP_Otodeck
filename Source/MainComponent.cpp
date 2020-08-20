@@ -12,18 +12,14 @@
 MainComponent::MainComponent() :
     leftPlayer(formatManager),
     rightPlayer(formatManager),
+    leftPlayerComponent(leftPlayer, formatManager, thumbCache),
+    rightPlayerComponent(rightPlayer, formatManager, thumbCache),
     TrackSelectedToPlayLeftListener([this](const String& message) { TrackSelectedToPlayCallback(message, this->leftPlayerComponent); }),
     TrackSelectedToPlayRightListener([this](const String& message) { TrackSelectedToPlayCallback(message, this->rightPlayerComponent); }),
-    //SpeedChangedLeftListener([this](const String& message) { SpeedChangedCallback(message, leftPlayerComponent); }),
-    //SpeedChangedRightListener([this](const String& message) { SpeedChangedCallback(message, rightPlayerComponent); }),
     LeftVolumeChangedListener([this](const String& message) { VolumeChangedCallback(message, leftPlayerComponent); }),
-    RightVolumeChangedListener([this](const String& message) { VolumeChangedCallback(message, rightPlayerComponent); }),
-    leftPlayerComponent(leftPlayer, formatManager, thumbCache),
-    rightPlayerComponent(rightPlayer, formatManager, thumbCache) ,
+    RightVolumeChangedListener([this](const String& message) { VolumeChangedCallback(message, rightPlayerComponent); }) ,
 	leftVuMeter(leftLevel),
 	rightVuMeter(rightLevel)
-    //LeftVolumeChangedListener1([this](double value) { volumeChangedCallback1(value); }),
-    //leftChannel(&LeftVolumeChangedListener1)
 
 
 {
@@ -45,37 +41,25 @@ MainComponent::MainComponent() :
     }  
 
     addAndMakeVisible(tooltipWindow);
-    //addAndMakeVisible(mixerPanelComponent);
     addAndMakeVisible(leftPlaylistComponent);
     addAndMakeVisible(rightPlaylistComponent);
     addAndMakeVisible(leftPlayerComponent);
     addAndMakeVisible(rightPlayerComponent);
-    //addAndMakeVisible(leftScratchDock);
-    //addAndMakeVisible(rightScratchDock);
     addAndMakeVisible(leftChannel);
     addAndMakeVisible(leftVuMeter);
     addAndMakeVisible(rightChannel);
     addAndMakeVisible(rightVuMeter);
 
-	
     leftChannel.setVolume(1.0);
     rightChannel.setVolume(1.0);
 	
-    //leftPlaylistComponent.setBounds(0, getHeight() / 2, getWidth(), getHeight() / 2);
     formatManager.registerBasicFormats();
 
     leftPlaylistComponent.TrackSelectedToPlayEventBroadcaster.addActionListener(&TrackSelectedToPlayLeftListener);
     rightPlaylistComponent.TrackSelectedToPlayEventBroadcaster.addActionListener(&TrackSelectedToPlayRightListener);
 
-    //leftScratchDock.SpeedChangedBroadcaster.addActionListener(&SpeedChangedLeftListener);
-    //rightScratchDock.SpeedChangedBroadcaster.addActionListener(&SpeedChangedRightListener);
-
-    //mixerPanelComponent.LeftVolumeChangedBroadcaster.addActionListener(&LeftVolumeChangedListener);
-    //mixerPanelComponent.RightVolumeChangedBroadcaster.addActionListener(&RightVolumeChangedListener);
-
 	leftChannel.VolumeChangedBroadcaster.addActionListener(&LeftVolumeChangedListener);
     rightChannel.VolumeChangedBroadcaster.addActionListener(&RightVolumeChangedListener);
-
 }
 
 MainComponent::~MainComponent()
@@ -97,26 +81,21 @@ void MainComponent::prepareToPlay (int samplesPerBlockExpected, double sampleRat
 void MainComponent::getNextAudioBlock (const AudioSourceChannelInfo& bufferToFill)
 {
     mixerSource.getNextAudioBlock(bufferToFill);
-    //const MessageManagerLock mmLock;
 
 	if(leftPlayer.isPlaying() || rightPlayer.isPlaying())
 	{
         if (true) {
-            auto leftRmsLevel = bufferToFill.buffer->getRMSLevel(0, bufferToFill.startSample, bufferToFill.numSamples/2);
-            auto rightRmsLevel = bufferToFill.buffer->getRMSLevel(1, bufferToFill.startSample, bufferToFill.numSamples);
-            auto leftMagnitude = bufferToFill.buffer->getMagnitude(0, bufferToFill.startSample, bufferToFill.numSamples/2);
-            auto rightMagnitude = bufferToFill.buffer->getMagnitude(0, bufferToFill.startSample, bufferToFill.numSamples);
-            //VuMeter::Level level{ leftLevel, leftMagnitude };
+            const auto leftRmsLevel = bufferToFill.buffer->getRMSLevel(0, bufferToFill.startSample, bufferToFill.numSamples);
+            const auto rightRmsLevel = bufferToFill.buffer->getRMSLevel(1, bufferToFill.startSample, bufferToFill.numSamples);
+            const auto leftMagnitude = bufferToFill.buffer->getMagnitude(0, bufferToFill.startSample, bufferToFill.numSamples);
+            const auto rightMagnitude = bufferToFill.buffer->getMagnitude(0, bufferToFill.startSample, bufferToFill.numSamples);
             leftLevel.set({ leftRmsLevel, leftMagnitude });
             rightLevel.set({ rightRmsLevel, rightMagnitude });
-        	//leftVuMeter.setLevel(leftLevel);
         }
 	}else
 	{
         leftLevel.set({ 0.0, 0.0 });
         rightLevel.set({ 0.0, 0.0 });
-
-        //leftVuMeter.setLevel(0.0);
 	}
 	
 }
@@ -164,30 +143,17 @@ void MainComponent::resized()
     controlLayout.templateRows = {
 		Grid::TrackInfo(1_fr),
         Grid::TrackInfo(1_fr),
-		//Grid::TrackInfo(1_fr),
-  //      Grid::TrackInfo(2_fr),
-		//Grid::TrackInfo(3_fr),
     };
 
     controlLayout.items = {
-
-        //      GridItem(leftScratchDock).withArea(2, 1, 4, 2),
-              //GridItem(rightScratchDock).withArea(2, 4, 4, 5),
-
-        //      GridItem(mixerPanelComponent).withArea(1, 2, 4, 4),
-
         GridItem(leftChannel).withArea(1, 2, 2, 3),
         GridItem(leftVuMeter).withArea(1, 3, 2, 4).withJustifySelf(GridItem::JustifySelf::center).withAlignSelf(GridItem::AlignSelf::center),
         GridItem(rightVuMeter).withArea(1, 4, 2, 5).withJustifySelf(GridItem::JustifySelf::center).withAlignSelf(GridItem::AlignSelf::center),
         GridItem(rightChannel).withArea(1, 5, 2, 6),
-
-
         GridItem(leftPlayerComponent).withArea(1, 1, 2, 2),
 		GridItem(rightPlayerComponent).withArea(1, 6, 2, 7),
-
         GridItem(leftPlaylistComponent).withArea(2, 1, 3, 4),
         GridItem(rightPlaylistComponent).withArea(2, 4, 3, 7),
-
     };
 
     controlLayout.performLayout(getLocalBounds());
@@ -199,25 +165,8 @@ void MainComponent::TrackSelectedToPlayCallback(const String& message, PlayerAgg
     player.setCurrentTrack(message);
 }
 
-//void MainComponent::SpeedChangedCallback(const String& message, PlayerAggregateComponent& player)
-//{
-//	
-//    player.setSpeed(message.getDoubleValue());
-//}
-
 void MainComponent::VolumeChangedCallback(const String& message, PlayerAggregateComponent& player)
 {
     player.setGain(message.getDoubleValue());
 }
-
-void MainComponent::audioCallback(AudioIODeviceCallback* newCallback)
-{
-	
-}
-
-//void MainComponent::volumeChangedCallback1(double value)
-//{
-//    leftPlayer.setGain(value);
-//
-//}
 
