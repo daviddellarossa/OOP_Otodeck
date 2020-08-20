@@ -19,9 +19,7 @@ public:
     ExternalCallbackActionListener(
         const std::function<void(const String& message)>& callback
     ) : callback(callback)
-    {
-
-    }
+    {  }
     void actionListenerCallback(const String& message) override
     {
         this->callback(message);

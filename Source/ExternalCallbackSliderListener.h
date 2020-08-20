@@ -19,9 +19,7 @@ public:
 	ExternalCallbackSliderListener(
 		const std::function<void(double value)> callback
 	) : callback(callback)
-	{
-		
-	}
+	{	}
 
     virtual void sliderValueChanged(Slider* slider) override
 	{
