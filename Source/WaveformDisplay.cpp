@@ -31,18 +31,14 @@ WaveformDisplay::~WaveformDisplay()
 
 void WaveformDisplay::paint (Graphics& g)
 {
-    /* This demo code just fills the component's background and
-       draws some placeholder text to get you started.
 
-       You should replace everything in this method with your own
-       drawing code..
-    */
 
     g.fillAll (getLookAndFeel().findColour (ResizableWindow::backgroundColourId));   // clear the background
 
     g.setColour (Colours::grey);
     g.drawRect (getLocalBounds(), 1);   // draw an outline around the component
 
+	//display the waveform
     g.setColour (Colours::orange);
     if(fileLoaded)
     {
@@ -58,9 +54,14 @@ void WaveformDisplay::paint (Graphics& g)
     }
     else 
     {
-      g.setFont (20.0f);
-      g.drawText ("File not loaded...", getLocalBounds(),
-                  Justification::centred, true);   // draw some placeholder text
+    	//otherwise display a message
+		g.setFont (20.0f);
+		g.drawText (
+            "File not loaded...", 
+            getLocalBounds(),
+			Justification::centred, 
+            true
+        );   // draw some placeholder text
     }
 }
 
@@ -115,8 +116,10 @@ void WaveformDisplay::setPositionRelative(double pos)
 void WaveformDisplay::mouseDrag(const MouseEvent& event)
 {
     if (!fileLoaded) return;
-	
+
+	//Calculate the new relative position
     double relativePosition = event.getPosition().getX() / static_cast<double>(getWidth());
+	//Control overflows and underflows
     if (relativePosition < 0)
         relativePosition = 0;
     if (relativePosition > 1)
@@ -129,9 +132,12 @@ void WaveformDisplay::mouseDown(const MouseEvent& event)
 {
     if (!fileLoaded) return;
 
+	//Set the mouse cursor to draggingHand
     setMouseCursor(MouseCursor::DraggingHandCursor);
 	
+    //Calculate the new relative position
     double relativePosition = event.getPosition().getX() / static_cast<double>(getWidth());
+    //Control overflows and underflows
     if (relativePosition < 0)
         relativePosition = 0;
     if (relativePosition > 1)
@@ -142,6 +148,7 @@ void WaveformDisplay::mouseDown(const MouseEvent& event)
 
 void WaveformDisplay::mouseUp(const MouseEvent& event)
 {
+	//Reset the cursor to Normal
     setMouseCursor(MouseCursor::NormalCursor);
 }
 

@@ -22,7 +22,6 @@ PlayerToolbar::PlayerToolbar()
     addAndMakeVisible(toolbar);
     toolbar.addDefaultItems(toolbarItemFactory);
     toolbar.setBounds(0, 0, getWidth(), getHeight());
-    auto children = toolbar.getChildren();
 }
 
 PlayerToolbar::~PlayerToolbar()
@@ -43,10 +42,6 @@ void PlayerToolbar::paint (juce::Graphics& g)
     g.setColour (juce::Colours::grey);
     g.drawRect (getLocalBounds(), 1);   // draw an outline around the component
 
-    //g.setColour (juce::Colours::white);
-    //g.setFont (14.0f);
-    //g.drawText ("PlayerToolbar", getLocalBounds(),
-    //            juce::Justification::centred, true);   // draw some placeholder text
 }
 
 
@@ -55,6 +50,7 @@ void PlayerToolbar::buttonClicked(Button* button)
     auto toolbarButton = dynamic_cast<ToolbarButton*>(button);
     if (toolbarButton != nullptr)
     {
+    	//Check which button has been clicked and invoke the relative broadcaster
     	switch(toolbarButton->getItemId())
     	{
             case static_cast<int>(PlayerToolbarItemFactory::PlayerToolbarItemIds::pause) :
@@ -126,6 +122,7 @@ void PlayerToolbar::PlayerToolbarItemFactory::setButtonListener(Listener* listen
 ToolbarButton* PlayerToolbar::PlayerToolbarItemFactory::createButtonFromZipFileSVG(const int itemId, const String& text,
 	const String& filename)
 {
+	//Load the icon from memory. The icons are expected to be in svg format
     if (iconsFromZipFile.size() == 0)
     {
         // If we've not already done so, load all the images from the zip file..
@@ -150,8 +147,10 @@ ToolbarButton* PlayerToolbar::PlayerToolbarItemFactory::createButtonFromZipFileS
         nullptr
     );
 
+	//attach the tooltip to the button
     button->setTooltip(text);
-	
+
+	//attach the listener to the new button
     if (this->buttonEventListener != nullptr)
     {
         button->addListener(buttonEventListener);

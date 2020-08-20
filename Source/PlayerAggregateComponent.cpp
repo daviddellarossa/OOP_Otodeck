@@ -27,7 +27,6 @@ PlayerAggregateComponent::PlayerAggregateComponent(
     // In your constructor, you should add any child components, and
     // initialise any special settings that your component needs.
     addAndMakeVisible(this->playerToolbar);
-    //addAndMakeVisible(this->audioPlayer);
     addAndMakeVisible(this->currentTrackLabel);
     addAndMakeVisible(waveformDisplay);
     addAndMakeVisible(speedSlider);
@@ -35,13 +34,16 @@ PlayerAggregateComponent::PlayerAggregateComponent(
     playerToolbar.setBounds(0, 0, getWidth(), getHeight());
     currentTrackLabel.setBounds(0, 0, getWidth(), getHeight());
     waveformDisplay.setBounds(0, 0, getWidth(), getHeight());
-	
+
+	//Plug the broadcaster of playerToolbar to their respective Listeners
     playerToolbar.PlayEventBroadcaster.addActionListener(&PlayListener);
     playerToolbar.PauseEventBroadcaster.addActionListener(&PauseListener);
     playerToolbar.StopEventBroadcaster.addActionListener(&StopListener);
 
+	//Plug the broadcaster of waveformDisplay to its respective Listener
     waveformDisplay.PositionChangedBroadcaster.addActionListener(&PositionChangedListener);
 
+    //Configure the speedSlider control
     speedSlider.addListener(this);
     speedSlider.setNumDecimalPlacesToDisplay(2);
     speedSlider.setRange(0, 2);
@@ -61,22 +63,7 @@ PlayerAggregateComponent::~PlayerAggregateComponent()
 
 void PlayerAggregateComponent::paint (juce::Graphics& g)
 {
-    /* This demo code just fills the component's background and
-       draws some placeholder text to get you started.
-
-       You should replace everything in this method with your own
-       drawing code..
-    */
-
     g.fillAll (getLookAndFeel().findColour (juce::ResizableWindow::backgroundColourId));   // clear the background
-
-    g.setColour (juce::Colours::grey);
-    g.drawRect (getLocalBounds(), 1);   // draw an outline around the component
-
-    g.setColour (juce::Colours::white);
-    g.setFont (14.0f);
-    g.drawText ("PlayerAggregateComponent", getLocalBounds(),
-                juce::Justification::centred, true);   // draw some placeholder text
 }
 
 void PlayerAggregateComponent::resized()
@@ -104,15 +91,6 @@ void PlayerAggregateComponent::resized()
     };
 
     layout.performLayout(getLocalBounds());
-
-	
-    //FlexBox controlLayout;
-    //controlLayout.flexWrap = FlexBox::Wrap::noWrap;
-    //controlLayout.flexDirection = FlexBox::Direction::column;
-    //controlLayout.items.add(FlexItem(getWidth(), 32.0f, currentTrackLabel));
-    //controlLayout.items.add(FlexItem(waveformDisplay).withMinHeight(100).withMaxHeight(getHeight()).withFlex(1));
-    //controlLayout.items.add(FlexItem(static_cast<float>(getWidth()), 32.0f, playerToolbar));
-    //controlLayout.performLayout(getLocalBounds().toFloat());
 }
 
 void PlayerAggregateComponent::PlayCallback(const String& message)
@@ -137,7 +115,6 @@ void PlayerAggregateComponent::StopCallback(const String& message)
 void PlayerAggregateComponent::positionChangedCallback(const String& message)
 {
     this->audioPlayer.setPositionRelative(message.getDoubleValue());
-    //DBG("New relative position: " << message.getDoubleValue());
 }
 
 void PlayerAggregateComponent::setCurrentTrack(String filePath)
@@ -159,13 +136,13 @@ String PlayerAggregateComponent::getCurrentTrack() const
 
 void PlayerAggregateComponent::timerCallback()
 {
-    //std::cout << "DeckGUI::timerCallback" << std::endl;
     waveformDisplay.setPositionRelative(
         audioPlayer.getPositionRelative());
 }
 
 bool PlayerAggregateComponent::isInterestedInFileDrag(const StringArray& files)
 {
+	//Player accepts only one file at the time
     if (files.size() != 1) return false;
 
     File file(files[0]);

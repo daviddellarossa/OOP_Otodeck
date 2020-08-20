@@ -15,10 +15,6 @@ AudioPlayer::AudioPlayer(AudioFormatManager& _formatManager)
 {
     
 }
-//AudioPlayer::~AudioPlayer()
-//{
-//
-//}
 
 void AudioPlayer::prepareToPlay(int samplesPerBlockExpected, double sampleRate)
 {
