@@ -12,9 +12,13 @@
 
 #include <JuceHeader.h>
 
+/// <summary>
+/// Custom Listener inheriting from TextEditor::Listener.
+/// It is made to execute an external function when the Listener is invoked.
+/// The function to execute is passed in as constructor's input parameter
+/// </summary>
 class ExternalCallbackTextEditorListener : public TextEditor::Listener
 {
-
 public:
 	ExternalCallbackTextEditorListener(
 		const std::function<void(String text)> _textChangedCallback

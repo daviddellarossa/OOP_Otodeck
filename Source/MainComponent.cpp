@@ -20,8 +20,6 @@ MainComponent::MainComponent() :
     RightVolumeChangedListener([this](const String& message) { VolumeChangedCallback(message, rightPlayerComponent); }) ,
 	leftVuMeter(leftLevel),
 	rightVuMeter(rightLevel)
-
-
 {
     // Make sure you set the size of the component after
     // you add any child components.
@@ -38,7 +36,9 @@ MainComponent::MainComponent() :
     {
         // Specify the number of input and output channels that we want to open
         setAudioChannels (0, 2);
-    }  
+    }
+
+    formatManager.registerBasicFormats();
 
     addAndMakeVisible(tooltipWindow);
     addAndMakeVisible(leftPlaylistComponent);
@@ -50,14 +50,15 @@ MainComponent::MainComponent() :
     addAndMakeVisible(rightChannel);
     addAndMakeVisible(rightVuMeter);
 
+	//Set initial volume on MixerChannels
     leftChannel.setVolume(1.0);
     rightChannel.setVolume(1.0);
-	
-    formatManager.registerBasicFormats();
 
+	//Attach Listeners to PlaylistAggregateComponents' Broadcasters
     leftPlaylistComponent.TrackSelectedToPlayEventBroadcaster.addActionListener(&TrackSelectedToPlayLeftListener);
     rightPlaylistComponent.TrackSelectedToPlayEventBroadcaster.addActionListener(&TrackSelectedToPlayRightListener);
 
+	//Attach Listeners to MixerChannels' Broadcasters
 	leftChannel.VolumeChangedBroadcaster.addActionListener(&LeftVolumeChangedListener);
     rightChannel.VolumeChangedBroadcaster.addActionListener(&RightVolumeChangedListener);
 }
@@ -82,22 +83,23 @@ void MainComponent::getNextAudioBlock (const AudioSourceChannelInfo& bufferToFil
 {
     mixerSource.getNextAudioBlock(bufferToFill);
 
+	//Calculate levels for VuMeters
+	//Execute the calculation only if there is at least one player running
 	if(leftPlayer.isPlaying() || rightPlayer.isPlaying())
 	{
-        if (true) {
-            const auto leftRmsLevel = bufferToFill.buffer->getRMSLevel(0, bufferToFill.startSample, bufferToFill.numSamples);
-            const auto rightRmsLevel = bufferToFill.buffer->getRMSLevel(1, bufferToFill.startSample, bufferToFill.numSamples);
-            const auto leftMagnitude = bufferToFill.buffer->getMagnitude(0, bufferToFill.startSample, bufferToFill.numSamples);
-            const auto rightMagnitude = bufferToFill.buffer->getMagnitude(0, bufferToFill.startSample, bufferToFill.numSamples);
-            leftLevel.set({ leftRmsLevel, leftMagnitude });
-            rightLevel.set({ rightRmsLevel, rightMagnitude });
-        }
+        const auto leftRmsLevel = bufferToFill.buffer->getRMSLevel(0, bufferToFill.startSample, bufferToFill.numSamples);
+        const auto rightRmsLevel = bufferToFill.buffer->getRMSLevel(1, bufferToFill.startSample, bufferToFill.numSamples);
+        const auto leftMagnitude = bufferToFill.buffer->getMagnitude(0, bufferToFill.startSample, bufferToFill.numSamples);
+        const auto rightMagnitude = bufferToFill.buffer->getMagnitude(0, bufferToFill.startSample, bufferToFill.numSamples);
+		//Set the values in the thread-safe Atomic wrapper to be read from the VuMeters, which run in a different thread
+        leftLevel.set({ leftRmsLevel, leftMagnitude });
+        rightLevel.set({ rightRmsLevel, rightMagnitude });
 	}else
 	{
+		//If there is nothing playing, set the levels to 0
         leftLevel.set({ 0.0, 0.0 });
         rightLevel.set({ 0.0, 0.0 });
 	}
-	
 }
 
 void MainComponent::releaseResources()
@@ -116,14 +118,11 @@ void MainComponent::paint (Graphics& g)
 {
     // (Our component is opaque, so we must completely fill the background with a solid colour)
     g.fillAll (getLookAndFeel().findColour (ResizableWindow::backgroundColourId));
-
-    // You can add your drawing code here!
 }
 
 void MainComponent::resized()
 {
     Array<Grid::TrackInfo> columns;
-
 
     Grid controlLayout;
     controlLayout.justifyContent = Grid::JustifyContent::spaceAround;
@@ -157,7 +156,6 @@ void MainComponent::resized()
     };
 
     controlLayout.performLayout(getLocalBounds());
-
 }
 
 void MainComponent::TrackSelectedToPlayCallback(const String& message, PlayerAggregateComponent& player) 

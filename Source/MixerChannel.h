@@ -11,15 +11,16 @@
 #pragma once
 
 #include <JuceHeader.h>
-
-//==============================================================================
-/*
-*/
-
 #include "ExternalCallbackSliderListener.h"
 
 typedef ExternalCallbackSliderListener Listener;
 
+/// <summary>
+/// Implements a single channel of a Mixer.
+/// This component aggregates a Slider to control the Volume and a ToggleButton to control the Mute
+/// Whenever one of these Components has a change in value, the VolumeChangeBroadcaster is invoked,
+/// sending out the current volume after the change
+/// </summary>
 class MixerChannel  :
 	public juce::Component,
     public ToggleButton::Listener,
@@ -29,22 +30,30 @@ public:
     MixerChannel();
     ~MixerChannel() override;
 
+	//Overrides for the Component's virtual functions
     void paint (juce::Graphics&) override;
     void resized() override;
+
+	//Set the Volume to value
     void setVolume(double value);
+	//Return the current Volume
     double getVolume() const;
 
-    virtual void buttonStateChanged(Button*) override;
-    virtual void buttonClicked(Button*) override;
-    virtual void sliderValueChanged(Slider* slider) override;
-	
-    ActionBroadcaster VolumeChangedBroadcaster;
+	//Overrides for the ToggleButton virtual methods
+    void buttonStateChanged(Button*) override;
+    void buttonClicked(Button*) override;
 
+	//Overrides for the Slider virtual methods
+    void sliderValueChanged(Slider* slider) override;
+
+	//Broadcaster invoked when a change in volume happens
+    ActionBroadcaster VolumeChangedBroadcaster;
 private:
+	//Volume slider component
     Slider volumeSlider;
+	//Mute toggle button component
     ToggleButton muteButton;
 
-    double getVolume();
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (MixerChannel)
 };
 

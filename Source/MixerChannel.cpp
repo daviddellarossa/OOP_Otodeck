@@ -20,15 +20,16 @@ MixerChannel::MixerChannel()
     addAndMakeVisible(volumeSlider);
     addAndMakeVisible(muteButton);
 
+	//Set the initial values for the volume slider
     volumeSlider.setSliderStyle(Slider::LinearVertical);
     volumeSlider.addListener(this);
     volumeSlider.setRange(0.0, 1.0);
     volumeSlider.setTextBoxStyle(Slider::NoTextBox, true, 0, 0);
     volumeSlider.setTooltip("Volume");
-	
+
+	//Set initial values for the mute button
     muteButton.setBounds(0, 0, getWidth(), getHeight());
     muteButton.setTooltip("Mute");
-    //muteButton.setButtonText("Mute");
     muteButton.addListener(this);
 }
 
@@ -38,22 +39,9 @@ MixerChannel::~MixerChannel()
 
 void MixerChannel::paint (juce::Graphics& g)
 {
-    /* This demo code just fills the component's background and
-       draws some placeholder text to get you started.
-
-       You should replace everything in this method with your own
-       drawing code..
-    */
-
     g.fillAll (getLookAndFeel().findColour (juce::ResizableWindow::backgroundColourId));   // clear the background
-
     g.setColour (juce::Colours::grey);
     g.drawRect (getLocalBounds(), 1);   // draw an outline around the component
-
-    //g.setColour (juce::Colours::white);
-    //g.setFont (14.0f);
-    //g.drawText ("MixerChannel", getLocalBounds(),
-    //            juce::Justification::centred, true);   // draw some placeholder text
 }
 
 void MixerChannel::resized()
@@ -68,8 +56,7 @@ void MixerChannel::resized()
     layout.alignItems = Grid::AlignItems::center;
 	
     layout.templateColumns = {
-    Grid::TrackInfo(24_px),
-   
+		Grid::TrackInfo(24_px),
     };
 
     layout.templateRows = {
@@ -90,11 +77,6 @@ void MixerChannel::setVolume(double value)
     this->volumeSlider.setValue(value);
 }
 
-double MixerChannel::getVolume() const
-{
-    return this->volumeSlider.getValue();
-}
-
 void MixerChannel::buttonStateChanged(Button*)
 {
     VolumeChangedBroadcaster.sendActionMessage(std::to_string(getVolume()));
@@ -108,8 +90,11 @@ void MixerChannel::sliderValueChanged(Slider* slider)
 {
     VolumeChangedBroadcaster.sendActionMessage(std::to_string(getVolume()));
 }
-
-inline double MixerChannel::getVolume()
+ double MixerChannel::getVolume() const
 {
-    return volumeSlider.getValue() * (muteButton.getToggleState() ? 0 : 1);
+	//return the volumeSlider value if muteButton is off, otherwise return 0
+     if (muteButton.getToggleState() == true)
+         return 0;
+     else
+         return volumeSlider.getValue();
 }
