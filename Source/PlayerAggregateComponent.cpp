@@ -16,8 +16,8 @@ PlayerAggregateComponent::PlayerAggregateComponent(
     AudioPlayer& audioPlayer,
     AudioFormatManager& formatManager,
     AudioThumbnailCache& cache) :
-	formatManager(formatManager),
-    audioPlayer(audioPlayer),
+	audioPlayer(audioPlayer),
+    formatManager(formatManager),
     waveformDisplay(formatManager, cache),
     StopListener([this](const String& message) {StopCallback(message); }),
     PlayListener([this](const String& message) {PlayCallback(message); }),
@@ -30,6 +30,7 @@ PlayerAggregateComponent::PlayerAggregateComponent(
     //addAndMakeVisible(this->audioPlayer);
     addAndMakeVisible(this->currentTrackLabel);
     addAndMakeVisible(waveformDisplay);
+    addAndMakeVisible(speedSlider);
 	
     playerToolbar.setBounds(0, 0, getWidth(), getHeight());
     currentTrackLabel.setBounds(0, 0, getWidth(), getHeight());
@@ -41,6 +42,11 @@ PlayerAggregateComponent::PlayerAggregateComponent(
 
     waveformDisplay.PositionChangedBroadcaster.addActionListener(&PositionChangedListener);
 
+    speedSlider.addListener(this);
+    speedSlider.setNumDecimalPlacesToDisplay(2);
+    speedSlider.setValue(mapFromLog10(1.0, 0.1, 10.0));
+    speedSlider.setRange(0, 1);
+	
     startTimer(100);
 }
 
@@ -73,13 +79,36 @@ void PlayerAggregateComponent::resized()
 {
     // This method is where you should set the bounds of any child
     // components that your component contains..
-    FlexBox controlLayout;
-    controlLayout.flexWrap = FlexBox::Wrap::noWrap;
-    controlLayout.flexDirection = FlexBox::Direction::column;
-    controlLayout.items.add(FlexItem(getWidth(), 32.0f, currentTrackLabel));
-    controlLayout.items.add(FlexItem(waveformDisplay).withMinHeight(100).withMaxHeight(getHeight()).withFlex(1));
-    controlLayout.items.add(FlexItem(static_cast<float>(getWidth()), 32.0f, playerToolbar));
-    controlLayout.performLayout(getLocalBounds().toFloat());
+
+    Grid layout;
+    layout.templateColumns = {
+        Grid::TrackInfo(1_fr),
+        Grid::TrackInfo(1_fr),
+    };
+
+    layout.templateRows = {
+        Grid::TrackInfo(32_px),
+        Grid::TrackInfo(1_fr),
+    	Grid::TrackInfo(32_px),
+    };
+
+    layout.items = {
+        GridItem(currentTrackLabel).withArea(1, 1, 2, 3),
+        GridItem(waveformDisplay).withArea(2, 1, 3, 3),
+        GridItem(playerToolbar).withArea(3, 1, 4, 2),
+        GridItem(speedSlider).withArea(3, 2, 4, 3),
+    };
+
+    layout.performLayout(getLocalBounds());
+
+	
+    //FlexBox controlLayout;
+    //controlLayout.flexWrap = FlexBox::Wrap::noWrap;
+    //controlLayout.flexDirection = FlexBox::Direction::column;
+    //controlLayout.items.add(FlexItem(getWidth(), 32.0f, currentTrackLabel));
+    //controlLayout.items.add(FlexItem(waveformDisplay).withMinHeight(100).withMaxHeight(getHeight()).withFlex(1));
+    //controlLayout.items.add(FlexItem(static_cast<float>(getWidth()), 32.0f, playerToolbar));
+    //controlLayout.performLayout(getLocalBounds().toFloat());
 }
 
 void PlayerAggregateComponent::PlayCallback(const String& message)
@@ -160,4 +189,9 @@ void PlayerAggregateComponent::setSpeed(double speed)
 void PlayerAggregateComponent::setGain(double gain)
 {
     audioPlayer.setGain(gain);
+}
+void PlayerAggregateComponent::sliderValueChanged(Slider* slider)
+{
+    double logaritmicValue = mapToLog10(slider->getValue(), 0.1, 10.0);
+    this->audioPlayer.setSpeed(logaritmicValue);
 }

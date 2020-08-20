@@ -22,7 +22,8 @@
 class PlayerAggregateComponent  :
 	public juce::Component,
 	public Timer,
-    public FileDragAndDropTarget
+    public FileDragAndDropTarget,
+    public Slider::Listener
 {
 public:
     PlayerAggregateComponent(
@@ -51,6 +52,8 @@ public:
     void setSpeed(double speed);
     void setGain(double gain);
 
+    void sliderValueChanged(Slider* slider) override;
+
 private:
     String currentTrackPath;
     Label currentTrackLabel;
@@ -58,6 +61,7 @@ private:
     AudioPlayer& audioPlayer;
     AudioFormatManager& formatManager;
     WaveformDisplay waveformDisplay;
+    Slider speedSlider;
 
     ExternalCallbackActionListener StopListener;
     ExternalCallbackActionListener PlayListener;
