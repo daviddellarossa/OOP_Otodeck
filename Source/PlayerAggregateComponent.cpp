@@ -44,10 +44,14 @@ PlayerAggregateComponent::PlayerAggregateComponent(
 
     speedSlider.addListener(this);
     speedSlider.setNumDecimalPlacesToDisplay(2);
-    speedSlider.setValue(mapFromLog10(1.0, 0.1, 10.0));
-    speedSlider.setRange(0, 1);
-	
+    speedSlider.setRange(0, 2);
+    speedSlider.setValue(mapFromLog10(1.0, 0.1, 10.0) * 2);
+    speedSlider.setTooltip("Speed");
+    speedSlider.setNumDecimalPlacesToDisplay(2);
+
     startTimer(100);
+
+    currentTrackLabel.setText("No track selected", NotificationType::dontSendNotification);
 }
 
 PlayerAggregateComponent::~PlayerAggregateComponent()
@@ -96,7 +100,7 @@ void PlayerAggregateComponent::resized()
         GridItem(currentTrackLabel).withArea(1, 1, 2, 3),
         GridItem(waveformDisplay).withArea(2, 1, 3, 3),
         GridItem(playerToolbar).withArea(3, 1, 4, 2),
-        GridItem(speedSlider).withArea(3, 2, 4, 3),
+        GridItem(speedSlider).withArea(3, 2, 4, 3).withMargin(GridItem::Margin{0, 0, 0, 10}),
     };
 
     layout.performLayout(getLocalBounds());
@@ -192,6 +196,6 @@ void PlayerAggregateComponent::setGain(double gain)
 }
 void PlayerAggregateComponent::sliderValueChanged(Slider* slider)
 {
-    double logaritmicValue = mapToLog10(slider->getValue(), 0.1, 10.0);
+    double logaritmicValue = mapToLog10(slider->getValue() / 2, 0.1, 10.0);
     this->audioPlayer.setSpeed(logaritmicValue);
 }
