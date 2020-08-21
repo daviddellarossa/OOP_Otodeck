@@ -34,22 +34,11 @@ PlaylistGrid::~PlaylistGrid()
 
 void PlaylistGrid::paint (juce::Graphics& g)
 {
-    /* This demo code just fills the component's background and
-       draws some placeholder text to get you started.
-
-       You should replace everything in this method with your own
-       drawing code..
-    */
-
     g.fillAll (getLookAndFeel().findColour (juce::ResizableWindow::backgroundColourId));   // clear the background
 
     g.setColour (juce::Colours::grey);
     g.drawRect (getLocalBounds(), 1);   // draw an outline around the component
 
-    g.setColour (juce::Colours::white);
-    g.setFont (14.0f);
-    g.drawText ("PlaylistGrid", getLocalBounds(),
-                juce::Justification::centred, true);   // draw some placeholder text
 }
 
 void PlaylistGrid::resized()
@@ -68,7 +57,6 @@ void PlaylistGrid::addTrack(TrackModel track)
             DBG("File already in playlist");
             return;
         }
-
 	}
     tracks->push_back(track);
     this->playlistDataGrid.updateContent();
@@ -180,6 +168,7 @@ void PlaylistGrid::PlaylistTableListBoxModel::paintCell(Graphics& graphics, int 
         text << track.fileName;
         break;
     case 2:
+		//Build a string for the length of the file
         text
 			<< std::setfill('0') << std::setw(2) << hours << ":"
 			<< std::setfill('0') << std::setw(2) <<minutes << ":"

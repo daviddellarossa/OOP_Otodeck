@@ -22,7 +22,6 @@ PlaylistToolbar::PlaylistToolbar()
     addAndMakeVisible(toolbar);
     toolbar.addDefaultItems(toolbarItemFactory);
     toolbar.setBounds(0, 0, getWidth(), getHeight());
-    auto children = toolbar.getChildren();
 }
 
 PlaylistToolbar::~PlaylistToolbar()
@@ -31,22 +30,10 @@ PlaylistToolbar::~PlaylistToolbar()
 
 void PlaylistToolbar::paint (juce::Graphics& g)
 {
-    /* This demo code just fills the component's background and
-       draws some placeholder text to get you started.
-
-       You should replace everything in this method with your own
-       drawing code..
-    */
-
     g.fillAll (getLookAndFeel().findColour (juce::ResizableWindow::backgroundColourId));   // clear the background
 
     g.setColour (juce::Colours::grey);
     g.drawRect (getLocalBounds(), 1);   // draw an outline around the component
-
-    //g.setColour (juce::Colours::white);
-    //g.setFont (14.0f);
-    //g.drawText ("PlaylistToolbar", getLocalBounds(),
-    //            juce::Justification::centred, true);   // draw some placeholder text
 }
 
 void PlaylistToolbar::resized()
@@ -61,7 +48,7 @@ void PlaylistToolbar::buttonClicked(Button* button)
     auto toolbarButton = dynamic_cast<ToolbarButton*>(button);
 	if(toolbarButton != nullptr)
 	{
-
+        //Invoke the proper Broadcaster for the event 
 		switch(toolbarButton->getItemId())
 		{
             case static_cast<int>(PlaylistToolbarItemFactory::PlaylistToolbarItemIds::addFile) :
@@ -170,6 +157,7 @@ void PlaylistToolbar::PlaylistToolbarItemFactory::setButtonListener(Listener* li
 ToolbarButton* PlaylistToolbar::PlaylistToolbarItemFactory::createButtonFromZipFileSVG(const int itemId,
                                                                                        const String& text, const String& filename)
 {
+    //Load the icon from memory. The icons are expected to be in svg format
     if (iconsFromZipFile.size() == 0)
     {
         // If we've not already done so, load all the images from the zip file..
@@ -193,8 +181,11 @@ ToolbarButton* PlaylistToolbar::PlaylistToolbarItemFactory::createButtonFromZipF
         iconsFromZipFile[iconNames.indexOf(filename)]->createCopy(),
         nullptr
     );
+	
+    //attach the tooltip to the button
     button->setTooltip(text);
 	
+    //attach the listener to the new button
     if(this->buttonEventListener != nullptr)
     {
         button->addListener(buttonEventListener);

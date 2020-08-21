@@ -14,24 +14,21 @@
 
 //==============================================================================
 PlaylistAggregateComponent::PlaylistAggregateComponent() :
+	//initialization of the listeners to call the proper Callback function
 	AddFileListener([this](const String& message) {AddFileCallback(message); }),
 	AddFolderListener([this](const String& message) {AddFolderCallback(message); }),
 	DeleteFilesListener([this](const String& message) {DeleteFilesCallback(message); }),
 	LoadPlaylistListener([this](const String& message) {LoadPlaylistCallback(message); }),
 	SavePlaylistListener([this](const String& message) {SavePlaylistCallback(message); }),
     OpenFileInPlayerListener([this](const String& message) {OpenFileInPlayerCallback(message); }),
-
     ItemDoubleClickedListener([this](const String& message) {ItemDoubleClickedCallback(message); }),
     searchTextChangedListener([this](const String& message) { SearchTextChangedCallback(message); })
 {
-    // In your constructor, you should add any child components, and
-    // initialise any special settings that your component needs.
 
 	addAndMakeVisible(this->playlistToolbar);
     addAndMakeVisible(this->playlistGrid);
     addAndMakeVisible(this->searchBox);
 
-	
     playlistToolbar.setBounds(0, 0, getWidth(), getHeight());
     searchBox.setBounds(0, 0, getWidth(), getHeight());
     searchBox.setTextToShowWhenEmpty("Search...", Colours::grey);
@@ -44,11 +41,9 @@ PlaylistAggregateComponent::PlaylistAggregateComponent() :
     playlistToolbar.SavePlaylistEventBroadcaster.addActionListener(&SavePlaylistListener);
     playlistToolbar.OpenFileInPlayerEventBroadcaster.addActionListener(&OpenFileInPlayerListener);
 
-
     playlistGrid.getGridBoxModel().ItemDoubleClickedEventBroadcaster.addActionListener(&ItemDoubleClickedListener);
 
 	searchBox.addListener(&searchTextChangedListener);
-
 }
 
 PlaylistAggregateComponent::~PlaylistAggregateComponent()
@@ -57,12 +52,6 @@ PlaylistAggregateComponent::~PlaylistAggregateComponent()
 
 void PlaylistAggregateComponent::paint (juce::Graphics& g)
 {
-    /* This demo code just fills the component's background and
-       draws some placeholder text to get you started.
-
-       You should replace everything in this method with your own
-       drawing code..
-    */
 
     g.fillAll (getLookAndFeel().findColour (juce::ResizableWindow::backgroundColourId));   // clear the background
 
@@ -104,8 +93,6 @@ void PlaylistAggregateComponent::resized()
 
 void PlaylistAggregateComponent::AddFileCallback(const String& message)
 {
-
-
     DBG(message);
     WildcardFileFilter wildcardFilter("*.mp3", String(), "Mp3 files");
 
@@ -139,6 +126,7 @@ void PlaylistAggregateComponent::AddFileCallback(const String& message)
 
 void PlaylistAggregateComponent::AddFolderCallback(const String& message) const
 {
+	//Not implemented deliberately. Available for possible future expansion
     DBG(message);
 }
 
