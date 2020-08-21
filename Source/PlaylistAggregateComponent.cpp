@@ -94,7 +94,10 @@ void PlaylistAggregateComponent::resized()
 void PlaylistAggregateComponent::AddFileCallback(const String& message)
 {
     DBG(message);
-    WildcardFileFilter wildcardFilter("*.mp3", String(), "Mp3 files");
+    AudioFormatManager formatManager;
+    formatManager.registerBasicFormats();
+	
+    WildcardFileFilter wildcardFilter(formatManager.getWildcardForAllFormats(), String(), "Audio files");
 
     FileBrowserComponent browser(FileBrowserComponent::canSelectFiles | FileBrowserComponent::openMode | FileBrowserComponent::canSelectMultipleItems,
         File::getSpecialLocation(File::SpecialLocationType::userHomeDirectory).getFullPathName(),
@@ -108,8 +111,6 @@ void PlaylistAggregateComponent::AddFileCallback(const String& message)
         Colours::lightgrey);
 
 
-    AudioFormatManager formatManager;
-    formatManager.registerBasicFormats();
 	
     if (dialogBox.show())
     {
