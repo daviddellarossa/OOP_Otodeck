@@ -27,6 +27,9 @@ class MixerChannel  :
     public Slider::Listener
 {
 public:
+    /// <summary>
+    /// Constructor for the class. Creates a new instance
+    /// </summary>
     MixerChannel();
     ~MixerChannel() override;
 
@@ -34,9 +37,15 @@ public:
     void paint (juce::Graphics&) override;
     void resized() override;
 
-	//Set the Volume to value
+    /// <summary>
+    /// Set the Volume to of the player to a new value
+    /// </summary>
+    /// <param name="value">New volume value</param>
     void setVolume(double value);
-	//Return the current Volume
+    /// <summary>
+    /// Return the current Volume
+    /// </summary>
+    /// <returns>The current volume set for the player</returns>
     double getVolume() const;
 
 	//Overrides for the ToggleButton virtual methods
@@ -46,7 +55,9 @@ public:
 	//Overrides for the Slider virtual methods
     void sliderValueChanged(Slider* slider) override;
 
-	//Broadcaster invoked when a change in volume happens
+    /// <summary>
+    /// Broadcaster used to notify when a change in volume happens
+    /// </summary>
     ActionBroadcaster VolumeChangedBroadcaster;
 private:
 	//Volume slider component

@@ -31,8 +31,6 @@ WaveformDisplay::~WaveformDisplay()
 
 void WaveformDisplay::paint (Graphics& g)
 {
-
-
     g.fillAll (getLookAndFeel().findColour (ResizableWindow::backgroundColourId));   // clear the background
 
     g.setColour (Colours::grey);

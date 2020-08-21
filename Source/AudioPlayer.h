@@ -73,13 +73,20 @@ public:
     /// </summary>
     void stop();
 
-    /** get the relative position of the playhead */
+    /// <summary>
+    /// Get the relative position of the playhead
+    /// </summary>
+    /// <returns>Relative position of the playhead</returns>
     double getPositionRelative();
 
 private:
+	//Reference to an instance of AudioFormatManager. Passed in as constructor parameter
     AudioFormatManager& formatManager;
+	//Pointer to an AudioFormatReaderSource instance.
     std::unique_ptr<AudioFormatReaderSource> readerSource;
+	//Instance of AudioTransportSource
     AudioTransportSource transportSource;
+	//Instance of ResamplingAudioSource
     ResamplingAudioSource resampleSource{ &transportSource, false, 2 };
 	
     //JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (AudioPlayer)

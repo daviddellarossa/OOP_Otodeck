@@ -22,6 +22,9 @@ class PlayerToolbar  :
     public Button::Listener
 {
 public:
+    /// <summary>
+    /// Constructor for the class. Creates a new instance
+    /// </summary>
     PlayerToolbar();
     ~PlayerToolbar() override;
 
@@ -50,6 +53,9 @@ private:
     public:
         PlayerToolbarItemFactory() = default;
 
+    	/// <summary>
+    	/// Enumeration of the available Toolbar buttons
+    	/// </summary>
     	enum class PlayerToolbarItemIds
     	{
     		stop = 1,

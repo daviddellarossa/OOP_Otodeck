@@ -13,9 +13,9 @@
 #include <JuceHeader.h>
 
 //==============================================================================
-/*
- *Structure Modeling the Levels used by the VuMeter
-*/
+
+ //Structure Modeling the Levels used by the VuMeter
+
 struct Level
 {
     double rmsLevel;
@@ -43,7 +43,10 @@ public:
     void paint (juce::Graphics&) override;
     void resized() override;
 
-	//Sets the levels 
+    /// <summary>
+    /// Sets the audio level for the VuMeter
+    /// </summary>
+    /// <param name="level">Object containing the new level values</param>
     void setLevel(Level level);
     
 private:
@@ -64,7 +67,9 @@ private:
     /// </summary>
     const Atomic<Level>& atomicLevel;
 
-	//Timer callback - part of the pattern to read an Atomic value across different threads
+    /// <summary>
+    /// Timer callback - part of the pattern to read an Atomic value across different threads
+    /// </summary>
     void timerCallback() override;
 
     /// <summary>

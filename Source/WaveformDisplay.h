@@ -24,8 +24,15 @@ class WaveformDisplay :
 	public ChangeListener
 {
 public:
+    /// <summary>
+    /// Constructor for the class. Creates a new instance.
+    /// </summary>
+    /// <param name="formatManagerToUse">Reference to an instance of AudioFormatManager,
+    /// required to open the current track and read its content</param>
+    /// <param name="cacheToUse">Reference to an instance of AudioThumbnailCache</param>
     WaveformDisplay( AudioFormatManager & 	formatManagerToUse,
                     AudioThumbnailCache & 	cacheToUse );
+	//Destructor
     ~WaveformDisplay();
 
 	//Overloads for the virtual methods inherited from the Component class
@@ -35,10 +42,16 @@ public:
 	//Overload for the virtual method inherited from the ChangeListener class
     void changeListenerCallback (ChangeBroadcaster *source) override;
 
-	//Load the file pointed to by the input parameter, in order to display it
+    /// <summary>
+    /// Load the file pointed to by the input parameter, in order to display it
+    /// </summary>
+    /// <param name="audioURL">URL of the file to load</param>
     void loadURL(URL audioURL);
 
-    /** set the relative position of the playhead*/
+    /// <summary>
+    /// Set the relative position of the playhead
+    /// </summary>
+    /// <param name="pos">New position relative to the track length</param>
     void setPositionRelative(double pos);
 
 	//These events control the actions performed on the waveform component,
@@ -47,10 +60,13 @@ public:
 	void mouseDown(const MouseEvent& event) override;
 	void mouseUp(const MouseEvent& event) override;
 
-	//Broadcaster that notifies when the position within the track has changed
+    /// <summary>
+    /// Broadcaster that notifies when the position within the track has changed
+    /// </summary>
     ActionBroadcaster PositionChangedBroadcaster;
 
 private:
+	//Instance of an object of type AudioThumbnail
     AudioThumbnail audioThumb;
 	//Says whether there is currently a track set up to display
     bool fileLoaded;

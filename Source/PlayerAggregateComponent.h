@@ -29,7 +29,7 @@ class PlayerAggregateComponent  :
 {
 public:
     /// <summary>
-    /// Create an instance of the class
+    /// Constructor for the class. Creates an instance of the class
     /// </summary>
     /// <param name="audioPlayer">Reference to an instance of audioPlayer</param>
     /// <param name="formatManager">Reference to an instance of AudioFormatManager</param>
@@ -46,29 +46,56 @@ public:
     void resized() override;
 
 	//Callbacks invoked by the Listeners when certain events are triggered
-	//Callback invoked when a Play event is triggered. This event is triggered when the user clicks on the Play button on the UI
+
+    /// <summary>
+    /// Callback invoked when a Play event is triggered. This event is triggered when the user clicks on the Play button on the UI
+    /// </summary>
+    /// <param name="message">Message describing the event</param>
     void PlayCallback(const String& message);
-    //Callback invoked when a Pause event is triggered. This event is triggered when the user clicks on the Pause button on the UI
+    /// <summary>
+    /// Callback invoked when a Pause event is triggered. This event is triggered when the user clicks on the Pause button on the UI
+    /// </summary>
+    /// <param name="message">Message describing the event</param>
     void PauseCallback(const String& message);
-    //Callback invoked when a Stop event is triggered. This event is triggered when the user clicks on the Stop button on the UI
+    /// <summary>
+    /// Callback invoked when a Stop event is triggered. This event is triggered when the user clicks on the Stop button on the UI
+    /// </summary>
+    /// <param name="message">Message describing the event</param>
     void StopCallback(const String& message);
-    //Callback invoked when a positionChanged event is triggered. This event is triggered when the user moves the position slider on the UI
+    /// <summary>
+    /// Callback invoked when a positionChanged event is triggered. This event is triggered when the user moves the position slider on the UI
+    /// </summary>
+    /// <param name="message">Message describing the event</param>
     void positionChangedCallback(const String& message);
-    //Sets the new current track for the player to the file pointed to by filePath
+    /// <summary>
+    /// Sets the new current track for the player to the file pointed to by filePath
+    /// </summary>
+    /// <param name="filePath">Message describing the event</param>
     void setCurrentTrack(String filePath);
-	//Returns the current track set in the player
+    /// <summary>
+    /// Returns the current track set in the player
+    /// </summary>
+    /// <returns>The full path of the current  track</returns>
     String getCurrentTrack() const;
 
-	//Callback invoked when the timer ticks.
+    /// <summary>
+    /// Callback invoked when the timer ticks. Used to synchronize the current position in the WaveformDisplay component
+    /// </summary>
     void timerCallback() override;
 
 	//Override for the virtual methods of FileDragAndDropTarget
     bool isInterestedInFileDrag(const StringArray& files) override;
     void filesDropped(const StringArray& files, int x, int y) override;
 	
-	//Set the speed of the player to the value speed
+    /// <summary>
+    /// Set the speed of the player to the value speed
+    /// </summary>
+    /// <param name="speed">New speed for the player</param>
     void setSpeed(double speed);
-	//Set the gain of the player to the value gain
+    /// <summary>
+    /// Set the gain of the player to the value gain
+    /// </summary>
+    /// <param name="gain">New gain for the player</param>
     void setGain(double gain);
 
 	//Override for the virtual method of Slider::Listener
