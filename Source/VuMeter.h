@@ -36,7 +36,9 @@ public:
     /// Constructor of the class Vumeter
     /// </summary>
     /// <param name="rmsLevel">Reference to the Level instance to get the values to display from</param>
-    VuMeter(const Atomic<Level>& rmsLevel);
+    VuMeter(
+        const Atomic<Level>& rmsLevel,
+        const String label);
     ~VuMeter() override;
 
 	// Overloads for virtual function of Component
@@ -66,6 +68,10 @@ private:
     /// Reference to the thread-safe Atomic wrapper for the Level instance to use to draw the VuMeter
     /// </summary>
     const Atomic<Level>& atomicLevel;
+    /// <summary>
+    /// Minimum height of the control for displaying the label
+    /// </summary>
+    const int minimumHeightForDisplayingLabels = 220;
 
     /// <summary>
     /// Timer callback - part of the pattern to read an Atomic value across different threads
@@ -79,7 +85,7 @@ private:
     /// <summary>
     /// Relative Height of the VuMeter bar respect to the Height of the Component
     /// </summary>
-    const float relativeHeight = 0.9;
+    const float relativeHeight = 0.85;
     /// <summary>
     /// Relative boundaries on the Y axis for the Green bar.
     /// Start Value is the bottom edge, EndValue is the top edge
@@ -107,6 +113,8 @@ private:
     /// <summary>
     /// Multiplication factor for the VuMeter, to change the scale
     /// </summary>
-    float gain = 2;
+    const float gain = 2;
+
+    String label;
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (VuMeter)
 };

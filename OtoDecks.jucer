@@ -36,6 +36,8 @@
       </GROUP>
       <FILE id="vx2b84" name="Icons.zip" compile="0" resource="1" file="Source/assets/Icons.zip"/>
       <GROUP id="{43D08731-AD5D-3A86-B683-B1C13AE44BE5}" name="Playlist">
+        <FILE id="fuQgWy" name="FileFormatException.h" compile="0" resource="0"
+              file="Source/FileFormatException.h"/>
         <FILE id="O53Dsp" name="PlaylistAggregateComponent.cpp" compile="1"
               resource="0" file="Source/PlaylistAggregateComponent.cpp"/>
         <FILE id="mklSva" name="PlaylistAggregateComponent.h" compile="0" resource="0"

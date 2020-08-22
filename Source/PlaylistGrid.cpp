@@ -11,6 +11,8 @@
 #include <JuceHeader.h>
 #include "PlaylistGrid.h"
 
+#include "FileFormatException.h"
+
 //==============================================================================
 PlaylistGrid::PlaylistGrid() :
     tracks{new std::vector<TrackModel>()},
@@ -225,6 +227,9 @@ PlaylistGrid::TrackModel PlaylistGrid::TrackModel::FromFile(const String& filepa
 {
     File selectedFile(filepath);
     std::unique_ptr<AudioFormatReader> formatReader(formatManager.createReaderFor(selectedFile));
+
+    if (formatReader == nullptr)
+        throw FileFormatException{ selectedFile.getFullPathName() };
 	
     PlaylistGrid::TrackModel track(
         selectedFile.getFileName(),

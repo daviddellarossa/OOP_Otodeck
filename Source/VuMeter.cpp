@@ -12,7 +12,10 @@
 #include "VuMeter.h"
 
 //==============================================================================
-VuMeter::VuMeter(const Atomic<Level>& level) : atomicLevel(level)
+VuMeter::VuMeter(
+    const Atomic<Level>& level,
+    const String label
+) : atomicLevel(level), label(label)
 {
     // In your constructor, you should add any child components, and
     // initialise any special settings that your component needs.
@@ -57,6 +60,10 @@ void VuMeter::paint (juce::Graphics& g)
 	//draw the white bar
     g.setColour(Colours::white);
     g.drawRect(getRectangle());
+
+	//only display the label if the height of the controller is greater than a minimum value
+	if(getHeight() > minimumHeightForDisplayingLabels)
+		g.drawText(label, getWidth() / 2 - 5, 10, 10, 10, Justification::centredBottom, false);
 
 }
 

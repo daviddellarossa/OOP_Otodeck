@@ -18,8 +18,8 @@ MainComponent::MainComponent() :
     TrackSelectedToPlayRightListener([this](const String& message) { TrackSelectedToPlayCallback(message, this->rightPlayerComponent); }),
     LeftVolumeChangedListener([this](const String& message) { VolumeChangedCallback(message, leftPlayerComponent); }),
     RightVolumeChangedListener([this](const String& message) { VolumeChangedCallback(message, rightPlayerComponent); }) ,
-	leftVuMeter(leftLevel),
-	rightVuMeter(rightLevel)
+	leftVuMeter(leftLevel, "L"),
+	rightVuMeter(rightLevel, "R")
 {
     // Make sure you set the size of the component after
     // you add any child components.

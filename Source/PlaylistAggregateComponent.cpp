@@ -11,6 +11,8 @@
 #include <JuceHeader.h>
 #include "PlaylistAggregateComponent.h"
 
+#include "FileFormatException.h"
+
 
 //==============================================================================
 PlaylistAggregateComponent::PlaylistAggregateComponent() :
@@ -177,10 +179,15 @@ void PlaylistAggregateComponent::LoadPlaylistCallback(const String& message)
             DBG(line << " is not a valid file.");
             continue;
         }
-
-        playlistGrid.addTrack(
-            PlaylistGrid::TrackModel::FromFile(trackFile.getFullPathName(), formatManager)
-        );
+        try
+        {
+            playlistGrid.addTrack(
+                PlaylistGrid::TrackModel::FromFile(trackFile.getFullPathName(), formatManager)
+            );
+        }catch(FileFormatException ex)
+        {
+            DBG("File Format exception: " << ex.file);
+        }
     }
 }
 
