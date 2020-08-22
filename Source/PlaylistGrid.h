@@ -100,10 +100,10 @@ public:
         /// <summary>
         /// Loads an audio file and returns a TrackModel instance based on the file information
         /// </summary>
-        /// <param name="filepath">Path of the file to open</param>
+        /// <param name="filePath">Path of the file to open</param>
         /// <param name="formatReader">Reference to an instance of AudioFormatManager, needed to read the audio file</param>
         /// <returns>New TrackModel instance containing the information about the audio file</returns>
-        static TrackModel FromFile(const String& filepath, AudioFormatManager& formatReader);
+        static TrackModel fromFile(const String& filePath, AudioFormatManager& formatReader);
     };
 
     /// <summary>
@@ -157,7 +157,7 @@ public:
         /// <summary>
         /// Broadcaster for the ItemDoubleClicked event
         /// </summary>
-        ActionBroadcaster ItemDoubleClickedEventBroadcaster;
+        ActionBroadcaster itemDoubleClickedEventBroadcaster;
         /// <summary>
         /// Contains the search text inputted in the Search text field
         /// </summary>

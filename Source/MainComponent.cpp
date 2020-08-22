@@ -14,10 +14,10 @@ MainComponent::MainComponent() :
     rightPlayer(formatManager),
     leftPlayerComponent(leftPlayer, formatManager, thumbCache),
     rightPlayerComponent(rightPlayer, formatManager, thumbCache),
-    TrackSelectedToPlayLeftListener([this](const String& message) { TrackSelectedToPlayCallback(message, this->leftPlayerComponent); }),
-    TrackSelectedToPlayRightListener([this](const String& message) { TrackSelectedToPlayCallback(message, this->rightPlayerComponent); }),
-    LeftVolumeChangedListener([this](const String& message) { VolumeChangedCallback(message, leftPlayerComponent); }),
-    RightVolumeChangedListener([this](const String& message) { VolumeChangedCallback(message, rightPlayerComponent); }) ,
+    trackSelectedToPlayLeftListener([this](const String& message) { trackSelectedToPlayCallback(message, this->leftPlayerComponent); }),
+    trackSelectedToPlayRightListener([this](const String& message) { trackSelectedToPlayCallback(message, this->rightPlayerComponent); }),
+    leftVolumeChangedListener([this](const String& message) { volumeChangedCallback(message, leftPlayerComponent); }),
+    rightVolumeChangedListener([this](const String& message) { volumeChangedCallback(message, rightPlayerComponent); }) ,
 	leftVuMeter(leftLevel, "L"),
 	rightVuMeter(rightLevel, "R")
 {
@@ -55,12 +55,12 @@ MainComponent::MainComponent() :
     rightChannel.setVolume(1.0);
 
 	//Attach Listeners to PlaylistAggregateComponents' Broadcasters
-    leftPlaylistComponent.TrackSelectedToPlayEventBroadcaster.addActionListener(&TrackSelectedToPlayLeftListener);
-    rightPlaylistComponent.TrackSelectedToPlayEventBroadcaster.addActionListener(&TrackSelectedToPlayRightListener);
+    leftPlaylistComponent.trackSelectedToPlayEventBroadcaster.addActionListener(&trackSelectedToPlayLeftListener);
+    rightPlaylistComponent.trackSelectedToPlayEventBroadcaster.addActionListener(&trackSelectedToPlayRightListener);
 
 	//Attach Listeners to MixerChannels' Broadcasters
-	leftChannel.VolumeChangedBroadcaster.addActionListener(&LeftVolumeChangedListener);
-    rightChannel.VolumeChangedBroadcaster.addActionListener(&RightVolumeChangedListener);
+	leftChannel.volumeChangedBroadcaster.addActionListener(&leftVolumeChangedListener);
+    rightChannel.volumeChangedBroadcaster.addActionListener(&rightVolumeChangedListener);
 }
 
 MainComponent::~MainComponent()
@@ -158,12 +158,12 @@ void MainComponent::resized()
     controlLayout.performLayout(getLocalBounds());
 }
 
-void MainComponent::TrackSelectedToPlayCallback(const String& message, PlayerAggregateComponent& player) 
+void MainComponent::trackSelectedToPlayCallback(const String& message, PlayerAggregateComponent& player) 
 {
     player.setCurrentTrack(message);
 }
 
-void MainComponent::VolumeChangedCallback(const String& message, PlayerAggregateComponent& player)
+void MainComponent::volumeChangedCallback(const String& message, PlayerAggregateComponent& player)
 {
     player.setGain(message.getDoubleValue());
 }

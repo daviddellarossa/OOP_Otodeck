@@ -19,10 +19,10 @@ PlayerAggregateComponent::PlayerAggregateComponent(
 	audioPlayer(audioPlayer),
     formatManager(formatManager),
     waveformDisplay(formatManager, cache),
-    StopListener([this](const String& message) {StopCallback(message); }),
-    PlayListener([this](const String& message) {PlayCallback(message); }),
-	PauseListener([this](const String& message) {PauseCallback(message); }),
-    PositionChangedListener([this](const String& message) {positionChangedCallback(message); })
+    stopListener([this](const String& message) {stopCallback(message); }),
+    playListener([this](const String& message) {playCallback(message); }),
+	pauseListener([this](const String& message) {pauseCallback(message); }),
+    positionChangedListener([this](const String& message) {positionChangedCallback(message); })
 {
     // In your constructor, you should add any child components, and
     // initialise any special settings that your component needs.
@@ -36,12 +36,12 @@ PlayerAggregateComponent::PlayerAggregateComponent(
     waveformDisplay.setBounds(0, 0, getWidth(), getHeight());
 
 	//Plug the broadcaster of playerToolbar to their respective Listeners
-    playerToolbar.PlayEventBroadcaster.addActionListener(&PlayListener);
-    playerToolbar.PauseEventBroadcaster.addActionListener(&PauseListener);
-    playerToolbar.StopEventBroadcaster.addActionListener(&StopListener);
+    playerToolbar.playEventBroadcaster.addActionListener(&playListener);
+    playerToolbar.pauseEventBroadcaster.addActionListener(&pauseListener);
+    playerToolbar.stopEventBroadcaster.addActionListener(&stopListener);
 
 	//Plug the broadcaster of waveformDisplay to its respective Listener
-    waveformDisplay.PositionChangedBroadcaster.addActionListener(&PositionChangedListener);
+    waveformDisplay.positionChangedBroadcaster.addActionListener(&positionChangedListener);
 
     //Configure the speedSlider control
     speedSlider.addListener(this);
@@ -93,19 +93,19 @@ void PlayerAggregateComponent::resized()
     layout.performLayout(getLocalBounds());
 }
 
-void PlayerAggregateComponent::PlayCallback(const String& message)
+void PlayerAggregateComponent::playCallback(const String& message)
 {
     this->audioPlayer.start();
     DBG(message);
 }
 
-void PlayerAggregateComponent::PauseCallback(const String& message)
+void PlayerAggregateComponent::pauseCallback(const String& message)
 {
     this->audioPlayer.stop();
     DBG(message);
 }
 
-void PlayerAggregateComponent::StopCallback(const String& message)
+void PlayerAggregateComponent::stopCallback(const String& message)
 {
     this->audioPlayer.stop();
     this->audioPlayer.setPosition(0.0);

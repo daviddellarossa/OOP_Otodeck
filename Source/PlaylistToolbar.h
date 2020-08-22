@@ -42,27 +42,27 @@ public:
     /// <summary>
     /// Broadcaster for the Add File event
     /// </summary>
-    ActionBroadcaster AddFileEventBroadcaster;
+    ActionBroadcaster addFileEventBroadcaster;
     /// <summary>
     /// Broadcaster for the Add Folder event
     /// </summary>
-    ActionBroadcaster AddFolderEventBroadcaster;
+    ActionBroadcaster addFolderEventBroadcaster;
     /// <summary>
     /// Broadcaster for the Delete Files event
     /// </summary>
-    ActionBroadcaster DeleteFilesEventBroadcaster;
+    ActionBroadcaster deleteFilesEventBroadcaster;
     /// <summary>
     /// Broadcaster for the Load Playlist event
     /// </summary>
-    ActionBroadcaster LoadPlaylistEventBroadcaster;
+    ActionBroadcaster loadPlaylistEventBroadcaster;
     /// <summary>
     /// Broadcaster for the Save Playlist event
     /// </summary>
-    ActionBroadcaster SavePlaylistEventBroadcaster;
+    ActionBroadcaster savePlaylistEventBroadcaster;
     /// <summary>
     /// Broadcaster for the Open File In Player event
     /// </summary>
-    ActionBroadcaster OpenFileInPlayerEventBroadcaster;
+    ActionBroadcaster openFileInPlayerEventBroadcaster;
 private:
     /// <summary>
     /// Factory for the PlaylistToolbar

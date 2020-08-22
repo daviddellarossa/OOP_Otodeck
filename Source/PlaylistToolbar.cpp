@@ -52,22 +52,22 @@ void PlaylistToolbar::buttonClicked(Button* button)
 		switch(toolbarButton->getItemId())
 		{
             case static_cast<int>(PlaylistToolbarItemFactory::PlaylistToolbarItemIds::addFile) :
-                AddFileEventBroadcaster.sendActionMessage("Add Files");
+                addFileEventBroadcaster.sendActionMessage("Add Files");
             break;
             case static_cast<int>(PlaylistToolbarItemFactory::PlaylistToolbarItemIds::addFolder) :
-                AddFolderEventBroadcaster.sendActionMessage("Add Folder");
+                addFolderEventBroadcaster.sendActionMessage("Add Folder");
             break;
             case static_cast<int>(PlaylistToolbarItemFactory::PlaylistToolbarItemIds::deleteFiles) :
-                DeleteFilesEventBroadcaster.sendActionMessage("Delete File");
+                deleteFilesEventBroadcaster.sendActionMessage("Delete File");
             break;
             case static_cast<int>(PlaylistToolbarItemFactory::PlaylistToolbarItemIds::loadPlaylist) :
-                LoadPlaylistEventBroadcaster.sendActionMessage("Load Playlist");
+                loadPlaylistEventBroadcaster.sendActionMessage("Load Playlist");
             break;
             case static_cast<int>(PlaylistToolbarItemFactory::PlaylistToolbarItemIds::savePlaylist) :
-                SavePlaylistEventBroadcaster.sendActionMessage("Save Playlist");
+                savePlaylistEventBroadcaster.sendActionMessage("Save Playlist");
             break;
             case static_cast<int>(PlaylistToolbarItemFactory::PlaylistToolbarItemIds::openFileInPlayer) :
-                OpenFileInPlayerEventBroadcaster.sendActionMessage("Open File In Player");
+                openFileInPlayerEventBroadcaster.sendActionMessage("Open File In Player");
                 break;
             default:
             break;

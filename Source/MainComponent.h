@@ -65,14 +65,14 @@ private:
     PlayerAggregateComponent rightPlayerComponent;
 
 	//Listener invoked by the left PlaylistAggregateComponent when there is a change of selected track
-    ExternalCallbackActionListener TrackSelectedToPlayLeftListener;
+    ExternalCallbackActionListener trackSelectedToPlayLeftListener;
     //Listener invoked by the right PlaylistAggregateComponent when there is a change of selected track
-    ExternalCallbackActionListener TrackSelectedToPlayRightListener;
+    ExternalCallbackActionListener trackSelectedToPlayRightListener;
 
     //Listener invoked by the left MixerChannel when there is a change in volume 
-    ExternalCallbackActionListener LeftVolumeChangedListener;
+    ExternalCallbackActionListener leftVolumeChangedListener;
     //Listener invoked by the right MixerChannel when there is a change in volume 
-    ExternalCallbackActionListener RightVolumeChangedListener;
+    ExternalCallbackActionListener rightVolumeChangedListener;
 
 	//Left instance of MixerChannel
     MixerChannel leftChannel;
@@ -85,10 +85,10 @@ private:
 	VuMeter rightVuMeter;
 
     //Callback method invoked when a track is selected
-    void TrackSelectedToPlayCallback(const String& message, PlayerAggregateComponent& player);
+    void trackSelectedToPlayCallback(const String& message, PlayerAggregateComponent& player);
 
     //Callback method invoked when the volume changes
-    void VolumeChangedCallback(const String& message, PlayerAggregateComponent& player);
+    void volumeChangedCallback(const String& message, PlayerAggregateComponent& player);
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (MainComponent)
 };

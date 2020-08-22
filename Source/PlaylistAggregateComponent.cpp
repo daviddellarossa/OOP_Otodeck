@@ -17,14 +17,14 @@
 //==============================================================================
 PlaylistAggregateComponent::PlaylistAggregateComponent() :
 	//initialization of the listeners to call the proper Callback function
-	AddFileListener([this](const String& message) {AddFileCallback(message); }),
-	AddFolderListener([this](const String& message) {AddFolderCallback(message); }),
-	DeleteFilesListener([this](const String& message) {DeleteFilesCallback(message); }),
-	LoadPlaylistListener([this](const String& message) {LoadPlaylistCallback(message); }),
-	SavePlaylistListener([this](const String& message) {SavePlaylistCallback(message); }),
-    OpenFileInPlayerListener([this](const String& message) {OpenFileInPlayerCallback(message); }),
-    ItemDoubleClickedListener([this](const String& message) {ItemDoubleClickedCallback(message); }),
-    searchTextChangedListener([this](const String& message) { SearchTextChangedCallback(message); })
+	addFileListener([this](const String& message) {addFileCallback(message); }),
+	addFolderListener([this](const String& message) {addFolderCallback(message); }),
+	deleteFilesListener([this](const String& message) {deleteFilesCallback(message); }),
+	loadPlaylistListener([this](const String& message) {loadPlaylistCallback(message); }),
+	savePlaylistListener([this](const String& message) {savePlaylistCallback(message); }),
+    openFileInPlayerListener([this](const String& message) {openFileInPlayerCallback(message); }),
+    itemDoubleClickedListener([this](const String& message) {itemDoubleClickedCallback(message); }),
+    searchTextChangedListener([this](const String& message) { searchTextChangedCallback(message); })
 {
 
 	addAndMakeVisible(this->playlistToolbar);
@@ -36,14 +36,14 @@ PlaylistAggregateComponent::PlaylistAggregateComponent() :
     searchBox.setTextToShowWhenEmpty("Search...", Colours::grey);
 	
 	//Register EventListeners to PlaylistToolbar Broadcasters
-    playlistToolbar.AddFileEventBroadcaster.addActionListener(&AddFileListener);
-    playlistToolbar.AddFolderEventBroadcaster.addActionListener(&AddFolderListener);
-    playlistToolbar.DeleteFilesEventBroadcaster.addActionListener(&DeleteFilesListener);
-    playlistToolbar.LoadPlaylistEventBroadcaster.addActionListener(&LoadPlaylistListener);
-    playlistToolbar.SavePlaylistEventBroadcaster.addActionListener(&SavePlaylistListener);
-    playlistToolbar.OpenFileInPlayerEventBroadcaster.addActionListener(&OpenFileInPlayerListener);
+    playlistToolbar.addFileEventBroadcaster.addActionListener(&addFileListener);
+    playlistToolbar.addFolderEventBroadcaster.addActionListener(&addFolderListener);
+    playlistToolbar.deleteFilesEventBroadcaster.addActionListener(&deleteFilesListener);
+    playlistToolbar.loadPlaylistEventBroadcaster.addActionListener(&loadPlaylistListener);
+    playlistToolbar.savePlaylistEventBroadcaster.addActionListener(&savePlaylistListener);
+    playlistToolbar.openFileInPlayerEventBroadcaster.addActionListener(&openFileInPlayerListener);
 
-    playlistGrid.getGridBoxModel().ItemDoubleClickedEventBroadcaster.addActionListener(&ItemDoubleClickedListener);
+    playlistGrid.getGridBoxModel().itemDoubleClickedEventBroadcaster.addActionListener(&itemDoubleClickedListener);
 
 	searchBox.addListener(&searchTextChangedListener);
 }
@@ -93,7 +93,7 @@ void PlaylistAggregateComponent::resized()
 
 }
 
-void PlaylistAggregateComponent::AddFileCallback(const String& message)
+void PlaylistAggregateComponent::addFileCallback(const String& message)
 {
     DBG(message);
     AudioFormatManager formatManager;
@@ -121,30 +121,30 @@ void PlaylistAggregateComponent::AddFileCallback(const String& message)
             File selectedFile = browser.getSelectedFile(counter);
     		
             playlistGrid.addTrack(               
-                PlaylistGrid::TrackModel::FromFile(browser.getSelectedFile(counter).getFullPathName(), formatManager)
+                PlaylistGrid::TrackModel::fromFile(browser.getSelectedFile(counter).getFullPathName(), formatManager)
             );
     	}
     }
 }
 
-void PlaylistAggregateComponent::AddFolderCallback(const String& message) const
+void PlaylistAggregateComponent::addFolderCallback(const String& message) const
 {
 	//Not implemented deliberately. Available for possible future expansion
     DBG(message);
 }
 
-void PlaylistAggregateComponent::DeleteFilesCallback(const String& message)
+void PlaylistAggregateComponent::deleteFilesCallback(const String& message)
 {
     playlistGrid.removeSelectedTracks();
 }
 
-void PlaylistAggregateComponent::LoadPlaylistCallback(const String& message)
+void PlaylistAggregateComponent::loadPlaylistCallback(const String& message)
 {
 
-    WildcardFileFilter wildcardFilter("*" + PLAYLISTFILEEXTENSION, String(), "Oto files");
+    WildcardFileFilter wildcardFilter("*" + _PlayListFileExtension, String(), "Oto files");
 
     FileBrowserComponent browser(FileBrowserComponent::canSelectFiles | FileBrowserComponent::openMode,
-        File(APPFOLDERFULLPATH()) ,
+        File(_AppFolderFullPath()) ,
         &wildcardFilter,
         nullptr);
 
@@ -182,7 +182,7 @@ void PlaylistAggregateComponent::LoadPlaylistCallback(const String& message)
         try
         {
             playlistGrid.addTrack(
-                PlaylistGrid::TrackModel::FromFile(trackFile.getFullPathName(), formatManager)
+                PlaylistGrid::TrackModel::fromFile(trackFile.getFullPathName(), formatManager)
             );
         }catch(FileFormatException ex)
         {
@@ -191,11 +191,11 @@ void PlaylistAggregateComponent::LoadPlaylistCallback(const String& message)
     }
 }
 
-void PlaylistAggregateComponent::SavePlaylistCallback(const String& message) const
+void PlaylistAggregateComponent::savePlaylistCallback(const String& message) const
 {
-    WildcardFileFilter wildcardFilter("*" + PLAYLISTFILEEXTENSION, String(), "Oto files");
+    WildcardFileFilter wildcardFilter("*" + _PlayListFileExtension, String(), "Oto files");
 
-    auto appFolder = File(APPFOLDERFULLPATH());
+    auto appFolder = File(_AppFolderFullPath());
 	
     if (!appFolder.exists() && appFolder.createDirectory().failed())
     {
@@ -241,34 +241,34 @@ void PlaylistAggregateComponent::SavePlaylistCallback(const String& message) con
 	
 }
 
-void PlaylistAggregateComponent::OpenFileInPlayerCallback(const String& message)
+void PlaylistAggregateComponent::openFileInPlayerCallback(const String& message)
 {
 	
     auto selectedIndices = playlistGrid.getSelectedRowsIndices();
     if (selectedIndices.getNumRanges() == 0)
         return;
 	
-    TrackSelectedToPlayEventBroadcaster.sendActionMessage(playlistGrid.getTracks()->at(selectedIndices.getRange(0).getStart()).filePath);
+    trackSelectedToPlayEventBroadcaster.sendActionMessage(playlistGrid.getTracks()->at(selectedIndices.getRange(0).getStart()).filePath);
 }
 
-void PlaylistAggregateComponent::ItemDoubleClickedCallback(const String& message) const
+void PlaylistAggregateComponent::itemDoubleClickedCallback(const String& message) const
 {
-    TrackSelectedToPlayEventBroadcaster.sendActionMessage(message);
+    trackSelectedToPlayEventBroadcaster.sendActionMessage(message);
     DBG("File double-clicked: " << message);
 }
 
-void PlaylistAggregateComponent::SearchTextChangedCallback(const String& message)
+void PlaylistAggregateComponent::searchTextChangedCallback(const String& message)
 {
     playlistGrid.setSearchText(message);
     DBG(message);
 }
 
-const String PlaylistAggregateComponent::APPFOLDERNAME{ "OtoDecks" };
-const String PlaylistAggregateComponent::PLAYLISTFILEEXTENSION{ ".oto" };
-const String PlaylistAggregateComponent::APPFOLDERFULLPATH()
+const String PlaylistAggregateComponent::_AppFolderName{ "OtoDecks" };
+const String PlaylistAggregateComponent::_PlayListFileExtension{ ".oto" };
+const String PlaylistAggregateComponent::_AppFolderFullPath()
 {
     std::stringstream ss;
     ss << File::addTrailingSeparator(File::getSpecialLocation(File::SpecialLocationType::userApplicationDataDirectory).getFullPathName());
-    ss << APPFOLDERNAME;
+    ss << _AppFolderName;
     return ss.str();
 }

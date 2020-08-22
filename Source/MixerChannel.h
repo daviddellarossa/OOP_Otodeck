@@ -58,7 +58,7 @@ public:
     /// <summary>
     /// Broadcaster used to notify when a change in volume happens
     /// </summary>
-    ActionBroadcaster VolumeChangedBroadcaster;
+    ActionBroadcaster volumeChangedBroadcaster;
 private:
 	//Volume slider component
     Slider volumeSlider;

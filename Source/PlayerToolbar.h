@@ -36,11 +36,11 @@ public:
     void buttonClicked(Button* button) override;
 
 	//Broadcaster for the Play Event
-    ActionBroadcaster PlayEventBroadcaster;
+    ActionBroadcaster playEventBroadcaster;
 	//Broadcaster for the Pause Event
-    ActionBroadcaster PauseEventBroadcaster;
+    ActionBroadcaster pauseEventBroadcaster;
 	//Broadcaster for the Stop Event
-    ActionBroadcaster StopEventBroadcaster;
+    ActionBroadcaster stopEventBroadcaster;
 
 private:
 

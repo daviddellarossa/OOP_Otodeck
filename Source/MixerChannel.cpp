@@ -79,7 +79,7 @@ void MixerChannel::setVolume(double value)
 
 void MixerChannel::buttonStateChanged(Button*)
 {
-    VolumeChangedBroadcaster.sendActionMessage(std::to_string(getVolume()));
+    volumeChangedBroadcaster.sendActionMessage(std::to_string(getVolume()));
 }
 
 void MixerChannel::buttonClicked(Button*)
@@ -88,7 +88,7 @@ void MixerChannel::buttonClicked(Button*)
 
 void MixerChannel::sliderValueChanged(Slider* slider)
 {
-    VolumeChangedBroadcaster.sendActionMessage(std::to_string(getVolume()));
+    volumeChangedBroadcaster.sendActionMessage(std::to_string(getVolume()));
 }
  double MixerChannel::getVolume() const
 {

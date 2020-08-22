@@ -63,7 +63,7 @@ public:
     /// <summary>
     /// Broadcaster that notifies when the position within the track has changed
     /// </summary>
-    ActionBroadcaster PositionChangedBroadcaster;
+    ActionBroadcaster positionChangedBroadcaster;
 
 private:
 	//Instance of an object of type AudioThumbnail

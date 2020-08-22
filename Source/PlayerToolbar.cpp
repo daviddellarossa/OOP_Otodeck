@@ -54,13 +54,13 @@ void PlayerToolbar::buttonClicked(Button* button)
     	switch(toolbarButton->getItemId())
     	{
             case static_cast<int>(PlayerToolbarItemFactory::PlayerToolbarItemIds::pause) :
-                PauseEventBroadcaster.sendActionMessage("Pause");
+                pauseEventBroadcaster.sendActionMessage("Pause");
                 break;
             case static_cast<int>(PlayerToolbarItemFactory::PlayerToolbarItemIds::play) :
-                PlayEventBroadcaster.sendActionMessage("Play");
+                playEventBroadcaster.sendActionMessage("Play");
                 break;
             case static_cast<int>(PlayerToolbarItemFactory::PlayerToolbarItemIds::stop) :
-                StopEventBroadcaster.sendActionMessage("Stop");
+                stopEventBroadcaster.sendActionMessage("Stop");
                 break;
             default:
             break;

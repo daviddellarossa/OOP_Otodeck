@@ -45,28 +45,6 @@ public:
     void paint (juce::Graphics&) override;
     void resized() override;
 
-	//Callbacks invoked by the Listeners when certain events are triggered
-
-    /// <summary>
-    /// Callback invoked when a Play event is triggered. This event is triggered when the user clicks on the Play button on the UI
-    /// </summary>
-    /// <param name="message">Message describing the event</param>
-    void PlayCallback(const String& message);
-    /// <summary>
-    /// Callback invoked when a Pause event is triggered. This event is triggered when the user clicks on the Pause button on the UI
-    /// </summary>
-    /// <param name="message">Message describing the event</param>
-    void PauseCallback(const String& message);
-    /// <summary>
-    /// Callback invoked when a Stop event is triggered. This event is triggered when the user clicks on the Stop button on the UI
-    /// </summary>
-    /// <param name="message">Message describing the event</param>
-    void StopCallback(const String& message);
-    /// <summary>
-    /// Callback invoked when a positionChanged event is triggered. This event is triggered when the user moves the position slider on the UI
-    /// </summary>
-    /// <param name="message">Message describing the event</param>
-    void positionChangedCallback(const String& message);
     /// <summary>
     /// Sets the new current track for the player to the file pointed to by filePath
     /// </summary>
@@ -120,13 +98,37 @@ private:
     Slider speedSlider;
 
 	//Listener for the Stop event. Stop resets the position to the beginning of the track
-    ExternalCallbackActionListener StopListener;
+    ExternalCallbackActionListener stopListener;
 	//Listener for the Play event
-    ExternalCallbackActionListener PlayListener;
+    ExternalCallbackActionListener playListener;
 	//Listener for the Pause event. Pause keeps the same position in the track
-    ExternalCallbackActionListener PauseListener;
+    ExternalCallbackActionListener pauseListener;
     //Listener for the PositionChanged event
-    ExternalCallbackActionListener PositionChangedListener;
+    ExternalCallbackActionListener positionChangedListener;
+
+    //Callbacks invoked by the Listeners when certain events are triggered
+
+	/// <summary>
+	/// Callback invoked when a Play event is triggered. This event is triggered when the user clicks on the Play button on the UI
+	/// </summary>
+	/// <param name="message">Message describing the event</param>
+    void playCallback(const String& message);
+    /// <summary>
+    /// Callback invoked when a Pause event is triggered. This event is triggered when the user clicks on the Pause button on the UI
+    /// </summary>
+    /// <param name="message">Message describing the event</param>
+    void pauseCallback(const String& message);
+    /// <summary>
+    /// Callback invoked when a Stop event is triggered. This event is triggered when the user clicks on the Stop button on the UI
+    /// </summary>
+    /// <param name="message">Message describing the event</param>
+    void stopCallback(const String& message);
+    /// <summary>
+    /// Callback invoked when a positionChanged event is triggered. This event is triggered when the user moves the position slider on the UI
+    /// </summary>
+    /// <param name="message">Message describing the event</param>
+    void positionChangedCallback(const String& message);
+
 	
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (PlayerAggregateComponent)
 };

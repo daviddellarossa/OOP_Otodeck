@@ -123,7 +123,7 @@ void WaveformDisplay::mouseDrag(const MouseEvent& event)
     if (relativePosition > 1)
         relativePosition = 1;
 
-    PositionChangedBroadcaster.sendActionMessage(static_cast<String>(relativePosition));
+    positionChangedBroadcaster.sendActionMessage(static_cast<String>(relativePosition));
 }
 
 void WaveformDisplay::mouseDown(const MouseEvent& event)
@@ -141,7 +141,7 @@ void WaveformDisplay::mouseDown(const MouseEvent& event)
     if (relativePosition > 1)
         relativePosition = 1;
 
-    PositionChangedBroadcaster.sendActionMessage(static_cast<String>(relativePosition));
+    positionChangedBroadcaster.sendActionMessage(static_cast<String>(relativePosition));
 }
 
 void WaveformDisplay::mouseUp(const MouseEvent& event)

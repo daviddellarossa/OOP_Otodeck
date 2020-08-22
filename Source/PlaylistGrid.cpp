@@ -110,7 +110,7 @@ void PlaylistGrid::filesDropped(const StringArray& files, int x, int y)
         File file(fileString);
         if(formatManager.findFormatForFileExtension(file.getFileExtension()))
         {
-            addTrack(TrackModel::FromFile(fileString, formatManager));
+            addTrack(TrackModel::fromFile(fileString, formatManager));
         }
     }
 }
@@ -202,7 +202,7 @@ void PlaylistGrid::PlaylistTableListBoxModel::paintCell(Graphics& graphics, int 
 
 void PlaylistGrid::PlaylistTableListBoxModel::cellDoubleClicked(int rowNumber, int columnId, const MouseEvent& event)
 {
-    ItemDoubleClickedEventBroadcaster.sendActionMessage(this->tracks.get()->at(rowNumber).filePath);
+    itemDoubleClickedEventBroadcaster.sendActionMessage(this->tracks.get()->at(rowNumber).filePath);
 }
 
 Component* PlaylistGrid::PlaylistTableListBoxModel::refreshComponentForCell(int rowNumber, int columnId,
@@ -223,9 +223,9 @@ String PlaylistGrid::TrackModel::toString() const
     return this->filePath;
 }
 
-PlaylistGrid::TrackModel PlaylistGrid::TrackModel::FromFile(const String& filepath, AudioFormatManager& formatManager)
+PlaylistGrid::TrackModel PlaylistGrid::TrackModel::fromFile(const String& filePath, AudioFormatManager& formatManager)
 {
-    File selectedFile(filepath);
+    File selectedFile(filePath);
     std::unique_ptr<AudioFormatReader> formatReader(formatManager.createReaderFor(selectedFile));
 
     if (formatReader == nullptr)
