@@ -23,19 +23,9 @@ class PlaylistGrid  :
 {
 public:
     /// <summary>
-    /// Constructor for the class. Creates an instance of the class
-    /// </summary>
-    PlaylistGrid();
-    ~PlaylistGrid() override;
-
-	//Overloads for the virtual methods inherited by the Component class
-    void paint (juce::Graphics&) override;
-    void resized() override;
-
-    /// <summary>
-    /// Class containing all the information related to a track
-    /// </summary>
-    class TrackModel
+	/// Class containing all the information related to a track
+	/// </summary>
+	class TrackModel
     {
     public:
         TrackModel() = default;
@@ -163,6 +153,20 @@ public:
         /// </summary>
         String searchText;
     };
+
+	
+    /// <summary>
+    /// Constructor for the class. Creates an instance of the class
+    /// </summary>
+    PlaylistGrid();
+    ~PlaylistGrid() override;
+
+	//Overloads for the virtual methods inherited by the Component class
+    void paint (juce::Graphics&) override;
+    void resized() override;
+
+
+
 
 	/// <summary>
 	/// Add a new track to the Track array
