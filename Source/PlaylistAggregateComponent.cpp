@@ -218,7 +218,15 @@ void PlaylistAggregateComponent::savePlaylistCallback(const String& message) con
     {
         return;
     }
-    if(browser.getSelectedFile(0).create().failed())
+
+	//If file extension is not .oto, append the extension
+    auto fileFullPath = browser.getSelectedFile(0);
+	if(fileFullPath.getFileExtension()!= _PlayListFileExtension)
+	{
+        fileFullPath = File(fileFullPath.getFullPathName() + _PlayListFileExtension);
+	}
+	
+    if(fileFullPath.create().failed())
     {
         AlertWindow::showMessageBox(AlertWindow::WarningIcon, "Otodecks",
             "Unable to create the playlist file " + browser.getSelectedFile(0).getFullPathName());
@@ -229,15 +237,15 @@ void PlaylistAggregateComponent::savePlaylistCallback(const String& message) con
     std::stringstream ss;
     std::for_each(tracks->begin(), tracks->end(), [&ss](const PlaylistGrid::TrackModel track) { ss << track.toString() << '\n'; });
 	
-	if(browser.getSelectedFile(0).replaceWithText(ss.str()))
+	if(fileFullPath.replaceWithText(ss.str()))
 	{
         AlertWindow::showMessageBox(AlertWindow::InfoIcon, "Otodecks",
-            "Playlist file created successfully\n" + browser.getSelectedFile(0).getFullPathName());
+            "Playlist file created successfully\n" + fileFullPath.getFullPathName());
         return;
 	}
 	
     AlertWindow::showMessageBox(AlertWindow::WarningIcon, "Otodecks",
-        "Unable to edit the playlist file " + browser.getSelectedFile(0).getFullPathName());
+        "Unable to edit the playlist file " + fileFullPath.getFullPathName());
 	
 }
 
